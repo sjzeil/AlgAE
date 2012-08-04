@@ -1,0 +1,86 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>edu.odu.cs.AlgAE</groupId>
+    <artifactId>AlgAE</artifactId>
+    <version>4.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>algae-cppserver</artifactId>
+  <packaging>pom</packaging>
+
+  <name>AlgAE C++ server</name>
+
+
+  <build>
+    <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-antrun-plugin</artifactId>
+	<version>1.7</version>
+	<executions>
+	  <execution>
+	    <id>cppcompile</id>
+	    <phase>compile</phase>
+	    <goals>
+	      <goal>run</goal>
+	    </goals>
+	    <configuration>
+	      <target name="compile">
+	        <property name="compile_classpath" refid="maven.compile.classpath"/>
+	        <ant antfile="${basedir}/build.xml">
+              <target name="compile"/>
+            </ant>
+	      </target>
+	    </configuration>
+	  </execution>
+	  <execution>
+	    <id>cpptestcompile</id>
+	    <phase>test-compile</phase>
+	    <goals>
+	      <goal>run</goal>
+	    </goals>
+	    <configuration>
+	      <target name="test-compile">
+	        <property name="compile_classpath" refid="maven.compile.classpath"/>
+	        <ant antfile="${basedir}/build.xml">
+              <target name="test-compile"/>
+            </ant>
+		  </target>
+	    </configuration>
+	  </execution>
+	  <execution>
+	    <id>cpptestrun</id>
+	    <phase>test</phase>
+	    <goals>
+	      <goal>run</goal>
+	    </goals>
+	    <configuration>
+	      <target name="test-run">
+		<property name="compile_classpath" refid="maven.compile.classpath"/>
+		<exec executable="target/Test/runAllTests"/>
+	      </target>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
+    </plugins>
+  </build>
+
+
+
+  <dependencies>
+	<dependency>
+		<groupId>ant-contrib</groupId>
+		<artifactId>cpptasks</artifactId>
+		<version>20030309.134440</version>
+	</dependency>
+  	<dependency>
+  		<groupId>edu.odu.cs.AlgAE</groupId>
+  		<artifactId>algae-client</artifactId>
+  		<version>4.0-SNAPSHOT</version>
+  		<scope>test</scope>
+  	</dependency>
+  </dependencies>
+</project>

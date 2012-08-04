@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+
+<project name="CompileCpp" default="compile" >
+
+	<path id="maven.compile.classpath">
+	  <pathelement location="/home/zeil/.m2/repository/ant-contrib/cpptasks/20030309.134440/cpptasks-20030309.134440.jar"/>
+	</path>
+	
+	<target name="compile">
+		      <property name="compile_classpath" refid="maven.compile.classpath"/>
+		        <taskdef resource="cpptasks.tasks" classpathref="maven.compile.classpath"/>
+	        	<mkdir dir="target/bin"/>
+	        	<cc name="g++"
+	        		outtype="static" 
+	        	    subsystem="console" 
+	        	    outfile="target/algae-cppserver.a"
+	        	    objdir="target/bin"
+	        	    debug="true"
+	        	    >
+	        	   <includepath path="src/main/include"/> 
+	               <fileset dir="src/main/cpp" includes="*.cpp"/>
+	            </cc>
+	      </target>
+	
+	<target name="test-compile">
+			      <property name="compile_classpath" refid="maven.compile.classpath"/>
+			        <taskdef resource="cpptasks.tasks" classpathref="maven.compile.classpath"/>
+		        	<mkdir dir="target/test-bin"/>
+		        	<cc name="g++"
+		        		outtype="executable" 
+		        	    subsystem="console" 
+		        	    outfile="target/test-bin/runAllTests"
+		        	    objdir="target/test-bin"
+		        	    debug="true"
+		        	    >
+		        	   <includepath path="src/test/cpp/gtest"/> 
+		               <includepath path="src/main/include"/> 
+		               <fileset dir="src/test/cpp" includes="*.cpp"/>
+		               <fileset dir="src/test/cpp/gtest" includes="*.cc"/>
+			           <libset libs="stdc++"/>
+		        	   <libset libs="pthread"/>
+		        	   <libset dir="target" libs="algae-cppserver"/>
+		            </cc>
+			      </target>
+	<target name="all" depends="compile, test-compile"/>
+	
+
+</project>
