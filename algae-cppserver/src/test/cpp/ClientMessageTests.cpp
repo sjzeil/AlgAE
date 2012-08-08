@@ -123,7 +123,7 @@ TEST_F (ClientMessageTests, AckMessage) {
 	XMLTester xml;
 	xml.printMessage(message1);
 	xml.readXML();
-	EXPECT_EQ ("AckMessage", xml.fields["Class"]);
+	EXPECT_EQ ("AckMessage", xml.valueOf("Class"));
 }
 
 TEST_F (ClientMessageTests, CapturedOutput) {
@@ -133,8 +133,8 @@ TEST_F (ClientMessageTests, CapturedOutput) {
 	EXPECT_EQ (outp, msg.getOutput());
 	xml.printMessage(msg);
 	xml.readXML();
-	EXPECT_EQ ("CapturedOutputMessage", xml.fields["Class"]);
-	EXPECT_EQ (outp, xml.fields["output"]);
+	EXPECT_EQ ("CapturedOutputMessage", xml.valueOf("Class"));
+	EXPECT_EQ (outp, xml.valueOf("output"));
 }
 
 
@@ -145,8 +145,8 @@ TEST_F (ClientMessageTests, ForceShutDown) {
 	xml.printMessage(msg);
 	EXPECT_EQ (param, msg.getExplanation());
 	xml.readXML();
-	EXPECT_EQ ("ForceShutDownMessage", xml.fields["Class"]);
-	EXPECT_EQ (param, xml.fields["explanation"]);
+	EXPECT_EQ ("ForceShutDownMessage", xml.valueOf("Class"));
+	EXPECT_EQ (param, xml.valueOf("explanation"));
 }
 
 
@@ -168,11 +168,11 @@ TEST_F (ClientMessageTests, Menu) {
 	XMLTester xml;
 	xml.printMessage(msg1);
 	xml.readXML();
-	EXPECT_EQ ("MenuMessage", xml.fields["Class"]);
-	EXPECT_EQ (string("All about this animation"), xml.fields["about"]);
-	/*EXPECT_GT (countOf("search", xml.fields["menu"]), 0);
-	EXPECT_GT (countOf("sort", xml.fields["menu"]), 0);
-	EXPECT_GT (countOf("insert", xml.fields["menu"]), 0);
+	EXPECT_EQ ("MenuMessage", xml.valueOf("Class"));
+	EXPECT_EQ (string("All about this animation"), xml.valueOf("about"));
+	/*EXPECT_GT (countOf("search", xml.valueOf("menu")), 0);
+	EXPECT_GT (countOf("sort", xml.valueOf("menu")), 0);
+	EXPECT_GT (countOf("insert", xml.valueOf("menu")), 0);
 	*/
 }
 
@@ -193,9 +193,9 @@ TEST_F (ClientMessageTests, Prompt) {
 	XMLTester xml;
 	xml.printMessage(msg1);
 	xml.readXML();
-	EXPECT_EQ ("PromptForInputMessage", xml.fields["Class"]);
-	EXPECT_EQ (prompt1, xml.fields["prompt"]);
-	EXPECT_EQ (pattern1, xml.fields["requiredpattern"]);
+	EXPECT_EQ ("PromptForInputMessage", xml.valueOf("Class"));
+	EXPECT_EQ (prompt1, xml.valueOf("prompt"));
+	EXPECT_EQ (pattern1, xml.valueOf("requiredpattern"));
 }
 
 TEST_F (ClientMessageTests, PullMessage) {
@@ -204,7 +204,7 @@ TEST_F (ClientMessageTests, PullMessage) {
 	XMLTester xml;
 	xml.printMessage(message1);
 	xml.readXML();
-	EXPECT_EQ ("PullMessage", xml.fields["Class"]);
+	EXPECT_EQ ("PullMessage", xml.valueOf("Class"));
 }
 
 
@@ -224,15 +224,15 @@ TEST_F (ClientMessageTests, SourceCode) {
 	XMLTester xml (true);
 	xml.printMessage(msg1);
 	xml.readXML();
-	EXPECT_EQ ("SourceCodeMessage", xml.fields["Class"]);
-	EXPECT_EQ (path1, xml.fields["filepath"]);
-	EXPECT_EQ (text1, xml.fields["sourcetext"]);
+	EXPECT_EQ ("SourceCodeMessage", xml.valueOf("Class"));
+	EXPECT_EQ (path1, xml.valueOf("filepath"));
+	EXPECT_EQ (text1, xml.valueOf("sourcetext"));
 
 	xml.printMessage(msg3);
 	xml.readXML();
-	EXPECT_EQ ("SourceCodeMessage", xml.fields["Class"]);
-	EXPECT_EQ (path1, xml.fields["filepath"]);
-	EXPECT_EQ (1, countOf("for (int i = 0; i != 10; i++)", xml.fields["sourcetext"]));
+	EXPECT_EQ ("SourceCodeMessage", xml.valueOf("Class"));
+	EXPECT_EQ (path1, xml.valueOf("filepath"));
+	EXPECT_EQ (1, countOf("for (int i = 0; i != 10; i++)", xml.valueOf("sourcetext")));
 }
 
 
@@ -244,15 +244,15 @@ TEST_F (ClientMessageTests, Snapshot) {
 	XMLTester xml;
 	xml.printMessage(msg1);
 	xml.readXML();
-	EXPECT_EQ ("SnapshotMessage", xml.fields["Class"]);
-	EXPECT_EQ ("true", xml.fields["menuitemcompleted"]);
-	EXPECT_GT (countOf("componentA", xml.fields["snapshot"]), 0);
-	//EXPECT_GT (countOf("link", xml.fields["snapshot"]), 0);
+	EXPECT_EQ ("SnapshotMessage", xml.valueOf("Class"));
+	EXPECT_EQ ("true", xml.valueOf("menuitemcompleted"));
+	EXPECT_GT (countOf("componentA", xml.valueOf("snapshot")), 0);
+	//EXPECT_GT (countOf("link", xml.valueOf("snapshot")), 0);
 
 	xml.printMessage(msg2);
 	xml.readXML();
-	EXPECT_EQ ("SnapshotMessage", xml.fields["Class"]);
-	EXPECT_EQ ("false", xml.fields["menuitemcompleted"]);
+	EXPECT_EQ ("SnapshotMessage", xml.valueOf("Class"));
+	EXPECT_EQ ("false", xml.valueOf("menuitemcompleted"));
 }
 
 	

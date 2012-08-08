@@ -119,14 +119,14 @@ TEST_F (SnapshotDiffTests, EmptyConstructor) {
 	XMLTester xml;
 	xml.printToXML(d0);
 	xml.readXML();
-	EXPECT_EQ ("SnapshotDiff", xml.fields["Class"]);
-	EXPECT_EQ ("[]", xml.fields["removedentities"]);
-	EXPECT_EQ ("[]", xml.fields["changedentities"]);
-	EXPECT_EQ ("[]", xml.fields["newglobals"]);
-	EXPECT_EQ ("[]", xml.fields["newnonglobals"]);
-	EXPECT_EQ ("", xml.fields["descriptor"]);
-	EXPECT_EQ (":1", xml.fields["breakpointlocation"]);
-	EXPECT_NE (string::npos, xml.fields["activationstack"].find("0"));
+	EXPECT_EQ ("SnapshotDiff", xml.valueOf("Class"));
+	EXPECT_EQ ("[]", xml.valueOf("removedentities"));
+	EXPECT_EQ ("[]", xml.valueOf("changedentities"));
+	EXPECT_EQ ("[]", xml.valueOf("newglobals"));
+	EXPECT_EQ ("[]", xml.valueOf("newnonglobals"));
+	EXPECT_EQ ("", xml.valueOf("descriptor"));
+	EXPECT_EQ (":1", xml.valueOf("breakpointlocation"));
+	EXPECT_NE (string::npos, xml.valueOf("activationstack").find("0"));
 }
 
 
@@ -145,14 +145,14 @@ TEST_F (SnapshotDiffTests, ConstructorNullNon) {
 	XMLTester xml;
 	xml.printToXML(d0);
 	xml.readXML();
-	EXPECT_EQ ("SnapshotDiff", xml.fields["Class"]);
-	EXPECT_EQ ("[]", xml.fields["removedentities"]);
-	EXPECT_TRUE (countOf("eid:", xml.fields["changedentities"]) >= 4);
-	EXPECT_EQ (1, countOf("@", xml.fields["newglobals"]));
-	EXPECT_EQ (1, countOf("label2", xml.fields["newglobals"]));
-	EXPECT_EQ (snap1.getDescriptor(), xml.fields["descriptor"]);
-	EXPECT_EQ ("foo.java:15", xml.fields["breakpointlocation"]);
-	EXPECT_EQ (1, countOf("labeled",xml.fields["activationstack"]));
+	EXPECT_EQ ("SnapshotDiff", xml.valueOf("Class"));
+	EXPECT_EQ ("[]", xml.valueOf("removedentities"));
+	EXPECT_TRUE (countOf("eid:", xml.valueOf("changedentities")) >= 4);
+	EXPECT_EQ (1, countOf("@", xml.valueOf("newglobals")));
+	EXPECT_EQ (1, countOf("label2", xml.valueOf("newglobals")));
+	EXPECT_EQ (snap1.getDescriptor(), xml.valueOf("descriptor"));
+	EXPECT_EQ ("foo.java:15", xml.valueOf("breakpointlocation"));
+	EXPECT_EQ (1, countOf("labeled",xml.valueOf("activationstack")));
 }
 
 TEST_F (SnapshotDiffTests, ConstructorNonNull) {
@@ -170,14 +170,14 @@ TEST_F (SnapshotDiffTests, ConstructorNonNull) {
 		XMLTester xml;
 		xml.printToXML(d0);
 		xml.readXML();
-		EXPECT_EQ ("SnapshotDiff", xml.fields["Class"]);
-		EXPECT_EQ ((int)snap1.getEntities().size()-1, countOf(",", xml.fields["removedentities"]));
-		EXPECT_EQ ("[]", xml.fields["changedentities"]);
-		EXPECT_EQ (1, countOf("@", xml.fields["newnonglobals"]));
-		EXPECT_EQ ("[]", xml.fields["newglobals"]);
-		EXPECT_EQ ("", xml.fields["descriptor"]);
-		EXPECT_EQ (":1", xml.fields["breakpointlocation"]);
-		EXPECT_NE (1, countOf("labeled",xml.fields["activationstack"]));
+		EXPECT_EQ ("SnapshotDiff", xml.valueOf("Class"));
+		EXPECT_EQ ((int)snap1.getEntities().size()-1, countOf(",", xml.valueOf("removedentities")));
+		EXPECT_EQ ("[]", xml.valueOf("changedentities"));
+		EXPECT_EQ (1, countOf("@", xml.valueOf("newnonglobals")));
+		EXPECT_EQ ("[]", xml.valueOf("newglobals"));
+		EXPECT_EQ ("", xml.valueOf("descriptor"));
+		EXPECT_EQ (":1", xml.valueOf("breakpointlocation"));
+		EXPECT_NE (1, countOf("labeled",xml.valueOf("activationstack")));
 	}
 
 

@@ -80,11 +80,11 @@ TEST_F (EntityTests, Entity1) {
 	XMLTester xml;
 	xml.printToXML(entity1a);
 	xml.readXML();
-	EXPECT_EQ ("Entity", xml.fields["Class"]);
-	EXPECT_EQ ("*null*", xml.fields["container"]);
-	EXPECT_EQ ("", xml.fields["componentLabel"]);
-	EXPECT_EQ ("aValue", xml.fields["value"]);
-	EXPECT_NE (string::npos, xml.fields["color"].find("255"));
+	EXPECT_EQ ("Entity", xml.valueOf("Class"));
+	EXPECT_EQ ("*null*", xml.valueOf("container"));
+	EXPECT_EQ ("*error*", xml.valueOf("componentLabel"));
+	EXPECT_EQ ("aValue", xml.valueOf("value"));
+	EXPECT_NE (string::npos, xml.valueOf("color").find("255"));
 }
 
 TEST_F (EntityTests, Entity2) {
@@ -98,11 +98,11 @@ TEST_F (EntityTests, Entity2) {
 	XMLTester xml (true);
 	xml.printToXML(entity2);
 	xml.readXML();
-	EXPECT_EQ ("Entity", xml.fields["Class"]);
-	EXPECT_EQ ("*null*", xml.fields["container"]);
-	EXPECT_EQ ("", xml.fields["componentLabel"]);
-	EXPECT_EQ ("entity2Value", xml.fields["value"]);
-	EXPECT_EQ (string::npos, xml.fields["color"].find("255"));
+	EXPECT_EQ ("Entity", xml.valueOf("Class"));
+	EXPECT_EQ ("*null*", xml.valueOf("container"));
+	EXPECT_EQ ("*error*", xml.valueOf("componentLabel"));
+	EXPECT_EQ ("entity2Value", xml.valueOf("value"));
+	EXPECT_EQ (string::npos, xml.valueOf("color").find("255"));
 }
 
 
@@ -117,10 +117,10 @@ TEST_F (EntityTests, Entity1b) {
 	XMLTester xml;
 	xml.printToXML(entity1b);
 	xml.readXML();
-	EXPECT_EQ ("Entity", xml.fields["Class"]);
-	EXPECT_NE ("*null*", xml.fields["container"]);
-	EXPECT_EQ ("", xml.fields["componentLabel"]);
-	EXPECT_EQ ("", xml.fields["value"]);
+	EXPECT_EQ ("Entity", xml.valueOf("Class"));
+	EXPECT_NE ("*null*", xml.valueOf("container"));
+	EXPECT_EQ ("*error*", xml.valueOf("componentLabel"));
+	EXPECT_EQ ("", xml.valueOf("value"));
 }
 
 TEST_F (EntityTests, Entity3) {
@@ -134,10 +134,10 @@ TEST_F (EntityTests, Entity3) {
 	XMLTester xml(true);
 	xml.printToXML(entity3);
 	xml.readXML();
-	EXPECT_EQ ("Entity", xml.fields["Class"]);
-	EXPECT_EQ ("*null*", xml.fields["container"]);
-	EXPECT_EQ ("labeled", xml.fields["label"]);
-	EXPECT_EQ ("", xml.fields["value"]);
+	EXPECT_EQ ("Entity", xml.valueOf("Class"));
+	EXPECT_EQ ("*null*", xml.valueOf("container"));
+	EXPECT_EQ ("labeled", xml.valueOf("label"));
+	EXPECT_EQ ("", xml.valueOf("value"));
 }
 
 

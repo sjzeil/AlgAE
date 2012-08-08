@@ -17,12 +17,19 @@ XMLTester::XMLTester (bool save, std::string prefix)
 
 
 
-
-void XMLTester::readXML()
+/**
+ * Asks the Java client to read the XML already printed.
+ *
+ * @return the name of the class recognized by the Java client, or ""
+ *      if the attempted input failed.
+ */
+std::string XMLTester::readXML()
 {
+	string classPath = "../algae-common/target/classes:../algae-client/target/classes:target/test-classes";
+
 	string fileName = fileNamePrefix + ((saving) ? "saved" : "in");
 	fields.clear();
-	string command = string("java -cp AlgAE_Client.4.0.jar edu.odu.cs.AlgAE.Common.ReadEncodedXML < ") + fileName + " > xmlTest.out";
+	string command = string("java -cp '" + classPath + "' edu.odu.cs.AlgAE.Common.ReadEncodedXML < ") + fileName + " > xmlTest.out";
 	system(command.c_str());
 	ifstream in ("xmlTest.out");
 	string line;
@@ -33,7 +40,25 @@ void XMLTester::readXML()
 		string value = line.substr(k+1);
 		fields[key] = value;
 	}
+	return fields["Class"];
 }
+
+/**
+ * Ask the Client to retrieve the indicated attribute
+ * and return the string equivalent of its value or "*error*"
+ * if the attribute does not exist.
+ */
+std::string XMLTester::valueOf (std::string attributeName) const
+{
+	map<string,string>::const_iterator pos = fields.find(attributeName);
+	if (pos != fields.end())
+		return pos->second;
+	else
+		return "*error*";
+}
+
+
+
 
 void XMLTester::cleanUp()
 {

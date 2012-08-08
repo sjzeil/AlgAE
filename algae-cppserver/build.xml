@@ -1,48 +1,89 @@
 <?xml version="1.0"?>
+<project name="CompileCpp" default="all" >
 
-<project name="CompileCpp" default="compile" >
+    <property environment="env"/>
 
-	<path id="maven.compile.classpath">
-	  <pathelement location="/home/zeil/.m2/repository/ant-contrib/cpptasks/20030309.134440/cpptasks-20030309.134440.jar"/>
+	<path id="ant.tasks.classpath">
+	  <pathelement location="${user.home}/.m2/repository/ant-contrib/cpptasks/20030309.134440/cpptasks-20030309.134440.jar"/>
 	</path>
+
+    <path id="maven.test.classpath">
+      <pathelement location="${user.home}/.m2/repository/ant-contrib/cpptasks/20030309.134440/cpptasks-20030309.134440.jar"/>
+      <pathelement location="target/test-classes"/>
+      <pathelement location="../algae-common/target/test-classes"/>
+      <pathelement location="../algae-client/target/test-classes"/>
+    </path>
+	<property name="test_classpath" refid="maven.test.classpath"/>
+
+	
+	
 	
 	<target name="compile">
-		      <property name="compile_classpath" refid="maven.compile.classpath"/>
-		        <taskdef resource="cpptasks.tasks" classpathref="maven.compile.classpath"/>
-	        	<mkdir dir="target/bin"/>
-	        	<cc name="g++"
-	        		outtype="static" 
-	        	    subsystem="console" 
-	        	    outfile="target/algae-cppserver.a"
-	        	    objdir="target/bin"
-	        	    debug="true"
-	        	    >
-	        	   <includepath path="src/main/include"/> 
-	               <fileset dir="src/main/cpp" includes="*.cpp"/>
-	            </cc>
-	      </target>
+		<taskdef resource="cpptasks.tasks" classpathref="ant.tasks.classpath"/>
+	    <mkdir dir="target/bin"/>
+	    <cc name="g++"
+	    	outtype="static" 
+	        subsystem="console" 
+	        outfile="target/algae-cppserver.a"
+	        objdir="target/bin"
+	        debug="true"
+	    >
+	       <includepath path="src/main/include"/> 
+	       <fileset dir="src/main/cpp" includes="*.cpp"/>
+	    </cc>
+	</target>
 	
-	<target name="test-compile">
-			      <property name="compile_classpath" refid="maven.compile.classpath"/>
-			        <taskdef resource="cpptasks.tasks" classpathref="maven.compile.classpath"/>
-		        	<mkdir dir="target/test-bin"/>
-		        	<cc name="g++"
-		        		outtype="executable" 
-		        	    subsystem="console" 
-		        	    outfile="target/test-bin/runAllTests"
-		        	    objdir="target/test-bin"
-		        	    debug="true"
-		        	    >
-		        	   <includepath path="src/test/cpp/gtest"/> 
-		               <includepath path="src/main/include"/> 
-		               <fileset dir="src/test/cpp" includes="*.cpp"/>
-		               <fileset dir="src/test/cpp/gtest" includes="*.cc"/>
-			           <libset libs="stdc++"/>
-		        	   <libset libs="pthread"/>
-		        	   <libset dir="target" libs="algae-cppserver"/>
-		            </cc>
-			      </target>
-	<target name="all" depends="compile, test-compile"/>
+    <target name="test-compile-java">
+        <mkdir dir="target/test-classes"/>
+        <javac srcdir="src/test/java" destdir="target/test-classes"
+            classpath="${test_classpath}" source="1.6" debug="on"
+            includeantruntime="false"/>
+     </target>	
+	
+	 <target name="test-compile-cpp">
+        <taskdef resource="cpptasks.tasks" classpathref="ant.tasks.classpath"/>
+
+	    <mkdir dir="target/test-bin"/>
+	    <cc name="g++"
+			outtype="executable" 
+		    subsystem="console" 
+		    outfile="target/test-bin/runAllTests"
+		    objdir="target/test-bin"
+		    debug="true"
+		>
+		   <includepath path="src/test/cpp/gtest"/> 
+		   <includepath path="src/main/include"/> 
+		   <fileset dir="src/test/cpp" includes="*.cpp"/>
+		   <fileset dir="src/test/cpp/gtest" includes="*.cc"/>
+		   <libset libs="stdc++"/>
+		   <libset libs="pthread"/>
+		   <libset dir="target" libs="algae-cppserver"/>
+		</cc>
+	</target>
+	
+    <target name="test-compile" depends="test-compile-java,test-compile-cpp"/>
+	
+	<target name="test">
+		<exec executable="target/test-bin/runAllTests"/>
+	</target>
+		
+	
+	<target name="all">
+		<!--
+		   This may not be the "ant way", but this build.xml is intended to be
+		   called from maven, so we the tasks do not have explicit dependencies
+		   because the orderign will be enforced by the maven POM lifecycle.
+		   
+		   On the other hand, it's useful to use this as the build command in eclipse
+		   (or another IDE). The all target is provided for that purpose.
+
+           It might help to tell the IDE to invoke this as "ant -emacs" so that compilation
+           errors can be collected without the preceding "[cc]" that ant will inject. 
+		-->
+		<antcall target="compile"/>
+		<antcall target="test-compile"/>
+		<antcall target="test"/>
+	</target>
 	
 
 </project>

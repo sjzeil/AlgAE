@@ -25,7 +25,7 @@ TEST (XMLOutTests, Identifier0) {
 	XMLTester xml;
 	xml.printToXML(id);
 	xml.readXML();
-	EXPECT_EQ ("RemoteIdentifier", xml.fields["Class"]);
+	EXPECT_EQ ("RemoteIdentifier", xml.valueOf("Class"));
 }
 
 TEST (XMLOutTests, Identifier1) {
@@ -34,7 +34,7 @@ TEST (XMLOutTests, Identifier1) {
 	XMLTester xml;
 	xml.printToXML(id);
 	xml.readXML();
-	EXPECT_EQ ("RemoteIdentifier", xml.fields["Class"]);
+	EXPECT_EQ ("RemoteIdentifier", xml.valueOf("Class"));
 }
 
 
