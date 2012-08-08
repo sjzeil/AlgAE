@@ -46,6 +46,7 @@
 	<module>algae-client</module>
   	<module>algae-jserver</module>
     <module>algae-cppserver</module>
+    <module>demos</module>
   </modules>
 
   <build>
