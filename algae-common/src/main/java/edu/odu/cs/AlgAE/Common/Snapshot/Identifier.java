@@ -23,5 +23,7 @@ public abstract class Identifier {
 	public abstract int hashCode();
 	
 	public abstract boolean equals (Object obj);
+	
+	public abstract boolean isNull();
 
 }

@@ -93,7 +93,7 @@ public class EntityIdentifier implements Serializable {
 	 * 
 	 */
 	public static EntityIdentifier nullID() {
-		return new EntityIdentifier(new RemoteIdentifier());
+		return new EntityIdentifier();
 	}
 	
 	
@@ -171,7 +171,13 @@ public class EntityIdentifier implements Serializable {
 	{
 		if (obj instanceof EntityIdentifier) {
 			EntityIdentifier eid = (EntityIdentifier)obj;
-			if (!eid.id.equals(id))
+			if (eid.id == null && id == null)
+			    return true;
+			else if (eid.id == null)
+			    return id.isNull();
+			else if (id == null)
+			    return eid.id.isNull();
+			else if (!eid.id.equals(id))
 				return false;
 			if (container == null) {
 				if (eid.container != null)

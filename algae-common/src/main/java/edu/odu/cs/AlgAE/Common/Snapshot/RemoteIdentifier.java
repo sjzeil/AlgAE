@@ -55,4 +55,9 @@ public class RemoteIdentifier extends Identifier {
 	public void setId(long id) {
 		this.id = id;
 	}
+
+    @Override
+    public boolean isNull() {
+        return id == 0L;
+    }
 }

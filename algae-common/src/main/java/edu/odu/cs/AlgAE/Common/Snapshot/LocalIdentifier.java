@@ -37,4 +37,9 @@ public class LocalIdentifier extends Identifier {
 			return id == other.id;
 	}
 
+    @Override
+    public boolean isNull() {
+        return id == null;
+    }
+
 }
