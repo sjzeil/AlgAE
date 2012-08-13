@@ -12,6 +12,7 @@
 #include <string>
 #include <typeinfo>
 
+#include <algae/memoryModel/activationRecord.h>
 #include <algae/snapshot/color.h>
 #include <algae/rendering/renderer.h>
 
@@ -30,7 +31,6 @@
 namespace algae {
 
 
-class ActivationRecord;
 class Scope;
 
 class Activation
@@ -71,7 +71,12 @@ public:
 	 * remain in effect until the current activation/scope is exited.
 	 */
 	template <typename T>
-	Activation& render(const T& object, const Renderer& newRendering);
+	Activation& render(const T& object, const Renderer& newRendering)
+	{
+		Identifier oid (object);
+		arecord->render (oid, newRendering);
+		return this;
+	}
 
 
 
@@ -83,7 +88,12 @@ public:
 	 * @param param  the variable/value
 	 */
 	template <typename Object>
-	Activation& param(std::string label, const Object& value);
+	Activation& param(std::string label, const Object& value)
+	{
+		EntityIdentifier eid(Identifier(value), label);
+		arecord->param(label, eid);
+		return this;
+	}
 
 
 	/**
@@ -96,7 +106,12 @@ public:
 	 * @return a reference to this breakpoint
 	 */
 	template <typename Object>
-	void refParam (std::string  label, const Object& value);
+	Activation& refParam (std::string  label, const Object& value)
+	{
+		EntityIdentifier eid(Identifier(value));
+		arecord->refParam(label, eid);
+		return this;
+	}
 
 
 	/**
@@ -107,7 +122,12 @@ public:
 	 * @param param  the variable/value
 	 */
 	template <typename Object>
-	Activation& var(std::string label, const Object& value);
+	Activation& var(std::string label, const Object& value)
+	{
+		EntityIdentifier eid(Identifier(value), label);
+		arecord->var(label, eid);
+		return this;
+	}
 
 
 	/**
@@ -120,7 +140,12 @@ public:
 	 * @return a reference to this breakpoint
 	 */
 	template <typename Object>
-	Activation& refVar (std::string  label, const Object& value);
+	Activation& refVar (std::string  label, const Object& value)
+	{
+		EntityIdentifier eid(Identifier(value));
+		arecord->refVar(label, eid);
+		return this;
+	}
 
 
 	/**
@@ -129,10 +154,21 @@ public:
 	 *
 	 */
 	template <typename Object>
-	Activation& highlight (const Object& value);
+	Activation& highlight (const Object& value)
+	{
+		Identifier oid (value);
+		arecord->highlight (oid);
+		return this;
+	}
 
 	template <typename Object>
-	Activation& highlight (const Object& value, Color c);
+	Activation& highlight (const Object& value, Color c)
+	{
+		Identifier oid (value);
+		arecord->highlight (oid, c);
+		return this;
+	}
+
 
 
 	/**
@@ -140,7 +176,12 @@ public:
 	 *
 	 */
 	template <typename Object>
-	Activation& unhighlight (const Object& value);
+	Activation& unhighlight (const Object& value)
+	{
+		Identifier oid (value);
+		arecord->unhighlight (oid);
+		return this;
+	}
 
 
 
@@ -154,7 +195,11 @@ public:
 	 * @param fileName  name of the file in which the breakpoint occurs.
 	 * @param lineNum   line number in that file where the breakpoint occurs
 	 */
-	Activation& breakPoint (std::string description, const char* fileName, int lineNumber);
+	Activation& breakPoint (std::string description, const char* fileName, int lineNumber)
+	{
+		arecord->breakPoint(description, fileName, lineNumber);
+		return this;
+	}
 
 
 
