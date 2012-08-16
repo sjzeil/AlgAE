@@ -33,6 +33,8 @@ private:
 	std::string id;
 	int componentIndex;
 	
+	friend class SimpleReference;
+
 protected:
 	Connection (std::string ident, const EntityIdentifier& theDestination,
 			double theMinAngle=DefaultMinAngle, double theMaxAngle=DefaultMaxAngle,

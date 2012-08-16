@@ -14,6 +14,7 @@
 #include <list>
 
 #include <algae/snapshot/entityIdentifier.h>
+#include <algae/snapshot/color.h>
 
 namespace algae {
 
@@ -26,10 +27,14 @@ struct LabeledComponent {
 	{}
 };
 
+class ActivationStack;
+class ObjectRenderer;
+class SimpleReference;
+
 class ActivationRecord
 {
 	std::string name;
-	bool isOnTop;
+	ActivationStack* onStack;
 
 
 
@@ -37,14 +42,25 @@ class ActivationRecord
 	std::list<LabeledComponent> locals;
 	EntityIdentifier* thisParam;
 
+	std::list<ObjectRenderer*> localRenderings;
+	std::list<SimpleReference*> artificialReferences;
+
 
 	friend class ActivationRecordRendering;
 
 public:
 
+	ActivationRecord (std::string functionName, ActivationStack* stack)
+	 : name(functionName), onStack(stack), thisParam(0)
+	{}
+
+	~ActivationRecord();
+
 	typedef std::list<LabeledComponent>::const_iterator const_iterator;
 	typedef std::list<LabeledComponent>::iterator iterator;
 
+	typedef std::list<ObjectRenderer*>::const_iterator const_render_iterator;
+	typedef std::list<ObjectRenderer*>::iterator render_iterator;
 
 	/**
 	 * Show a variable as a parameter of the current activation
@@ -111,7 +127,7 @@ public:
 	 * Establish a rendering for a specific object. This rendering will only
 	 * remain in effect until the current activation/scope is exited.
 	 */
-	void render(const Identifier& object, const Renderer& newRendering);
+	void render(const ObjectRenderer& newRendering);
 
 	/**
 	 * Take a snapshot of the current program state and send it to the animator.
@@ -127,21 +143,23 @@ public:
 
 
 
+	const_iterator beginParams() const {return parameters.begin();}
+	iterator beginParams() {return parameters.begin();}
 
+	const_iterator endParams() const {return parameters.end();}
+	iterator endParams() {return parameters.end();}
 
+	const_iterator beginLocals() const {return locals.begin();}
+	iterator beginLocals() {return locals.begin();}
 
-	const_iterator beginParams() const;
-	iterator beginParams();
+	const_iterator endLocals() const {return locals.end();}
+	iterator endLocals() {return locals.end();}
 
-	const_iterator endParams() const;
-	iterator endParams();
+	const_render_iterator beginRenderings() const {return localRenderings.begin();}
+	render_iterator beginRenderings() {return localRenderings.begin();}
 
-	const_iterator beginLocals() const;
-	iterator beginLocals();
-
-	const_iterator endLocals() const;
-	iterator endLocals();
-
+	const_render_iterator endRenderings() const {return localRenderings.end();}
+	render_iterator endRenderings() {return localRenderings.end();}
 
 
 };

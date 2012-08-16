@@ -30,12 +30,8 @@ public:
 
 	virtual void addComponent (const Identifier& t, std::string label);
 
-	virtual void addConnection (
-				const Identifier& t,
-				double theMinAngle = 0.0, double theMaxAngle=360.0,
-				int component = -1,
-				std::string label=std::string(),
-				std::string ident=std::string());
+	virtual void addConnection (const Connection& conn);
+
 };
 
 void EntityCollector::addComponent (const Identifier& t, std::string label)
@@ -43,21 +39,18 @@ void EntityCollector::addComponent (const Identifier& t, std::string label)
 	e.getComponents().push_back(EntityIdentifier(t, e.getEntityIdentifier(), label));
 }
 
-void EntityCollector::addConnection (
-			const Identifier& destID,
-			double theMinAngle, double theMaxAngle,
-			int component,
-			std::string label,
-			std::string ident)
+
+
+void EntityCollector::addConnection (const Connection& conn)
 {
-	EntityIdentifier destEID (destID);
-	Connector c (ident, e.getEntityIdentifier(), destEID, theMinAngle, theMaxAngle, component);
-	c.setColor(Color::Black);
-	c.setLabel(label);
-	e.getConnections().push_back(c);
+	Connector c (conn.getId(), e.getEntityIdentifier(), conn.getDestination(),
+			conn.getMinAngle(), conn.getMaxAngle(), conn.getComponentIndex());
+		c.setElasticity(conn.getElasticity());
+		c.setPreferredLength(conn.getPreferredLength());
+		c.setColor(conn.getColor());
+		c.setLabel(conn.getLabel());
+		e.getConnections().push_back(c);
 }
-
-
 
 
 /**

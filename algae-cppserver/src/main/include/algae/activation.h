@@ -14,7 +14,7 @@
 
 #include <algae/memoryModel/activationRecord.h>
 #include <algae/snapshot/color.h>
-#include <algae/rendering/renderer.h>
+#include <algae/rendering/objectRenderer.h>
 
 
 /**
@@ -70,12 +70,10 @@ public:
 	 * Establish a rendering for a specific object. This rendering will only
 	 * remain in effect until the current activation/scope is exited.
 	 */
-	template <typename T>
-	Activation& render(const T& object, const Renderer& newRendering)
+	Activation& render(ObjectRenderer& newRendering)
 	{
-		Identifier oid (object);
-		arecord->render (oid, newRendering);
-		return this;
+		arecord->render (newRendering);
+		return *this;
 	}
 
 
@@ -195,11 +193,7 @@ public:
 	 * @param fileName  name of the file in which the breakpoint occurs.
 	 * @param lineNum   line number in that file where the breakpoint occurs
 	 */
-	Activation& breakPoint (std::string description, const char* fileName, int lineNumber)
-	{
-		arecord->breakPoint(description, fileName, lineNumber);
-		return this;
-	}
+	Activation& breakPoint (std::string description, const char* fileName, int lineNumber);
 
 
 

@@ -195,17 +195,21 @@ private:
 	class InternalComponent {
 	public:
 		EntityIdentifier container;
-		Component component;
+		Identifier component;
+		std::string label;
 
-		InternalComponent (EntityIdentifier acontainer, Component acomponent)
+		InternalComponent (EntityIdentifier acontainer, Component acomponent, std::string aLabel = std::string())
 		{
 			container = acontainer;
 			component = acomponent;
+			label = aLabel;
 		}
 
 		void print (std::ostream& out) const
 		{
 			out << "IC[" << component << "]@" << container;
+			if (label.size() > 0L)
+				out << ":" << label;
 		}
 
 	};
@@ -237,6 +241,8 @@ private:
 	 */
 	void normalize(Snapshot* snap);
 
+
+	std::string toString(int i) const;
 
 
 };

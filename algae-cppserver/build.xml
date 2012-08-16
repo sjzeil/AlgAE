@@ -82,7 +82,7 @@
 		-->
 		<antcall target="compile"/>
 		<antcall target="test-compile"/>
-		<antcall target="test"/>
+		<!-- antcall target="test"/ -->
 	</target>
 	
 

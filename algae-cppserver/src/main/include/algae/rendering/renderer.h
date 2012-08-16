@@ -119,6 +119,7 @@ public:
 
 
 	const Renderer* deferTo() const {return prior;}
+	void setDeferTo (const Renderer* d)  {prior = d;}
 
 	bool canBeCopied() const {return thisCanBeCopied;}
 	void setCanBeCopied (bool copyable) {thisCanBeCopied = copyable;}

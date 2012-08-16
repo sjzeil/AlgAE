@@ -13,7 +13,7 @@
 #include <string>
 
 #include <algae/snapshot/color.h>
-#include <algae/memoryModel/connection.h>
+#include <algae/rendering/connection.h>
 #include <algae/rendering/renderer.h>
 
 
@@ -22,9 +22,18 @@ namespace algae {
 
 class ObjectRenderer: public Renderer
 {
+	Identifier renders;
 public:
-	ObjectRenderer (const Renderer* deferringTo = 0)
-	: Renderer(deferringTo) {}
+	ObjectRenderer (const Identifier& renderingOf, const Renderer* deferringTo = 0)
+	: renders(renderingOf), Renderer(deferringTo) {}
+
+
+	/**
+	 * What object is this a rendering of?
+	 *
+	 */
+	const Identifier& getRenders() const { return renders; }
+
 
 
 	/**
@@ -51,7 +60,7 @@ public:
 	 *
 	 * @return an array of contained objects or null to yield to other renderers
 	 */
-	virtual void getComponents(ComponentCollector& components) const {deferTo()-->getComponents(components);}
+	virtual void getComponents(ComponentCollector& components) const {deferTo()->getComponents(components);}
 
 	/**
 	 * Get a list of other objects to which we will draw
@@ -61,7 +70,7 @@ public:
 	 *
 	 * @return an array of referenced objects or null to yield to other renderers
 	 */
-	virtual void getConnections(ConnectionCollector& connections) const {deferTo()-->getConnections(connections);}
+	virtual void getConnections(ConnectionCollector& connections) const {deferTo()->getConnections(connections);}
 
 
 

@@ -14,6 +14,8 @@
 #include <algae/rendering/renderer.h>
 #include <algae/rendering/typeRendering.h>
 
+using namespace std;
+
 
 namespace algae {
 
@@ -25,28 +27,18 @@ void ComponentCollector::add (const T& t, std::string label)
 }
 
 template <typename T>
-void ConnectionCollector::add (const T* destination,
+void ConnectionCollector::add (
+		const T* destination,
 		double theMinAngle, double theMaxAngle,
 		int component,
-		std::string label,
-		std::string ident)
+		std::string label)
 {
-	if (destination != 0)
-	{
-		addConnection (Identifier(*destination),
-			theMinAngle, theMaxAngle,
-			component,
-			label,
-			ident	);
-	}
-	else
-	{
-		addConnection (Identifier::NullID,
-			theMinAngle, theMaxAngle,
-			component,
-			label,
-			ident	);
-	}
+	++counter;
+	char ch = ' ' + counter;
+	string ident (1, ch);
+	Connection c (ident, destination, theMinAngle, theMaxAngle, component);
+	c.setLabel(label);
+	addConnection (c);
 }
 
 }

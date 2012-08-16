@@ -8,30 +8,27 @@
 
 
 #include <algae/memoryModel/activationRecord.h>
+#include <algae/memoryModel/activationStack.h>
 #include <algae/memoryModel/simpleReference.h>
+#include <algae/rendering/colorChanger.h>
+#include <algae/rendering/colorInverter.h>
+#include <algae/rendering/objectRenderer.h>
+#include <algae/animation.h>
 
 using namespace std;
 
 namespace algae {
 
-/*class ActivationRecord
+
+ActivationRecord::~ActivationRecord()
 {
-	std::string name;
-	bool isOnTop;
+	for (render_iterator it = beginRenderings(); it != endRenderings(); ++it)
+	{
+		ObjectRenderer* orend = *it;
+		delete orend;
+	}
+}
 
-
-	std::list<EntityIdentifier> parameters;
-	std::list<EntityIdentifier> locals;
-	EntityIdentifier* thisParam;
-
-
-	friend class ActivationRecordRendering;
-
-public:
-
-	typedef std::list<EntityIdentifier>::const_iterator const_iterator;
-	typedef std::list<EntityIdentifier>::iterator iterator;
-*/
 
 /**
  * Show a variable as a parameter of the current activation
@@ -57,7 +54,9 @@ void ActivationRecord::param(std::string label, const Identifier& value)
  */
 void ActivationRecord::refParam (std::string  label, const Identifier& value)
 {
-	param (label, Identifier(SimpleReference(Identifier)));
+	SimpleReference* sref = new SimpleReference(value);
+	artificialReferences.push_back (sref);
+	param (label, *sref);
 }
 
 
@@ -68,7 +67,10 @@ void ActivationRecord::refParam (std::string  label, const Identifier& value)
  * @param label  the variable name (optional, can be "" or null)
  * @param param  the variable/value
  */
-void ActivationRecord::var(std::string label, const Identifier& value);
+void ActivationRecord::var(std::string label, const Identifier& value)
+{
+	locals.push_back(LabeledComponent(value, label));
+}
 
 
 /**
@@ -80,7 +82,12 @@ void ActivationRecord::var(std::string label, const Identifier& value);
  * @param param  the variable/value
  * @return a reference to this breakpoint
  */
-void ActivationRecord::refVar (std::string  label, const Identifier& value);
+void ActivationRecord::refVar (std::string  label, const Identifier& value)
+{
+	SimpleReference* sref = new SimpleReference(value);
+	artificialReferences.push_back (sref);
+	var(label, *sref);
+}
 
 
 /**
@@ -88,23 +95,52 @@ void ActivationRecord::refVar (std::string  label, const Identifier& value);
  * This stays in effect until the end of the current scope/activation.
  *
  */
-void ActivationRecord::highlight (const Identifier& value);
+void ActivationRecord::highlight (const Identifier& value)
+{
+	ColorInverter ci (value);
+	render (ci);
+}
 
-void ActivationRecord::highlight (const Identifier& value, Color c);
+void ActivationRecord::highlight (const Identifier& value, Color c)
+{
+	ColorChanger cc(value, c);
+	render (cc);
+}
 
 
 /**
  * Reverse the effect of a prior highlight call
  *
  */
-void ActivationRecord::unhighlight (const Identifier& value);
+void ActivationRecord::unhighlight (const Identifier& value)
+{
+	for (list<ObjectRenderer*>::iterator i = localRenderings.begin(); i != localRenderings.end(); ++i)
+	{
+		ObjectRenderer* orend = *i;
+		if (value == orend->getRenders())
+		{
+			ObjectRenderer& renderer = *orend;
+			if (typeid(renderer) == typeid(ColorChanger) || typeid(renderer) == typeid(ColorInverter))
+			{
+				localRenderings.erase(i);
+				break;
+			}
+		}
+	}
+}
 
 
 /**
  * Establish a rendering for a specific object. This rendering will only
  * remain in effect until the current activation/scope is exited.
  */
-void ActivationRecord::render(const Identifier& object, const Renderer& newRendering);
+void ActivationRecord::render(const ObjectRenderer& newRendering)
+{
+	ObjectRenderer* newRendering2 = dynamic_cast<ObjectRenderer*>(newRendering.clone());
+	Renderer* oldRenderer = Animation::algae()->getMemoryModel().getActivationStack().getRenderingOf(newRendering.getRenders());
+	newRendering2->setDeferTo(oldRenderer);
+	localRenderings.push_back (newRendering2);
+}
 
 /**
  * Take a snapshot of the current program state and send it to the animator.
@@ -116,7 +152,10 @@ void ActivationRecord::render(const Identifier& object, const Renderer& newRende
  * @param fileName  name of the file in which the breakpoint occurs.
  * @param lineNum   line number in that file where the breakpoint occurs
  */
-void ActivationRecord::breakPoint (std::string description, const char* fileName, int lineNumber);
+void ActivationRecord::breakPoint (std::string description, const char* fileName, int lineNumber)
+{
+	// Todo
+}
 
 
 

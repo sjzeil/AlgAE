@@ -19,6 +19,8 @@
 #include <algae/communications/serverMessage.h>
 #include <algae/memoryModel/memoryModel.h>
 
+
+
 namespace algae {
 
 
@@ -40,6 +42,7 @@ private:
 	std::set<std::string> sourceCodeAlreadySent;
 	bool breakpointsAreActive;
 	Snapshot* currentSnapshot;
+
 
 public:
 	Animation ();
@@ -186,6 +189,14 @@ public:
 	 * @param lineNum   line number in that file where the breakpoint occurs
 	 */
 	void breakPoint (std::string description, const char* fileName, int lineNumber);
+
+
+	/**
+	 * For testing purposes only!!
+	 */
+	static void reset() {	delete theAnimation; theAnimation = 0;}
+
+
 
 private:
 	MenuFunction startingAction;
