@@ -131,7 +131,6 @@ public:
 	template <typename T>
 	Entity render(const T& x, std::string label = std::string()) const;
 
-private:
 	void renderInto (Entity& e) const;
 
 

@@ -45,7 +45,7 @@ class ActivationRecord
 	std::list<ObjectRenderer*> localRenderings;
 	std::list<SimpleReference*> artificialReferences;
 
-
+	friend class Scope;
 	friend class ActivationRecordRendering;
 
 public:
@@ -55,6 +55,8 @@ public:
 	{}
 
 	~ActivationRecord();
+
+	std::string getName() const {return name;}
 
 	typedef std::list<LabeledComponent>::const_iterator const_iterator;
 	typedef std::list<LabeledComponent>::iterator iterator;

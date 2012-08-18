@@ -46,8 +46,8 @@ Entity::Entity (const Identifier& id, std::string theLabel)
  * @param container  entity that is considered to contain this one as a component
  * @param componentLabel  a string differentiating this component from all others of the same container
  */
-Entity::Entity (const Identifier& id, const Entity& container, std::string componentLabel)
-: entityIdentifier(id,container.getEntityIdentifier(), componentLabel),
+Entity::Entity (const Identifier& id, const EntityIdentifier& container, std::string componentLabel)
+: entityIdentifier(id, container, componentLabel),
   label(componentLabel), color(Color::LightGray), maxComponentsPerRow(1)
 {
 }

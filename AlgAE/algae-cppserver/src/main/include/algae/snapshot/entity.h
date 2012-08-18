@@ -48,6 +48,9 @@ private:
 
 public:
 
+	typedef std::list<EntityIdentifier> ComponentsList;
+	typedef std::list<Connector> ConnectionsList;
+
 	
 	/**
 	 * Create an entity representing a named "standalone" object
@@ -66,7 +69,7 @@ public:
 	 * @param container  entity that is considered to contain this one as a component
 	 * @param componentLabel  a string differentiating this component from all others of the same container
 	 */
-	Entity (const Identifier& id, const Entity& container, std::string componentLabel);
+	Entity (const Identifier& id, const EntityIdentifier& container, std::string componentLabel);
 	
 	
 
@@ -83,7 +86,7 @@ public:
 		return entityIdentifier.getObjectIdentifier();
 	}
 
-	const EntityIdentifier* getContainer() const {
+	const EntityIdentifier getContainer() const {
 		return entityIdentifier.getContainer();
 	}
 
@@ -168,43 +171,37 @@ public:
 	/**
 	 * @return the components
 	 */
-	const std::list<EntityIdentifier>& getComponents() const {
+	const ComponentsList& getComponents() const {
 		return components;
 	}
 
 	/**
 	 * @return the components
 	 */
-	std::list<EntityIdentifier>& getComponents() {
+	ComponentsList& getComponents() {
 		return components;
 	}
 
 
-	/**
-	 * @param components the components to set
-	 */
-	void setComponents(const std::list<EntityIdentifier>& components0) {
-		components = components0;
-	}
 
 	/**
 	 * @return the connections
 	 */
-	const std::list<Connector>& getConnections() const{
+	const ConnectionsList& getConnections() const{
 		return connections;
 	}
 
 	/**
 	 * @return the connections
 	 */
-	std::list<Connector>& getConnections() {
+	ConnectionsList& getConnections() {
 		return connections;
 	}
 
 	/**
 	 * @param connections the connections to set
 	 */
-	void setConnections(const std::list<Connector>& connections0) {
+	void setConnections(const ConnectionsList& connections0) {
 		connections = connections0;
 	}
 	

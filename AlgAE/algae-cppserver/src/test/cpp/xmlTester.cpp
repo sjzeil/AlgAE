@@ -25,11 +25,11 @@ XMLTester::XMLTester (bool save, std::string prefix)
  */
 std::string XMLTester::readXML()
 {
-	string classPath = "../algae-common/target/classes:../algae-client/target/classes:target/test-classes";
+	string classPath = "target/test-classes:../algae-common/target/classes:../algae-client/target/classes:target/test-classes";
 
 	string fileName = fileNamePrefix + ((saving) ? "saved" : "in");
 	fields.clear();
-	string command = string("java -cp '" + classPath + "' edu.odu.cs.AlgAE.Common.ReadEncodedXML < ") + fileName + " > xmlTest.out";
+	string command = string("java -cp '" + classPath + "' edu.odu.cs.AlgAE.ReadEncodedXML < ") + fileName + " > xmlTest.out";
 	system(command.c_str());
 	ifstream in ("xmlTest.out");
 	string line;

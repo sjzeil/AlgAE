@@ -55,7 +55,7 @@ public:
 	 *  being animated and the name of the person who prepared the
 	 *  animation.
 	 **/
-	virtual std::string about() = 0;
+	virtual std::string about() const = 0;
 
 
 	/**
@@ -191,10 +191,6 @@ public:
 	void breakPoint (std::string description, const char* fileName, int lineNumber);
 
 
-	/**
-	 * For testing purposes only!!
-	 */
-	static void reset() {	delete theAnimation; theAnimation = 0;}
 
 
 

@@ -44,6 +44,7 @@ Animation::Animation ()
 : memoryModel(*this), breakpointsAreActive(true), startingAction(0)
 {
 	currentSnapshot = new Snapshot();
+	theAnimation = this;
 }
 
 

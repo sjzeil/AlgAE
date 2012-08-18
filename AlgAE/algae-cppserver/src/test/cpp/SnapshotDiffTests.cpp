@@ -38,7 +38,7 @@ class SnapshotDiffTests : public ::testing::Test {
 	  //entity1b(id1, entity2, "componentA")
 	  entity3(id3, "labeled")
 	{
-	    entity1b = Entity(id1, entity2, "componentA");
+	    entity1b = Entity(id1, entity2.getEntityIdentifier(), "componentA");
 		entity2.getComponents().push_back(entity1b.getEntityIdentifier());
 		entity2.setValue("entity2Value");
 		entity3.getConnections().push_back(Connector("link", entity3.getEntityIdentifier(),

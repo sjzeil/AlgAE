@@ -11,22 +11,59 @@
   <artifactId>algae-referenceManual</artifactId>
 
   <build>
-    <pluginManagement>
       <plugins>
+      	<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-antrun-plugin</artifactId>
+			<version>1.7</version>
+			<dependencies>
+				<dependency>
+					<groupId>com.sun</groupId>
+					<artifactId>tools</artifactId>
+					<version>1.6.0</version>
+					<scope>system</scope>
+					<systemPath>${java.home}/../lib/tools.jar</systemPath>
+				</dependency>
+			</dependencies>
+			<executions>
+				<execution>
+					<id>sourcecode-prep</id>
+					<phase>generate-sources</phase>
+					<goals>
+						<goal>run</goal>
+					</goals>
+					<configuration>
+						<target>
+						  <property name="java.src.dir" location="../demos/ReferenceManualJava/src/main/java"/>
+						  <property name="latex.work.dir" location="target/latex/referenceManual"/>
+						  <copy toDir="${latex.work.dir}">
+						     <fileSet dir="${java.src.dir}">
+						       <include name="**/Sorting*.java"/>
+						       <include name="**/*Driver*.java"/>
+						       <include name="**/Singly*.java"/>
+						     </fileSet>
+						  </copy>
+						</target>
+					</configuration>
+				</execution>
+			</executions>
+			</plugin>
+      
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>latex-maven-plugin</artifactId>
-	  <executions>
-	    <execution>
-	      <goals>
-		<goal>latex:latex</goal>
-	      </goals>
-	      <phase>compile</phase>
-	    </execution>
-	  </executions>
+          <version>1.1</version>
+          <inherited>false</inherited>
+	  	  <executions>
+	    	<execution>
+	    		<phase>compile</phase>
+	      		<goals>
+					<goal>latex</goal>
+	      		</goals>
+	    	</execution>
+	  	  </executions>
         </plugin>
       </plugins>
-    </pluginManagement>
   </build>
 
   <repositories>

@@ -58,7 +58,6 @@ class MemoryModel
 {
 private:
 	ActivationStack activationStack;
-	std::list<Component> globals;
 	Animation& animation;
 
 
@@ -132,7 +131,11 @@ public:
 	 * @param param  the variable/value
 	 */
 	template <typename Object>
-	void globalVar(std::string label, const Object& value);
+	void globalVar(std::string label, const Object& value)
+	{
+		ActivationRecord& arec = *(activationStack.begin());
+		arec.var(label, value);
+	}
 
 
 	/**
@@ -145,19 +148,26 @@ public:
 	 * @return a reference to this breakpoint
 	 */
 	template <typename Object>
-	void globalRefVar (std::string  label, const Object& value);
-
+	void globalRefVar (std::string  label, const Object& value)
+	{
+		ActivationRecord& arec = *(activationStack.begin());
+		arec.refVar(label, value);
+	}
 
 
 
 	/**
-	 * Get a list of all global objects shared by all activations
-	 * @return list of global objects
+	 * Iterators over global variables
 	 */
-	std::list<Component>& getGlobalComponents() {
-		return globals;
-	}
 
+	typedef ActivationRecord::const_iterator const_iterator;
+	typedef ActivationRecord::iterator iterator;
+
+	const_iterator beginGlobals() const {return activationStack.begin()->beginLocals();}
+	iterator beginGlobals() {return activationStack.begin()->beginLocals();}
+
+	const_iterator endGlobals() const {return activationStack.begin()->endLocals();}
+	iterator endGlobals() {return activationStack.begin()->endLocals();}
 
 
 
@@ -198,7 +208,7 @@ private:
 		Identifier component;
 		std::string label;
 
-		InternalComponent (EntityIdentifier acontainer, Component acomponent, std::string aLabel = std::string())
+		InternalComponent (EntityIdentifier acontainer, Identifier acomponent, std::string aLabel = std::string())
 		{
 			container = acontainer;
 			component = acomponent;
@@ -226,7 +236,7 @@ private:
 	void formClosure(Snapshot* snap);
 
 	// Create an entity describing the rendering of this component;
-	Entity* renderObject(EntityIdentifier eid, InternalComponent c, std::list<InternalComponent> queue);
+	Entity renderObject(EntityIdentifier eid, InternalComponent c, std::list<InternalComponent> queue);
 
 
 	/**

@@ -37,7 +37,7 @@ TEST (IdentifierTest, intTypeRendering) {
 	const TypeRenderer* r = id.getType();
 
 	Entity e = r->render(nagi.i, "label");
-	EXPECT_EQ(NULL, e.getContainer());
+	EXPECT_EQ(EntityIdentifier::nullId(), e.getContainer());
 	EXPECT_EQ("23", e.getValue());
 	EXPECT_EQ("label", e.getLabel());
 	EXPECT_EQ(0U, e.getComponents().size());

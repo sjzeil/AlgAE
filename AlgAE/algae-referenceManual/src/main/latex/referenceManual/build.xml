@@ -1,0 +1,61 @@
+<project name="AlgAE Reference Manual" default="buildJar" 
+        basedir="." xmlns:ac="antlib:net.sf.antcontrib">
+  <description>
+    AlgAE reference manual and sample code
+  </description>
+
+
+
+  <!-- set global properties for this build -->
+  
+  <property name="project" value="SortingExample" />
+  <property name="mainClass" 
+            value="edu.odu.cs.AlgAE.Demos.SortingDriver" />
+  
+  <property name="version" value="3.0" />
+  <property name="AlgAE.dir" location="../AlgAE"/>
+  
+  <property name="compile.dest" location="src"/>
+  
+  
+  <path id="compile.classpath">
+    <pathelement location="${AlgAE.dir}/AlgAE.${version}.jar"/>
+    <pathelement location="${AlgAE.dir}/jhbasic.jar"/>
+  </path>
+
+  <path id="execute.classpath">
+	 <pathelement location="${project}.jar"/>
+	 <pathelement location="${AlgAE.dir}/AlgAE.${version}.jar"/>
+	 <pathelement location="${AlgAE.dir}/jhbasic.jar"/>
+  </path>
+
+  
+  <target name="compile">
+    <mkdir dir="${compile.dest}" />
+    <javac srcdir="src" destdir="${compile.dest}"
+           classpathref="compile.classpath"
+           excludes="**/Test*.java" debug="true"
+           includeantruntime="false">
+      <compilerarg value="-Xlint:deprecation"/>
+    </javac>
+  </target>
+  
+  
+  <target name="buildJar" depends="compile">
+    <jar destfile="${project}.jar">
+      <fileset dir="${compile.dest}"></fileset>
+      <manifest>
+        <attribute name="Main-Class"
+                   value="${mainClass}"/>
+      </manifest>
+    </jar>
+  </target>
+  
+  <target name="run" depends="buildJar">
+    <java classname="${mainClass}"
+          fork="true"
+          classpathref="execute.classpath">
+    </java>
+  </target>
+  
+</project>

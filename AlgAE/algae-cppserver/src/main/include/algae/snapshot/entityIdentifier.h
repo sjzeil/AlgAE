@@ -123,8 +123,11 @@ public:
 	 *
 	 * @return
 	 */
-	const EntityIdentifier* getContainer() const {
-		return container;
+	EntityIdentifier getContainer() const {
+		if (container != 0)
+			return *container;
+		else
+			return nullId();
 	}
 
 	void setContainer(const EntityIdentifier* c) {
@@ -145,6 +148,7 @@ public:
 
 
 	bool operator== (const EntityIdentifier& eid) const;
+	bool operator!= (const EntityIdentifier& eid) const {return !(operator==(eid));}
 
 
 	bool operator< (const EntityIdentifier& eid) const;

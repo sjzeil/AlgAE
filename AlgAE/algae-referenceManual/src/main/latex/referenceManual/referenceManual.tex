@@ -386,7 +386,7 @@ the rendering decisions will correspond to \algae's built-in defaults.
 
 Our starting point will be the Java class in \autoref{list:sortingStart}, which 
 contains three well-known sorting algorithms.
-\lstinputlisting[language=Java,frame=TB,caption={An ADT for Disjoint Sets\label{list:sortingStart}}]{src/edu/odu/cs/AlgAE/Demos/Sorting0.java}
+\lstinputlisting[language=Java,frame=TB,caption={An ADT for Disjoint Sets\label{list:sortingStart}}]{edu/odu/cs/AlgAE/Demos/Sorting0.java}
 
 \begin{itemize}
 \item You can place your code in any package you wish, or forgo a
@@ -545,7 +545,7 @@ create a reversed array.
 
 
 These menu items are created in the driver's \texttt{buildMenu()} function (\autoref{list:register}).
-\lstinputlisting[language=Java,frame=TB,caption={Creating the Algorithms Menu\label{list:register}}]{src/edu/odu/cs/AlgAE/Demos/SortingDriver0.java}
+\lstinputlisting[language=Java,frame=TB,caption={Creating the Algorithms Menu\label{list:register}}]{edu/odu/cs/AlgAE/Demos/SortingDriver0.java}
 \begin{itemize}
 \item Each Algorithm menu item is created by calling \texttt{register}
   with a string to appear in the menu and a \texttt{MenuFunction}
@@ -1178,7 +1178,7 @@ implicitly to \texttt{Integer}, with the result that \texttt{Integer}
 containers holding equal {\tt int} values will often occupy the same
 address.
 
-\lstinputlisting[language=Java,frame=TB,caption={Integers Are Shared Unexpectedly\label{list:integerAliasing}}]{src/IntegerAliasing.java}
+\lstinputlisting[language=Java,frame=TB,caption={Integers Are Shared Unexpectedly\label{list:integerAliasing}}]{IntegerAliasing.java}
 
 When run with Oracle Java 1.6, this program produces the output
 \begin{verbatim}
@@ -1258,10 +1258,10 @@ public class SinglyLinkedLists {
 
 In this example, we will be interested only in demonstrating the process of inserting a node into a linked list, so the driver will provide only a single menu item:
 
-\lstinputlisting[language=Java,frame=TB,caption={Driver For Singly-Linked List Insertion\label{list:sllDriver}}]{src/edu/odu/cs/AlgAE/Demos/SLLInsertionDriver0.java}
+\lstinputlisting[language=Java,frame=TB,caption={Driver For Singly-Linked List Insertion\label{list:sllDriver}}]{edu/odu/cs/AlgAE/Demos/SLLInsertionDriver0.java}
 
 We can also start with a set of breakpoints in the insertion function.
-\lstinputlisting[language=Java,frame=TB,caption={Singly-Linked List Insertion Breakpoints\label{list:sllBP}}]{src/edu/odu/cs/AlgAE/Demos/SinglyLinkedLists0.java}
+\lstinputlisting[language=Java,frame=TB,caption={Singly-Linked List Insertion Breakpoints\label{list:sllBP}}]{edu/odu/cs/AlgAE/Demos/SinglyLinkedLists0.java}
 
 \begin{figure}
   \begin{center}

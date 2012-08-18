@@ -25,7 +25,7 @@ TEST (TypeRendering, intTypeRendering) {
 	int k = 23;
 	const TypeRenderer* r = TypeRenderer::typeRenderer(k);
 	Entity e = r->render(k, "label");
-	EXPECT_EQ(NULL, e.getContainer());
+	EXPECT_EQ(EntityIdentifier::nullId(), e.getContainer());
 	EXPECT_EQ("23", e.getValue());
 	EXPECT_EQ("label", e.getLabel());
 	EXPECT_EQ(0U, e.getComponents().size());
@@ -39,7 +39,7 @@ TEST (TypeRendering, stringTypeRendering) {
 	string s = "abc";
 	const Renderer* r = TypeRenderer::typeRenderer(s);
 	Entity e = r->render(s);
-	EXPECT_EQ(NULL, e.getContainer());
+	EXPECT_EQ(EntityIdentifier::nullId(), e.getContainer());
 	EXPECT_EQ("abc", e.getValue());
 	EXPECT_EQ("", e.getLabel());
 	EXPECT_EQ(0U, e.getComponents().size());
@@ -111,7 +111,7 @@ TEST (TypeRendering, selfRendering) {
 	IntStr x (k,s);
 	const Renderer* r = TypeRenderer::typeRenderer(x);
 	Entity e = r->render(x);
-	EXPECT_EQ(NULL, e.getContainer());
+	EXPECT_EQ(EntityIdentifier::nullId(), e.getContainer());
 	EXPECT_EQ("@@@", e.getValue());
 	EXPECT_EQ(Color::Green, e.getColor());
 	EXPECT_EQ("", e.getLabel());
@@ -119,14 +119,14 @@ TEST (TypeRendering, selfRendering) {
 	EXPECT_EQ(0U, e.getConnections().size());
 
 	EntityIdentifier eid1 = e.getComponents().front();
-	EXPECT_TRUE(eid1.getContainer() != NULL);
-	EXPECT_EQ (e.getEntityIdentifier(), *(eid1.getContainer()));
+	EXPECT_NE(EntityIdentifier::nullId(), eid1.getContainer());
+	EXPECT_EQ (e.getEntityIdentifier(), eid1.getContainer());
 
 
 
 	EntityIdentifier eid2 = e.getComponents().front();
-	EXPECT_TRUE(eid2.getContainer() != NULL);
-	EXPECT_EQ (e.getEntityIdentifier(), *(eid2.getContainer()));
+	EXPECT_NE(EntityIdentifier::nullId(), eid2.getContainer());
+	EXPECT_EQ (e.getEntityIdentifier(), eid2.getContainer());
 
 	if (r->canBeCopied())
 		delete r;
@@ -152,7 +152,7 @@ TEST (TypeRendering, connections) {
 
 	const Renderer* r = TypeRenderer::typeRenderer(x);
 	Entity e = r->render(x);
-	EXPECT_EQ(NULL, e.getContainer());
+	EXPECT_EQ(EntityIdentifier::nullId(), e.getContainer());
 	EXPECT_EQ("@@@", e.getValue());
 	EXPECT_EQ(Color::Green, e.getColor());
 	EXPECT_EQ("", e.getLabel());
@@ -160,14 +160,14 @@ TEST (TypeRendering, connections) {
 	EXPECT_EQ(3U, e.getConnections().size());
 
 	EntityIdentifier eid1 = e.getComponents().front();
-	EXPECT_TRUE(eid1.getContainer() != NULL);
-	EXPECT_EQ (e.getEntityIdentifier(), *(eid1.getContainer()));
+	EXPECT_NE(EntityIdentifier::nullId(), eid1.getContainer());
+	EXPECT_EQ (e.getEntityIdentifier(), eid1.getContainer());
 
 
 
 	EntityIdentifier eid2 = e.getComponents().front();
-	EXPECT_TRUE(eid2.getContainer() != NULL);
-	EXPECT_EQ (e.getEntityIdentifier(), *(eid2.getContainer()));
+	EXPECT_NE(EntityIdentifier::nullId(), eid2.getContainer());
+	EXPECT_EQ (e.getEntityIdentifier(), eid2.getContainer());
 
 	list<Connector> conn = e.getConnections();
 	EXPECT_EQ (conn.end(), find_if(conn.begin(), conn.end(), destinationIs(eid1)));
@@ -257,7 +257,7 @@ TEST (TypeRendering, canBeRendered) {
 	IntStr2 x (k,s);
 	const Renderer* r = TypeRenderer::typeRenderer(x);
 	Entity e = r->render(x);
-	EXPECT_EQ(NULL, e.getContainer());
+	EXPECT_EQ(EntityIdentifier::nullId(), e.getContainer());
 	EXPECT_EQ(s, e.getValue());
 	EXPECT_EQ(Color::Blue, e.getColor());
 	EXPECT_EQ("", e.getLabel());
@@ -265,14 +265,14 @@ TEST (TypeRendering, canBeRendered) {
 	EXPECT_EQ(0U, e.getConnections().size());
 
 	EntityIdentifier eid1 = e.getComponents().front();
-	EXPECT_TRUE(eid1.getContainer() != NULL);
-	EXPECT_EQ (e.getEntityIdentifier(), *(eid1.getContainer()));
+	EXPECT_NE(EntityIdentifier::nullId(), eid1.getContainer());
+	EXPECT_EQ (e.getEntityIdentifier(), eid1.getContainer());
 
 
 
 	EntityIdentifier eid2 = e.getComponents().front();
-	EXPECT_TRUE(eid2.getContainer() != NULL);
-	EXPECT_EQ (e.getEntityIdentifier(), *(eid2.getContainer()));
+	EXPECT_NE(EntityIdentifier::nullId(), eid2.getContainer());
+	EXPECT_EQ (e.getEntityIdentifier(), eid2.getContainer());
 
 	if (r->canBeCopied())
 		delete r;

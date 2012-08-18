@@ -15,6 +15,7 @@
 #include <algae/memoryModel/activationRecord.h>
 #include <algae/snapshot/color.h>
 #include <algae/rendering/objectRenderer.h>
+#include <algae/memoryModel/scope.h>
 
 
 /**

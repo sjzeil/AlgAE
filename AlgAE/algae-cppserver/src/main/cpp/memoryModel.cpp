@@ -8,6 +8,7 @@
 
 
 #include <algae/memoryModel/memoryModel.h>
+#include <algae/rendering/typeRendering.h>
 #include <algae/snapshot/snapshot.h>
 #include <algae/snapshot/entityIdentifier.h>
 #include <algae/snapshot/entity.h>
@@ -15,6 +16,7 @@
 
 #include <list>
 #include <map>
+#include <sstream>
 
 
 
@@ -46,26 +48,12 @@ using namespace std;
 
 namespace algae {
 
-/*
-class Animation;
-class Entity;
-class Snapshot;
 
-class MemoryModel
-{
-private:
-	ActivationStack activationStack;
-	std::list<Component> globals;
-	Animation& animation;
-
-
-	std::set<Identifier> knownObjects;
-*/
 
 MemoryModel::MemoryModel (Animation& context)
  : animation(context)
 {
-
+	activationStack.push("*globals*");
 }
 
 
@@ -84,30 +72,6 @@ Snapshot* MemoryModel::renderInto(std::string description, SourceLocation source
 
 
 
-
-	/**
-	 * Guards against infinite recursion in the componentOf relation
-	static const int DepthLimit = 25;
-
-
-	class InternalComponent {
-	public:
-		EntityIdentifier container;
-		Component component;
-
-		InternalComponent (EntityIdentifier acontainer, Component acomponent)
-		{
-			container = acontainer;
-			component = acomponent;
-		}
-
-		void print (std::ostream& out) const
-		{
-			out << "IC[" << component << "]@" << container;
-		}
-
-	};
-*/
 
 
 /**
@@ -155,7 +119,7 @@ void MemoryModel::formClosure(Snapshot* snap)
 		}
 		if (!found)
 		{
-			Entity* entity = renderObject (newEntityID, c, queue);
+			Entity entity = renderObject (newEntityID, c, queue);
 			//cerr << "Closure: new entity " << entity << endl;
 			etable.insert(Snapshot::EntitiesTable::value_type(oid, entity));
 		}
@@ -171,7 +135,7 @@ string MemoryModel::toString(int i) const
 }
 
 // Create an entity describing the rendering of this component;
-Entity* MemoryModel::renderObject(EntityIdentifier eid, InternalComponent c, std::list<InternalComponent> queue)
+Entity MemoryModel::renderObject(EntityIdentifier eid, InternalComponent c, std::list<InternalComponent> queue)
 {
 	Identifier oid = eid.getObjectIdentifier();
 	Entity entity (oid, c.container, c.label);
@@ -179,10 +143,10 @@ Entity* MemoryModel::renderObject(EntityIdentifier eid, InternalComponent c, std
 	Identifier obj = c.component;
 	Renderer* renderer = activationStack.getRenderingOf(obj);
 	renderer->renderInto(entity);
-	list<EntityIdentifier>& components = entity.getComponents();
+	Entity::ComponentsList& components = entity.getComponents();
 	if (components.size() > 0U && eid.depth() < DepthLimit) {
 		int componentCount = 0;
-		for (list<EntityIdentifier>::iterator ci = components.begin(); ci != components.end(); ++ci)
+		for (Entity::ComponentsList::iterator ci = components.begin(); ci != components.end(); ++ci)
 		{
 			EntityIdentifier& comp = *ci;
 			Identifier cobj = comp.getObjectIdentifier();
@@ -191,7 +155,7 @@ Entity* MemoryModel::renderObject(EntityIdentifier eid, InternalComponent c, std
 				clabel = string("\t") + toString(componentCount);
 			++componentCount;
 			if (cobj != Identifier::NullID) {
-				EntityIdentifier c_eid = new EntityIdentifier(cobj, eid, clabel);
+				EntityIdentifier c_eid (cobj, eid, clabel);
 				entity.getComponents().push_back(c_eid);
 				InternalComponent intComp (eid, cobj, clabel);
 				//cerr << entity.getEntityIdentifier() << " has component " << c_eid << endl;
@@ -199,8 +163,8 @@ Entity* MemoryModel::renderObject(EntityIdentifier eid, InternalComponent c, std
 			}
 		}
 	}
-	list<Connector> connections = entity.getConnections();
-	for (list<Connector>::iterator ci = connections.begin(); ci != connections.end(); ++ci)
+	Entity::ConnectionsList connections = entity.getConnections();
+	for (Entity::ConnectionsList::iterator ci = connections.begin(); ci != connections.end(); ++ci)
 	{
 		Connector& conn = *ci;
 		Identifier destID = conn.getDestination();
@@ -229,18 +193,31 @@ void MemoryModel::normalize(Snapshot* snap)
 {
 	map<Identifier, Entity> primaries;
 	map<EntityIdentifier, Entity> unique;
-	for (Identifier oid: snap.getEntities().keySet()) {
-		LinkedList<Entity> aliases = snap.getEntities().get(oid);
+
+	Snapshot::EntitiesTable& etable = snap->getEntities();
+	Identifier lastOID;
+	set<Identifier> keys;
+	for (Snapshot::EntitiesTable::iterator i = etable.begin(); i != etable.end(); ++i)
+	{
+		keys.insert(i->first);
+	}
+	list<Snapshot::EntitiesTable::iterator> toBeRemoved;
+	for (set<Identifier>::iterator k = keys.begin(); k != keys.end(); ++k)
+	{
+		const Identifier& oid = *k;
+		pair<Snapshot::EntitiesTable::iterator, Snapshot::EntitiesTable::iterator> erange = etable.equal_range(oid);
+		unsigned numAliases = distance(erange.first, erange.second);
+
 		int maxdepth = -1;
-		Entity deepest = null;
-		Iterator<Entity> it = aliases.iterator();
-		while (it.hasNext()) {
-			Entity entity = it.next();
-			unique.put (entity.getEntityIdentifier(), entity);
-			if (aliases.size() > 1) {
-				if (entity.getContainer() == null &&
-						(entity.getLabel() == null ||  entity.getLabel().length() == 0)) {
-					it.remove();
+		Entity deepest = (erange.first)->second;
+		for (Snapshot::EntitiesTable::iterator it = erange.first; it != erange.second; ++it)
+		{
+			Entity& entity = it->second;
+			unique[entity.getEntityIdentifier()] =  entity;
+			if (numAliases > 1) {
+				if (entity.getContainer() == EntityIdentifier::nullId() &&
+					entity.getLabel().size() == 0U) {
+					toBeRemoved.push_back (it);
 				}
 			}
 			int deep = entity.getEntityIdentifier().depth();
@@ -249,55 +226,73 @@ void MemoryModel::normalize(Snapshot* snap)
 				deepest = entity;
 			}
 		}
-		primaries.put(oid, deepest);
+		primaries[oid] = deepest;
+		for (list<Snapshot::EntitiesTable::iterator>::iterator j = toBeRemoved.begin(); j != toBeRemoved.end(); ++j)
+			etable.erase(*j);
 	}
 
-	HashSet<EntityIdentifier> keepThese = new HashSet<EntityIdentifier>();
-	LinkedList<Entity> queue = new LinkedList<Entity>();
-	for (Identifier oid: snap.getEntities().keySet()) {
-		LinkedList<Entity> aliases = snap.getEntities().get(oid);
-		for (Entity e: aliases) {
+	set<EntityIdentifier> keepThese;
+	list<Entity> queue;
+	for (set<Identifier>::iterator k = keys.begin(); k != keys.end(); ++k)
+	{
+		const Identifier& oid = *k;
+		pair<Snapshot::EntitiesTable::iterator, Snapshot::EntitiesTable::iterator> aliases = etable.equal_range(oid);
+		for (Snapshot::EntitiesTable::iterator j = aliases.first; j != aliases.second; ++j)
+		{
+			Entity& e = j->second;
 			EntityIdentifier ceid = e.getContainer();
-			if (ceid == null || ceid.equals(EntityIdentifier.nullID())) {
-				queue.add(e);
+			if (ceid == EntityIdentifier::nullId()) {
+				queue.push_back(e);
 			}
 		}
 	}
-	while (!queue.isEmpty()) {
-		Entity e = queue.getFirst();
-		queue.removeFirst();
+	while (queue.size() > 0) {
+		Entity e = *(queue.begin());
+		queue.pop_front();
 		EntityIdentifier eid = e.getEntityIdentifier();
-		keepThese.add(eid);
-		for (EntityIdentifier ceid: e.getComponents()) {
-			queue.add (unique.get(ceid));
+		keepThese.insert(eid);
+		for (Entity::ComponentsList::iterator i = e.getComponents().begin(); i != e.getComponents().end(); ++i)
+		{
+			EntityIdentifier& ceid = *i;
+			queue.push_back (unique[ceid]);
 		}
 	}
-	HashMap<Identifier, LinkedList<Entity>> trimmedEntities = new HashMap<Identifier, LinkedList<Entity>>();
-	for (Identifier oid: snap.getEntities().keySet()) {
-		LinkedList<Entity> aliases = snap.getEntities().get(oid);
-		Iterator<Entity> it = aliases.iterator();
-		while (it.hasNext()) {
-			Entity entity = it.next();
-			if (!keepThese.contains(entity.getEntityIdentifier())) {
-				it.remove();
+
+	toBeRemoved.clear();
+	Snapshot::EntitiesTable trimmedEntities;
+	for (set<Identifier>::iterator k = keys.begin(); k != keys.end(); ++k)
+	{
+		const Identifier& oid = *k;
+		pair<Snapshot::EntitiesTable::iterator, Snapshot::EntitiesTable::iterator> aliases = etable.equal_range(oid);
+		for (Snapshot::EntitiesTable::iterator it = aliases.first; it != aliases.second; ++it)
+		{
+			Entity& entity = it->second;
+			if (keepThese.count(entity.getEntityIdentifier()) == 0) {
+				toBeRemoved.push_back (it);
 			}
 		}
-		if (aliases.size() > 0) {
-			trimmedEntities.put (oid, aliases);
-		}
 	}
-	snap.getEntities().clear();
-	snap.getEntities().putAll (trimmedEntities);
+	for (list<Snapshot::EntitiesTable::iterator>::iterator j = toBeRemoved.begin(); j != toBeRemoved.end(); ++j)
+		etable.erase(*j);
+	snap->getEntities().swap (trimmedEntities);
 
-	for (Identifier oid: snap.getEntities().keySet()) {
-		LinkedList<Entity> aliases = snap.getEntities().get(oid);
-		Entity primary = primaries.get(oid);
-		for (Entity e: aliases) {
-			if (e == primary) {
-				for (Connector conn: e.getConnections()) {
+	for (set<Identifier>::iterator k = keys.begin(); k != keys.end(); ++k)
+	{
+		const Identifier& oid = *k;
+		pair<Snapshot::EntitiesTable::iterator, Snapshot::EntitiesTable::iterator> aliases = etable.equal_range(oid);
+		Entity primary = primaries[oid];
+		for (Snapshot::EntitiesTable::iterator it = aliases.first; it != aliases.second; ++it)
+		{
+			Entity& e = it->second;
+			if (e == primary)
+			{
+				for (Entity::ConnectionsList::iterator ci = e.getConnections().begin(); ci != e.getConnections().end(); ++ci)
+				{
+					Connector& conn = *ci;
 					EntityIdentifier destID = conn.getDestination();
-					if (!destID.equals(EntityIdentifier.nullID())) {
-						EntityIdentifier primaryDest = primaries.get(destID.getObjectIdentifier()).getEntityIdentifier();
+					if (!(destID == EntityIdentifier::nullId()))
+					{
+						EntityIdentifier primaryDest = primaries[destID.getObjectIdentifier()].getEntityIdentifier();
 						conn.setDestination (primaryDest);
 					}
 				}
