@@ -56,7 +56,7 @@ Entity::Entity (const Identifier& id, const EntityIdentifier& container, std::st
 
 
 /**
- * Create an entity that can be rebuilt via XML decoding
+ * Create an entity
  * @param entityIdentifier    object to be represented by this new entity
  */
 Entity::Entity ()

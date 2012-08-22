@@ -86,8 +86,8 @@ public:
 	 * The special ID value used for null pointers
 	 *
 	 */
-	static EntityIdentifier nullId() {
-		return EntityIdentifier(Identifier::NullID);
+	static EntityIdentifier nullEID() {
+		return EntityIdentifier(Identifier::nullID());
 	}
 
 
@@ -127,7 +127,7 @@ public:
 		if (container != 0)
 			return *container;
 		else
-			return nullId();
+			return nullEID();
 	}
 
 	void setContainer(const EntityIdentifier* c) {

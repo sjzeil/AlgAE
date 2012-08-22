@@ -41,7 +41,7 @@ public:
 
 	
 	Connector ()
-	: source(EntityIdentifier::nullId())
+	: source(EntityIdentifier::nullEID())
 	{
 	}
 

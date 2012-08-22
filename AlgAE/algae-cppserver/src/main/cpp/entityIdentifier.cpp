@@ -36,7 +36,7 @@ EntityIdentifier::EntityIdentifier (const Identifier& oid, std::string label)
  *
  */
 EntityIdentifier::EntityIdentifier ()
-: id(Identifier::NullID), container(0), componentLabel("")
+: id(Identifier::nullID()), container(0), componentLabel("")
 {
 }
 

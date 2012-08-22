@@ -19,13 +19,25 @@
 
 namespace algae {
 
-
+/**
+ * One of the two major divisions of renderers, Object Renderers are charged with the details
+ * of a specific object. They are commonly used to implement "exceptions" to the normal rendering
+ * rules for a data type, such as highlighting a selected object by changing its color for a limited
+ * period of time.
+ *
+ * Because of this specialized use, many object renderers do not implement the entire functionality for
+ * a type. Instead, they will implement a few functions directly, and defer to other renderers for the
+ * remainder. For example, a highlighting renderer would implement getColor(), but defer on all other
+ * rendering functions.
+ */
 class ObjectRenderer: public Renderer
 {
 	Identifier renders;
+	const Renderer* prior;
+
 public:
 	ObjectRenderer (const Identifier& renderingOf, const Renderer* deferringTo = 0)
-	: renders(renderingOf), Renderer(deferringTo) {}
+	: renders(renderingOf), prior(deferringTo) {}
 
 
 	/**
@@ -87,6 +99,29 @@ public:
 	 */
 
 	virtual int getMaxComponentsPerRow() const {return deferTo()->getMaxComponentsPerRow();}
+
+
+	/**
+	 * To what other renderer will this one defer?
+	 *
+	 * @return a renderer used as a fall-back for rules not implemented in this one
+	 */
+	const Renderer* deferTo() const {return prior;}
+
+
+	/**
+	 * Sets another renderer to which this one may defer
+	 *
+	 * @param deferTo a renderer used as a fall-back for rules not implemented in this one
+	 */
+	void setDeferTo (const Renderer* deferTo)  {prior = deferTo;}
+
+
+	/**
+	 * Convenience method for cloning object renderers
+	 */
+	ObjectRenderer* cloneOR() const {return (ObjectRenderer*)clone();}
+
 
 };
 

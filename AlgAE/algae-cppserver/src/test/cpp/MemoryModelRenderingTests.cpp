@@ -88,7 +88,7 @@ class MemoryModelRenderingTests : public ::testing::Test {
   bool hasAncestor(const Identifier& ident, const Identifier& expectedAncestor)
   {
 	  Identifier ancestor = ident;
-	  while (ancestor != Identifier::NullID && ancestor != expectedAncestor)
+	  while (ancestor != Identifier::nullID() && ancestor != expectedAncestor)
 	     ancestor = snap->getEntities().lower_bound(ancestor)->second.getEntityIdentifier().getContainer();
 	  return (ancestor == expectedAncestor);
   }
@@ -98,6 +98,16 @@ class MemoryModelRenderingTests : public ::testing::Test {
 
 
 
+TEST_F (MemoryModelRenderingTests, Rendered) {
+	string description = "why are we stopping here?";
+	string fileName = "filename.cpp";
+	int lineNumber = 314;
+	snap = mm.renderInto(description, SourceLocation(fileName, lineNumber));
+
+	EXPECT_EQ(description, snap->getDescriptor());
+	EXPECT_EQ(SourceLocation(fileName, lineNumber), snap->getBreakpointLocation());
+	EXPECT_EQ(Identifier(stack), snap->getActivationStack().getObjectIdentifier());
+}
 
 
 
@@ -107,9 +117,6 @@ TEST_F (MemoryModelRenderingTests, ClosureTaken) {
 	int lineNumber = 314;
 	snap = mm.renderInto(description, SourceLocation(fileName, lineNumber));
 
-	EXPECT_EQ(description, snap->getDescriptor());
-	EXPECT_EQ(SourceLocation(fileName, lineNumber), snap->getBreakpointLocation());
-	EXPECT_EQ(Identifier(stack), snap->getActivationStack().getObjectIdentifier());
 	EXPECT_EQ (1, snap->getEntities().count(Identifier(stack)));
 	EXPECT_EQ (1, snap->getEntities().count(Identifier(s1)));
 	EXPECT_EQ (1, snap->getEntities().count(Identifier(s2)));
@@ -144,12 +151,12 @@ TEST_F (MemoryModelRenderingTests, Components) {
 	int lineNumber = 314;
 	snap = mm.renderInto(description, SourceLocation(fileName, lineNumber));
 
-	EXPECT_NE (Identifier::NullID, getParent(Identifier(stack)));
+	EXPECT_NE (Identifier::nullID(), getParent(Identifier(stack)));
 	EXPECT_TRUE (hasAncestor(Identifier(*fooAR), Identifier(stack)));
 	EXPECT_TRUE (hasAncestor(Identifier(*barAR), Identifier(stack)));
 
-	EXPECT_EQ (EntityIdentifier::nullId(), getParent(Identifier(i1)));
-	EXPECT_EQ (EntityIdentifier::nullId(), getParent(Identifier(s1)));
+	EXPECT_EQ (EntityIdentifier::nullEID(), getParent(Identifier(i1)));
+	EXPECT_EQ (EntityIdentifier::nullEID(), getParent(Identifier(s1)));
 
 	EXPECT_TRUE (hasAncestor(Identifier(*fooAR), Identifier(s2)));
 	EXPECT_TRUE (hasAncestor(Identifier(*fooAR), Identifier(i2)));

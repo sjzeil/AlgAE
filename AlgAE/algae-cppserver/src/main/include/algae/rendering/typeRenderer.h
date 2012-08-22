@@ -1,8 +1,6 @@
 /**
  * typeRenderer.h
  *
- *  Type renderers capture the default rendering rules for all objects of a
- *  given data type.
  *
  *  Created on: June 26, 2012
  *      Author: zeil
@@ -19,20 +17,27 @@
 #include <algae/snapshot/color.h>
 #include <algae/rendering/connection.h>
 #include <algae/rendering/renderer.h>
-#include <algae/rendering/specialization.h>
 
 
 namespace algae {
 
-
+/**
+ * Type renderers provide the basic rendering rules for all objects of some data type.
+ * Unlike object renderers, type renderers never defer to other renderers. In fact, the type renderer
+ * is often what the object renderers will defer to for the basic rendering rules.
+ *
+ */
 class TypeRenderer: public Renderer
 {
 public:
-	TypeRenderer(bool canBeCopied = false)
-	: Renderer(0, canBeCopied)  {}
 
 	template <typename T>
 	static const TypeRenderer* typeRenderer (const T& t);
+
+	/**
+	 * Convenience method for cloning type renderers
+	 */
+	TypeRenderer* cloneTR() const {return (TypeRenderer*)clone();}
 
 };
 
@@ -49,23 +54,12 @@ protected:
 	const T* instance;
 
 public:
-	TypeRendererOf (const T& t, bool canBeCopied = true)
-	: TypeRenderer(canBeCopied), instance(&t) {}
+	TypeRendererOf (const T& t)
+	: instance(&t) {}
 };
 
 
 
-/**
- * A mix-in type renderer for objects that render themselves
- */
-class SelfRenderer: public TypeRenderer
-{
-public:
-	SelfRenderer ()
-	: TypeRenderer(false) {}
-
-	virtual Renderer* clone() const {return (Renderer*)this;}
-};
 
 
 

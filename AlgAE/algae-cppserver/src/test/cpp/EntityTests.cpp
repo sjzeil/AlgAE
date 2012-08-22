@@ -65,7 +65,7 @@ class EntityTests : public ::testing::Test {
 
 TEST_F (EntityTests, Entity1) {
 	EXPECT_EQ (id1, entity1a.getObjectIdentifier());
-	EXPECT_EQ(EntityIdentifier::nullId(), entity1a.getContainer());
+	EXPECT_EQ(EntityIdentifier::nullEID(), entity1a.getContainer());
 	EXPECT_EQ("", entity1a.getLabel());
 	EXPECT_EQ("", entity1a.getValue());
 	EXPECT_EQ(0U, entity1a.getComponents().size());
@@ -89,7 +89,7 @@ TEST_F (EntityTests, Entity1) {
 
 TEST_F (EntityTests, Entity2) {
 	EXPECT_EQ (id2, entity2.getObjectIdentifier());
-	EXPECT_EQ(EntityIdentifier::nullId(), entity2.getContainer());
+	EXPECT_EQ(EntityIdentifier::nullEID(), entity2.getContainer());
 	EXPECT_EQ("label2", entity2.getLabel());
 	EXPECT_EQ("entity2Value", entity2.getValue());
 	EXPECT_EQ(1U, entity2.getComponents().size());
@@ -125,7 +125,7 @@ TEST_F (EntityTests, Entity1b) {
 
 TEST_F (EntityTests, Entity3) {
 	EXPECT_EQ (id3, entity3.getObjectIdentifier());
-	EXPECT_EQ(EntityIdentifier::nullId(), entity3.getContainer());
+	EXPECT_EQ(EntityIdentifier::nullEID(), entity3.getContainer());
 	EXPECT_EQ("labeled", entity3.getLabel());
 	EXPECT_EQ("", entity3.getValue());
 	EXPECT_EQ(0U, entity3.getComponents().size());

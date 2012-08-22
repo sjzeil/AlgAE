@@ -71,10 +71,8 @@ public:
 	 */
 	Entity (const Identifier& id, const EntityIdentifier& container, std::string componentLabel);
 	
-	
-
 	/**
-	 * Create an entity that can be rebuilt via XML decoding
+	 * Create an entity
 	 * @param entityIdentifier    object to be represented by this new entity
 	 */
 	Entity ();
@@ -82,11 +80,11 @@ public:
 	
 	std::string getDescription() const;
 
-	Identifier getObjectIdentifier() const {
+	const Identifier& getObjectIdentifier() const {
 		return entityIdentifier.getObjectIdentifier();
 	}
 
-	const EntityIdentifier getContainer() const {
+	EntityIdentifier getContainer() const {
 		return entityIdentifier.getContainer();
 	}
 

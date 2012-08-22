@@ -136,7 +136,7 @@ void ActivationRecord::unhighlight (const Identifier& value)
  */
 void ActivationRecord::render(const ObjectRenderer& newRendering)
 {
-	ObjectRenderer* newRendering2 = dynamic_cast<ObjectRenderer*>(newRendering.clone());
+	ObjectRenderer* newRendering2 = newRendering.cloneOR();
 	Renderer* oldRenderer = Animation::algae()->getMemoryModel().getActivationStack().getRenderingOf(newRendering.getRenders());
 	newRendering2->setDeferTo(oldRenderer);
 	localRenderings.push_back (newRendering2);

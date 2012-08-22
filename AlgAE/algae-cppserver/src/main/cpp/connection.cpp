@@ -34,7 +34,7 @@ Connection::Connection (std::string ident, const EntityIdentifier& theDestinatio
 
 
 Connection::Connection ()
-: destination(EntityIdentifier::nullId()), minAngle(DefaultMinAngle),
+: destination(EntityIdentifier::nullEID()), minAngle(DefaultMinAngle),
 	maxAngle(DefaultMaxAngle), preferredLength (DefaultPreferredLength),
 	elasticity(DefaultElasticity), value(""), label(""),
 	color(Color::MedGray), id(""), componentIndex(NotAnInternalReference)

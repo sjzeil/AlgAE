@@ -1,47 +1,47 @@
 /**
- * renderer.h
+ * proxyForSelfRenderer.h
  *
  *
- *  Created on: June 17, 2012
+ *  Created on: Aug 22, 2012
  *      Author: zeil
  */
 
-#ifndef RENDERER_H_
-#define RENDERER_H_
+#ifndef PROXYFORSELFRENDERER_H_
+#define PROXYFORSELFRENDERER_H_
 
 #include <list>
 #include <string>
+#include <sstream>
+#include <typeinfo>
 
 #include <algae/snapshot/color.h>
-#include <algae/snapshot/identifier.h>
-#include <algae/rendering/componentCollector.h>
-#include <algae/rendering/connectionCollector.h>
+#include <algae/rendering/connection.h>
+#include <algae/rendering/typeRenderer.h>
 
 
 namespace algae {
 
-class Entity;
+class SelfRenderer;
+
 
 /**
- * A Renderer is a class that has the task of representing objects as
- * Entities - colored boxes with text strings (labels and values), possible
- * nested entity components, and possible connections to other entities.
- *
+ * The type renderer for objects that implement the SelfRendering interface.
  *
  */
-class Renderer
+class ProxyForSelfRenderer: public TypeRenderer
 {
-
+	const SelfRenderer* proxyFor;
 public:
 
-	virtual ~Renderer() {}
+	ProxyForSelfRenderer (const SelfRenderer* instance);
+	ProxyForSelfRenderer (const SelfRenderer& instance);
 
 	/**
 	 * make a copy of this renderer
 	 *
 	 * @return a dynamically selected copy
 	 */
-	virtual Renderer* clone() const = 0;
+	virtual Renderer* clone() const;
 
 
 
@@ -50,14 +50,14 @@ public:
 	 *
 	 * @return a string or null to yield to other renderers
 	 */
-	virtual std::string getValue() const = 0;
+	virtual std::string getValue() const;
 
 	/**
 	 * What color will be used to draw this object?
 	 *
 	 * @return a color or null to yield to other renderers
 	 */
-	virtual Color getColor() const = 0;
+	virtual Color getColor() const;
 
 	/**
 	 * Collect a list of other objects to be drawn inside the
@@ -65,7 +65,7 @@ public:
 	 *
 	 * @param components a collector to which components can be passed
 	 */
-	virtual void getComponents(ComponentCollector& components) const = 0;
+	virtual void getComponents(ComponentCollector& components) const;
 
 	/**
 	 * Collect a list of other objects to which we will draw
@@ -73,7 +73,7 @@ public:
 	 *
 	 * @param connections a collecotr to which connections can be passed
 	 */
-	virtual void getConnections(ConnectionCollector& connections) const = 0;
+	virtual void getConnections(ConnectionCollector& connections) const;
 
 
 	/**
@@ -88,25 +88,10 @@ public:
 	 * @return max #components per row or a negative value to yield to other renderers
 	 */
 
-	virtual int getMaxComponentsPerRow() const = 0;
-
-
-
-	/**
-	 * Apply this renderer to fill in the details of an Entity
-	 * that already contains contains the appropriate object identifier and label.
-	 *
-	 * @param e An entity already carrying the appropriate object identifier
-	 *          and label. This function adds the color, value, components, and
-	 *          connections to the entiry.
-	 */
-	void renderInto (Entity& e) const;
+	virtual int getMaxComponentsPerRow() const;
 
 
 };
-
-
-
 
 }
 

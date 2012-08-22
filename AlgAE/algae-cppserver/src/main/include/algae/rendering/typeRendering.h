@@ -12,6 +12,8 @@
 #define TYPERENDERING_H_
 
 #include <algae/rendering/typeRenderer.h>
+#include <algae/rendering/selfRenderer.h>
+#include <algae/rendering/proxyForSelfRenderer.h>
 #include <algae/rendering/defaultTypeRenderer.h>
 #include <algae/rendering/specialization.h>
 
@@ -48,9 +50,9 @@ public:
 template <typename T>
 class TypeRendering<anySubClassOf(T, SelfRenderer)> {
 public:
-	const TypeRenderer* getRenderer (const TypeRenderer& anObject) const
+	const TypeRenderer* getRenderer (const SelfRenderer& anObject) const
 	{
-		return &anObject;
+		return new ProxyForSelfRenderer(anObject);
 	}
 };
 

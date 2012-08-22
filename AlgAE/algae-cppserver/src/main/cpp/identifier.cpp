@@ -22,19 +22,18 @@ namespace algae {
 
 Identifier::~Identifier()
 {
-	if (type != 0 && type->canBeCopied())
+	if (type != 0)
 	{
 		delete type;
 	}
-
 }
 
 Identifier::Identifier (const Identifier& ident)
 : id(ident.id), type(ident.type)
 {
-	if (type != 0 && type->canBeCopied())
+	if (type != 0)
 	{
-		type = (TypeRenderer*)type->clone();
+		type = type->cloneTR();
 	}
 }
 
@@ -43,21 +42,21 @@ Identifier& Identifier::operator= (const Identifier& ident)
 	if (this != &ident)
 	{
 		id = ident.id;
-		if (type != 0 && type->canBeCopied())
+		if (type != 0)
 		{
 			delete type;
 		}
 		type = ident.type;
-		if (type != 0 && type->canBeCopied())
+		if (type != 0)
 		{
-			type = (TypeRenderer*)type->clone();
+			type = type->cloneTR();
 		}
 	}
 	return *this;
 }
 
 
-const Identifier Identifier::NullID;
+
 
 void Identifier::printXML (std::ostream& out) const
 {

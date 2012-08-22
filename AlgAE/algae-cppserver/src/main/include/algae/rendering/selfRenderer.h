@@ -1,13 +1,13 @@
 /**
- * renderer.h
+ * selfRenderer.h
  *
  *
- *  Created on: June 17, 2012
+ *  Created on: Aug 22, 2012
  *      Author: zeil
  */
 
-#ifndef RENDERER_H_
-#define RENDERER_H_
+#ifndef SELFRENDERER_H_
+#define SELFRENDERER_H_
 
 #include <list>
 #include <string>
@@ -23,26 +23,21 @@ namespace algae {
 class Entity;
 
 /**
- * A Renderer is a class that has the task of representing objects as
- * Entities - colored boxes with text strings (labels and values), possible
- * nested entity components, and possible connections to other entities.
+ * A SelfRenderer is a class that knows how to render itself.
+ * i.e., in addition to its "real" operations, it supports the
+ * operations expected of a renderer.
  *
+ * It is not, however, a subclass of Renderer and therefore need not
+ * support cloning (which could otherwise interfere with the copy
+ * policy of the class).
  *
  */
-class Renderer
+class SelfRenderer
 {
 
 public:
 
-	virtual ~Renderer() {}
-
-	/**
-	 * make a copy of this renderer
-	 *
-	 * @return a dynamically selected copy
-	 */
-	virtual Renderer* clone() const = 0;
-
+	virtual ~SelfRenderer() {}
 
 
 	/**
@@ -89,18 +84,6 @@ public:
 	 */
 
 	virtual int getMaxComponentsPerRow() const = 0;
-
-
-
-	/**
-	 * Apply this renderer to fill in the details of an Entity
-	 * that already contains contains the appropriate object identifier and label.
-	 *
-	 * @param e An entity already carrying the appropriate object identifier
-	 *          and label. This function adds the color, value, components, and
-	 *          connections to the entiry.
-	 */
-	void renderInto (Entity& e) const;
 
 
 };

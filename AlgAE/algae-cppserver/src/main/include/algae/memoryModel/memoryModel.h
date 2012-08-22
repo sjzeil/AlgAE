@@ -236,7 +236,7 @@ private:
 	void formClosure(Snapshot* snap);
 
 	// Create an entity describing the rendering of this component;
-	Entity renderObject(EntityIdentifier eid, InternalComponent c, std::list<InternalComponent> queue);
+	void renderObject(Entity& entity, std::list<InternalComponent>& queue);
 
 
 	/**

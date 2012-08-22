@@ -16,7 +16,7 @@ using namespace algae;
 
 TEST (IdentifierTest, emptyID) {
 	Identifier id;
-	EXPECT_EQ (Identifier::NullID, id);
+	EXPECT_EQ (Identifier::nullID(), id);
 }
 
 union NotAGoodIdea {
@@ -29,15 +29,16 @@ TEST (IdentifierTest, intTypeRendering) {
 	NotAGoodIdea nagi;
 	nagi.i = 23;
 	Identifier id(nagi.i);
-	EXPECT_NE (Identifier::NullID, id);
+	EXPECT_NE (Identifier::nullID(), id);
 
 	Identifier id2 (nagi.d);
 	EXPECT_EQ (id, id2); // only the addresses are significant
 
 	const TypeRenderer* r = id.getType();
 
-	Entity e = r->render(nagi.i, "label");
-	EXPECT_EQ(EntityIdentifier::nullId(), e.getContainer());
+	Entity e (Identifier(nagi.i), "label");
+	r->renderInto(e);
+	EXPECT_EQ(EntityIdentifier::nullEID(), e.getContainer());
 	EXPECT_EQ("23", e.getValue());
 	EXPECT_EQ("label", e.getLabel());
 	EXPECT_EQ(0U, e.getComponents().size());

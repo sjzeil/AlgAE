@@ -15,6 +15,7 @@
 
 #include <iostream>
 
+
 namespace algae {
 
 class TypeRenderer;
@@ -38,7 +39,7 @@ public:
 
 	Identifier& operator= (const Identifier& ident);
 
-	static const Identifier NullID;
+	static Identifier nullID() {return Identifier();}
 
 	const TypeRenderer* getType() const {return type;}
 

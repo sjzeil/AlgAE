@@ -58,9 +58,9 @@ const ActivationRecord& ActivationStack::top() const
 Renderer* ActivationStack::getRenderingOf(const Identifier& ident) const
 {
 	Renderer* renderer = 0;
-	for (size_type i = activations.size(); renderer == 0 && i >= 0 ; --i)
+	for (size_type i = activations.size(); renderer == 0 && i > 0 ; --i)
 	{
-		const ActivationRecord& arec = activations[i];
+		const ActivationRecord& arec = activations[i-1];
 		for (ActivationRecord::const_render_iterator it = arec.beginRenderings(); it != arec.endRenderings(); ++it)
 		{
 			ObjectRenderer* orend = *it;
