@@ -64,17 +64,6 @@ class MemoryModelRenderingTests : public ::testing::Test {
   }
 
   virtual void SetUp() {
-		Animation* anim = Animation::algae();
-		MemoryModel& mm = anim->getMemoryModel();
-		ActivationStack& stack = mm.getActivationStack();
-		stack.push ("bar");
-		{
-				ActivationRecord& arec = stack.top();
-
-				arec.param("c", i2);
-				arec.param("d", s2);
-		}
-
   }
 
   virtual void TearDown() {
@@ -118,14 +107,14 @@ TEST_F (MemoryModelRenderingTests, ClosureTaken) {
 	snap = mm.renderInto(description, SourceLocation(fileName, lineNumber));
 
 	EXPECT_EQ (1, snap->getEntities().count(Identifier(stack)));
+	EXPECT_EQ (1, snap->getEntities().count(Identifier(*fooAR)));
+	EXPECT_EQ (1, snap->getEntities().count(Identifier(*barAR)));
 	EXPECT_EQ (1, snap->getEntities().count(Identifier(s1)));
 	EXPECT_EQ (1, snap->getEntities().count(Identifier(s2)));
 	EXPECT_EQ (1, snap->getEntities().count(Identifier(s3)));
 	EXPECT_EQ (1, snap->getEntities().count(Identifier(i1)));
 	EXPECT_EQ (1, snap->getEntities().count(Identifier(i2)));
 	EXPECT_EQ (1, snap->getEntities().count(Identifier(i3)));
-	EXPECT_EQ (1, snap->getEntities().count(Identifier(*fooAR)));
-	EXPECT_EQ (1, snap->getEntities().count(Identifier(*barAR)));
 }
 
 TEST_F (MemoryModelRenderingTests, GlobalsMarked) {

@@ -69,6 +69,8 @@ void foo() {
 
 #define anySubClassOf(T, U) T, typename enable_if<is_base_of<U, T>::value>::type
 
+#define sameClassAs(T, U) T, typename enable_if<is_same<U, T>::value>::type
+
 
 }
 

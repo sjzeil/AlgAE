@@ -15,9 +15,12 @@
 #include <algae/rendering/selfRenderer.h>
 #include <algae/rendering/proxyForSelfRenderer.h>
 #include <algae/rendering/defaultTypeRenderer.h>
+#include <algae/rendering/componentCollector.h>
 #include <algae/rendering/specialization.h>
 
 #include <algae/snapshot/identifier.h>
+
+#include <string>
 
 namespace algae {
 
@@ -97,6 +100,9 @@ Identifier::Identifier (const T& t)
   : id(&t), type(TypeRenderer::typeRenderer(t))
 {}
 
-}
 
+
+
+
+}
 #endif

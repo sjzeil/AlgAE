@@ -14,6 +14,8 @@
 #include <vector>
 
 #include <algae/memoryModel/activationRecord.h>
+#include <algae/memoryModel/activationStackRenderer.h>
+#include <algae/rendering/typeRendering.h>
 
 namespace algae {
 
@@ -21,13 +23,13 @@ class Renderer;
 
 class ActivationStack
 {
-	std::vector <ActivationRecord> activations;
-	friend class ActivationStackRendering;
+	std::vector <ActivationRecord*> activations;
+	friend class ActivationStackRenderer;
 
 public:
 	typedef std::vector<ActivationRecord>::size_type size_type;
-	typedef std::vector<ActivationRecord>::iterator iterator;
-	typedef std::vector<ActivationRecord>::const_iterator const_iterator;
+	typedef std::vector<ActivationRecord*>::iterator iterator;
+	typedef std::vector<ActivationRecord*>::const_iterator const_iterator;
 
 	void push (std::string functionName);
 	void pop();
@@ -53,6 +55,20 @@ public:
 	const_iterator end() const {return activations.end();}
 
 };
+
+
+/**
+ * Specialization for rendering of types that specialize CanBeRendered
+ */
+template <typename T>
+class TypeRendering<sameClassAs(T, ActivationStack)> {
+public:
+	const TypeRenderer* getRenderer (const ActivationStack& anObject) const
+	{
+		return new ActivationStackRenderer(anObject);
+	}
+};
+
 
 }
 

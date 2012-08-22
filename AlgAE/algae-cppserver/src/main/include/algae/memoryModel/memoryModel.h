@@ -133,8 +133,8 @@ public:
 	template <typename Object>
 	void globalVar(std::string label, const Object& value)
 	{
-		ActivationRecord& arec = *(activationStack.begin());
-		arec.var(label, value);
+		ActivationRecord* arec = *(activationStack.begin());
+		arec->var(label, value);
 	}
 
 
@@ -163,11 +163,11 @@ public:
 	typedef ActivationRecord::const_iterator const_iterator;
 	typedef ActivationRecord::iterator iterator;
 
-	const_iterator beginGlobals() const {return activationStack.begin()->beginLocals();}
-	iterator beginGlobals() {return activationStack.begin()->beginLocals();}
+	const_iterator beginGlobals() const {return (*activationStack.begin())->beginLocals();}
+	iterator beginGlobals() {return (*activationStack.begin())->beginLocals();}
 
-	const_iterator endGlobals() const {return activationStack.begin()->endLocals();}
-	iterator endGlobals() {return activationStack.begin()->endLocals();}
+	const_iterator endGlobals() const {return (*activationStack.begin())->endLocals();}
+	iterator endGlobals() {return (*activationStack.begin())->endLocals();}
 
 
 

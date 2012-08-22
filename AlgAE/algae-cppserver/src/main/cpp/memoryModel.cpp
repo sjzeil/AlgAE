@@ -91,8 +91,8 @@ void MemoryModel::formClosure(Snapshot* snap)
 	queue.push_back (InternalComponent(EntityIdentifier::nullEID(), Identifier(activationStack)));
 
 	// globals are stored in record 0 of the stack
-	ActivationRecord& globals = *(activationStack.begin());
-	for (ActivationRecord::iterator g = globals.beginLocals(); g != globals.endLocals(); ++g) {
+	ActivationRecord* globals = *(activationStack.begin());
+	for (ActivationRecord::iterator g = globals->beginLocals(); g != globals->endLocals(); ++g) {
 		queue.push_back(InternalComponent(EntityIdentifier::nullEID(), g->oid, g->label));
 	}
 
@@ -153,8 +153,8 @@ void MemoryModel::renderObject(Entity& entity, std::list<InternalComponent>& que
 				clabel = string("\t") + toString(componentCount);
 			++componentCount;
 			if (cobj != Identifier::nullID()) {
-				EntityIdentifier c_eid (cobj, entity.getEntityIdentifier(), clabel);
-				entity.getComponents().push_back(c_eid);
+				//EntityIdentifier c_eid (cobj, entity.getEntityIdentifier(), clabel);
+				//entity.getComponents().push_back(c_eid);
 				InternalComponent intComp (entity.getEntityIdentifier(), cobj, clabel);
 				//cerr << entity.getEntityIdentifier() << " has component " << c_eid << endl;
 				queue.push_back (intComp);
