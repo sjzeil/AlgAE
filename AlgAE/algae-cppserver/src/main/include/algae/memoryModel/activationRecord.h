@@ -15,6 +15,8 @@
 
 #include <algae/snapshot/entityIdentifier.h>
 #include <algae/snapshot/color.h>
+#include <algae/memoryModel/activationRecordRenderer.h>
+#include <algae/rendering/typeRendering.h>
 
 namespace algae {
 
@@ -27,26 +29,36 @@ struct LabeledComponent {
 	{}
 };
 
+class ActivationRecord;
+
+struct ActivationParams {
+		std::string name;
+		ActivationStack* onStack;
+		int depth;
+		std::list<LabeledComponent> parameters;
+		EntityIdentifier* thisParam;
+};
+
+struct ActivationLocals {
+	std::list<LabeledComponent> locals;
+};
+
 class ActivationStack;
 class ObjectRenderer;
 class SimpleReference;
 
 class ActivationRecord
 {
-	std::string name;
-	ActivationStack* onStack;
 
+	ActivationParams params;
 
-
-	std::list<LabeledComponent> parameters;
-	std::list<LabeledComponent> locals;
-	EntityIdentifier* thisParam;
+	ActivationLocals locals;
 
 	std::list<ObjectRenderer*> localRenderings;
 	std::list<SimpleReference*> artificialReferences;
 
 	friend class Scope;
-	friend class ActivationRecordRendering;
+	friend class ActivationRecordRenderer;
 
 public:
 
@@ -164,6 +176,43 @@ public:
 	render_iterator endRenderings() {return localRenderings.end();}
 
 
+};
+
+
+/**
+ * Specialization for rendering of types that specialize CanBeRendered
+ */
+template <typename T>
+class TypeRendering<sameClassAs(T, ActivationRecord)> {
+public:
+	const TypeRenderer* getRenderer (const ActivationRecord& anObject) const
+	{
+		return new ActivationRecordRenderer(anObject);
+	}
+};
+
+/**
+ * Specialization for rendering of types that specialize CanBeRendered
+ */
+template <typename T>
+class TypeRendering<sameClassAs(T, ActivationParams)> {
+public:
+	const TypeRenderer* getRenderer (const ActivationParams& anObject) const
+	{
+		return new ActivationParamsRenderer(anObject);
+	}
+};
+
+/**
+ * Specialization for rendering of types that specialize CanBeRendered
+ */
+template <typename T>
+class TypeRendering<sameClassAs(T, ActivationLocals)> {
+public:
+	const TypeRenderer* getRenderer (const ActivationLocals& anObject) const
+	{
+		return new ActivationLocalsRenderer(anObject);
+	}
 };
 
 }
