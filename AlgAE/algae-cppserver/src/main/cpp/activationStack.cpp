@@ -26,6 +26,7 @@ public:
 void ActivationStack::push (std::string functionName)
 {
 	activations.push_back (new ActivationRecord(functionName, this));
+	activations.back()->setHeight(activations.size()-1);
 }
 
 

@@ -27,7 +27,6 @@ public:
 	template <typename T>
 	void add (const T& t, std::string label=std::string());
 
-protected:
 	virtual void addComponent (const Identifier& t, std::string label) = 0;
 
 };

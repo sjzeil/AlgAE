@@ -35,6 +35,19 @@ TEST (TypeRendering, intTypeRendering) {
 }
 
 
+TEST (TypeRendering, charTypeRendering) {
+	char c = 'Q';
+	const Renderer* r = TypeRenderer::typeRenderer(c);
+	Entity e (Identifier(c), "");
+	r->renderInto(e);
+	EXPECT_EQ(EntityIdentifier::nullEID(), e.getContainer());
+	EXPECT_EQ("Q", e.getValue());
+	EXPECT_EQ("", e.getLabel());
+	EXPECT_EQ(0U, e.getComponents().size());
+	EXPECT_EQ(0U, e.getConnections().size());
+}
+
+
 TEST (TypeRendering, stringTypeRendering) {
 	string s = "abc";
 	const Renderer* r = TypeRenderer::typeRenderer(s);

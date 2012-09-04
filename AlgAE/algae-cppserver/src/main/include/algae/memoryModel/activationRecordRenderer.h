@@ -8,11 +8,13 @@
 #ifndef ACTIVATIONRECORDRENDERER_H_
 #define ACTIVATIONRECORDRENDERER_H_
 
-#include <algae/rendering/typeRenderer.h>
+#include <algae/rendering/typeRendering.h>
 
 namespace algae {
 
 class ActivationRecord;
+class ActivationParams;
+class ActivationLocals;
 
 /**
  *  Rendering rules for activation records.
@@ -216,6 +218,16 @@ public:
 
 
 
+};
+
+
+template <typename T>
+class TypeRendering<anySubClassOf(T, ActivationRecord)> {
+public:
+	const TypeRenderer* getRenderer (const ActivationRecord& arecord) const
+	{
+		return new ActivationRecordRenderer(arecord);
+	}
 };
 
 

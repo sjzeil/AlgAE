@@ -10,6 +10,8 @@
 #include <algae/memoryModel/scope.h>
 #include <algae/animation.h>
 #include <algae/memoryModel/memoryModel.h>
+#include <algae/memoryModel/activationRecord.h>
+#include <algae/impl/activationRecordImpl.h>
 
 using namespace algae;
 
@@ -52,13 +54,13 @@ Scope::~Scope()
 	ActivationRecord& arecord = stack.top();
 	if (arWasEmpty)
 	{
-		arecord.locals.clear();
+		arecord.impl->locals.locals.clear();
 	}
 	else
 	{
 		ActivationRecord::iterator after = lastLocalVariable;
 		++after;
-		arecord.locals.erase (after, arecord.locals.end());
+		arecord.impl->locals.locals.erase (after, arecord.impl->locals.locals.end());
 	}
 
 }

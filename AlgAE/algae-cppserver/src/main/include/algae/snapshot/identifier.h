@@ -49,6 +49,8 @@ public:
 	bool operator< (const Identifier& ident) const {return id < ident.id;}
 
 	void printXML (std::ostream& out) const;
+
+	void* getKey() const { return (void*)id; }
 };
 
 inline

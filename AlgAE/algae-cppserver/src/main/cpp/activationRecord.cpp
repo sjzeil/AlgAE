@@ -8,25 +8,40 @@
 
 
 #include <algae/memoryModel/activationRecord.h>
-#include <algae/memoryModel/activationStack.h>
-#include <algae/memoryModel/simpleReference.h>
-#include <algae/rendering/colorChanger.h>
-#include <algae/rendering/colorInverter.h>
-#include <algae/rendering/objectRenderer.h>
-#include <algae/animation.h>
+#include <algae/impl/activationRecordImpl.h>
 
 using namespace std;
 
 namespace algae {
 
+ActivationRecord::ActivationRecord (std::string functionName, ActivationStack* stack)
+ : impl(new ActivationRecordImpl(functionName, stack))
+{}
+
 
 ActivationRecord::~ActivationRecord()
 {
-	for (render_iterator it = beginRenderings(); it != endRenderings(); ++it)
-	{
-		ObjectRenderer* orend = *it;
-		delete orend;
-	}
+	delete impl;
+}
+
+/**
+ * Returns the name of the function that is active
+ */
+std::string ActivationRecord::getName() const {return impl->getName();}
+
+
+/**
+ * Show a variable as the "this" parameter of the current activation.
+ * Variables portrayed by this call are shown as labeled ("this")
+ * pointers to the actual value.
+ *
+ * @param label  the variable name (optional, can be "" or null)
+ * @param param  the variable/value
+ * @return a reference to this breakpoint
+ */
+void ActivationRecord::thisParam (const Identifier& oid)
+{
+	impl->thisParam(oid);
 }
 
 
@@ -39,7 +54,7 @@ ActivationRecord::~ActivationRecord()
  */
 void ActivationRecord::param(std::string label, const Identifier& value)
 {
-	parameters.push_back(LabeledComponent(value, label));
+	impl->param(label, value);
 }
 
 
@@ -54,9 +69,7 @@ void ActivationRecord::param(std::string label, const Identifier& value)
  */
 void ActivationRecord::refParam (std::string  label, const Identifier& value)
 {
-	SimpleReference* sref = new SimpleReference(value);
-	artificialReferences.push_back (sref);
-	param (label, *sref);
+	impl->refParam(label, value);
 }
 
 
@@ -69,7 +82,7 @@ void ActivationRecord::refParam (std::string  label, const Identifier& value)
  */
 void ActivationRecord::var(std::string label, const Identifier& value)
 {
-	locals.push_back(LabeledComponent(value, label));
+	impl->var(label, value);
 }
 
 
@@ -84,9 +97,7 @@ void ActivationRecord::var(std::string label, const Identifier& value)
  */
 void ActivationRecord::refVar (std::string  label, const Identifier& value)
 {
-	SimpleReference* sref = new SimpleReference(value);
-	artificialReferences.push_back (sref);
-	var(label, *sref);
+	impl->refVar(label, value);
 }
 
 
@@ -97,14 +108,12 @@ void ActivationRecord::refVar (std::string  label, const Identifier& value)
  */
 void ActivationRecord::highlight (const Identifier& value)
 {
-	ColorInverter ci (value);
-	render (ci);
+	impl->highlight(value);
 }
 
 void ActivationRecord::highlight (const Identifier& value, Color c)
 {
-	ColorChanger cc(value, c);
-	render (cc);
+	impl->highlight(value, c);
 }
 
 
@@ -114,19 +123,7 @@ void ActivationRecord::highlight (const Identifier& value, Color c)
  */
 void ActivationRecord::unhighlight (const Identifier& value)
 {
-	for (list<ObjectRenderer*>::iterator i = localRenderings.begin(); i != localRenderings.end(); ++i)
-	{
-		ObjectRenderer* orend = *i;
-		if (value == orend->getRenders())
-		{
-			ObjectRenderer& renderer = *orend;
-			if (typeid(renderer) == typeid(ColorChanger) || typeid(renderer) == typeid(ColorInverter))
-			{
-				localRenderings.erase(i);
-				break;
-			}
-		}
-	}
+	impl->unhighlight(value);
 }
 
 
@@ -136,29 +133,42 @@ void ActivationRecord::unhighlight (const Identifier& value)
  */
 void ActivationRecord::render(const ObjectRenderer& newRendering)
 {
-	ObjectRenderer* newRendering2 = newRendering.cloneOR();
-	Renderer* oldRenderer = Animation::algae()->getMemoryModel().getActivationStack().getRenderingOf(newRendering.getRenders());
-	newRendering2->setDeferTo(oldRenderer);
-	localRenderings.push_back (newRendering2);
+	impl->render(newRendering);
 }
+
 
 /**
- * Take a snapshot of the current program state and send it to the animator.
- *
- * This function is not normally called directly, but is invoked via the breakHere macro.
- *
- * @param description short message to be displayed by the animator explaining the current circumstances
- *                       the break
- * @param fileName  name of the file in which the breakpoint occurs.
- * @param lineNum   line number in that file where the breakpoint occurs
- */
-void ActivationRecord::breakPoint (std::string description, const char* fileName, int lineNumber)
+	 * The height of an AR is its position on the activation stack.
+	 * The first record pushed has height 1.
+	 */
+int ActivationRecord::getHeight() const
 {
-	// Todo
+	return impl->getHeight();
+}
+
+void ActivationRecord::setHeight (int h)
+{
+	impl->setHeight(h);
 }
 
 
+ActivationRecord::const_iterator ActivationRecord::beginParams() const {return impl->beginParams();}
+ActivationRecord::iterator ActivationRecord::beginParams() {return impl->beginParams();}
 
+ActivationRecord::const_iterator ActivationRecord::endParams() const {return impl->endParams();}
+ActivationRecord::iterator ActivationRecord::endParams() {return impl->endParams();}
+
+ActivationRecord::const_iterator ActivationRecord::beginLocals() const {return impl->beginLocals();}
+ActivationRecord::iterator ActivationRecord::beginLocals() {return impl->beginLocals();}
+
+ActivationRecord::const_iterator ActivationRecord::endLocals() const {return impl->endLocals();}
+ActivationRecord::iterator ActivationRecord::endLocals() {return impl->endLocals();}
+
+ActivationRecord::const_render_iterator ActivationRecord::beginRenderings() const {return impl->beginRenderings();}
+ActivationRecord::render_iterator ActivationRecord::beginRenderings() {return impl->beginRenderings();}
+
+ActivationRecord::const_render_iterator ActivationRecord::endRenderings() const {return impl->endRenderings();}
+ActivationRecord::render_iterator ActivationRecord::endRenderings() {return impl->endRenderings();}
 
 
 
