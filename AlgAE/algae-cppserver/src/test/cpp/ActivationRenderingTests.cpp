@@ -88,7 +88,7 @@ class ActivationRenderingTests : public ::testing::Test {
   {
 	  Identifier ancestor = ident;
 	  while (ancestor != Identifier::nullID() && ancestor != expectedAncestor)
-	     ancestor = snap->getEntities().lower_bound(ancestor)->second.getEntityIdentifier().getContainer();
+	     ancestor = snap->getEntities().lower_bound(ancestor)->second.getEntityIdentifier().getContainer().getObjectIdentifier();
 	  return (ancestor == expectedAncestor);
   }
 
@@ -100,7 +100,7 @@ class ActivationRenderingTests : public ::testing::Test {
 TEST_F (ActivationRenderingTests, TopAR) {
 	stack.push("foo");
 	fooAR = (ActivationRecordAccess*)(&stack.top());
-	Entity e (*fooAR, "");
+	Entity e (Identifier(*fooAR), "");
 	e.getObjectIdentifier().getType()->renderInto(e);
 	EXPECT_EQ(EntityIdentifier::nullEID(), e.getContainer());
 	EXPECT_EQ("", e.getValue());
@@ -113,7 +113,7 @@ TEST_F (ActivationRenderingTests, InnerAR) {
 	stack.push("foo");
 	fooAR = (ActivationRecordAccess*)(&stack.top());
 	stack.push ("bar");
-	Entity e (*fooAR, "");
+	Entity e (Identifier(*fooAR), "");
 	e.getObjectIdentifier().getType()->renderInto(e);
 	EXPECT_EQ(EntityIdentifier::nullEID(), e.getContainer());
 	EXPECT_EQ("", e.getValue());
@@ -126,7 +126,7 @@ TEST_F (ActivationRenderingTests, InnerAR) {
 TEST_F (ActivationRenderingTests, EmptyParams) {
 	stack.push("foo");
 	fooAR = (ActivationRecordAccess*)(&stack.top());
-	Entity e (fooAR->impl->params, "");
+	Entity e (Identifier(fooAR->impl->params), "");
 	e.getObjectIdentifier().getType()->renderInto(e);
 	EXPECT_EQ(EntityIdentifier::nullEID(), e.getContainer());
 	EXPECT_EQ("", e.getValue());
@@ -139,7 +139,7 @@ TEST_F (ActivationRenderingTests, ThisParam) {
 	stack.push("foo");
 	fooAR = (ActivationRecordAccess*)(&stack.top());
 	fooAR->thisParam(Identifier(s1));
-	Entity e (fooAR->impl->params, "");
+	Entity e (Identifier(fooAR->impl->params), "");
 	e.getObjectIdentifier().getType()->renderInto(e);
 	EXPECT_EQ(EntityIdentifier::nullEID(), e.getContainer());
 	EXPECT_EQ("", e.getValue());
@@ -159,7 +159,7 @@ TEST_F (ActivationRenderingTests, BasicParam) {
 	stack.push("foo");
 	fooAR = (ActivationRecordAccess*)(&stack.top());
 	fooAR->param("s1", Identifier(s1));
-	Entity e (fooAR->impl->params, "");
+	Entity e (Identifier(fooAR->impl->params), "");
 	e.getObjectIdentifier().getType()->renderInto(e);
 	EXPECT_EQ(EntityIdentifier::nullEID(), e.getContainer());
 	EXPECT_EQ("", e.getValue());
@@ -175,7 +175,7 @@ TEST_F (ActivationRenderingTests, BasicParam) {
 	EXPECT_EQ(Identifier(s1), component);
 
 	fooAR->param("i1", Identifier(i1));
-	Entity e2 (fooAR->impl->params, "");
+	Entity e2 (Identifier(fooAR->impl->params), "");
 	e2.getObjectIdentifier().getType()->renderInto(e);
 	EXPECT_EQ(6U, e.getComponents().size());
 }
@@ -185,7 +185,7 @@ TEST_F (ActivationRenderingTests, RefParam) {
 	stack.push("foo");
 	fooAR = (ActivationRecordAccess*)(&stack.top());
 	fooAR->refParam("s1", Identifier(s1));
-	Entity e (fooAR->impl->params, "");
+	Entity e (Identifier(fooAR->impl->params), "");
 	e.getObjectIdentifier().getType()->renderInto(e);
 	EXPECT_EQ(EntityIdentifier::nullEID(), e.getContainer());
 	EXPECT_EQ("", e.getValue());
@@ -210,7 +210,7 @@ TEST_F (ActivationRenderingTests, RefParam) {
 TEST_F (ActivationRenderingTests, EmptyLocals) {
 	stack.push("foo");
 	fooAR = (ActivationRecordAccess*)(&stack.top());
-	Entity e (fooAR->impl->locals, "");
+	Entity e (Identifier(fooAR->impl->locals), "");
 	e.getObjectIdentifier().getType()->renderInto(e);
 	EXPECT_EQ(EntityIdentifier::nullEID(), e.getContainer());
 	EXPECT_EQ("", e.getValue());

@@ -24,7 +24,7 @@ TEST (TypeRendering, emptyT) {
 TEST (TypeRendering, intTypeRendering) {
 	int k = 23;
 	const TypeRenderer* r = TypeRenderer::typeRenderer(k);
-	Entity e (k, "label");
+	Entity e (Identifier(k), "label");
 	r->renderInto(e);
 	EXPECT_EQ(EntityIdentifier::nullEID(), e.getContainer());
 	EXPECT_EQ("23", e.getValue());

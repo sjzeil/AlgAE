@@ -68,15 +68,9 @@ void ActivationParamsRenderer::getComponents(ComponentCollector& components) con
 	int depth = instance->onStack->size() - instance->height;
 	bool detailed = (depth <= ActivationStackRenderer::getMaxDetailed());
 
-	if (instance->thisParam != Identifier::nullID())
+	if (instance->thisParam != 0)
 	{
-		SimpleReference thisPtr (Identifier::nullID());
-		if (detailed)
-		{
-			thisPtr.set(instance->thisParam);
-		}
-
-		components.add (thisPtr, "this");
+		components.add (*(instance->thisParam), "this");
 		components.add ('.');
 	}
 	components.add(instance->name);

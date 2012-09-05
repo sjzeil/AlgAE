@@ -165,7 +165,7 @@ void MemoryModel::renderObject(Entity& entity, std::list<InternalComponent>& que
 	for (Entity::ConnectionsList::iterator ci = connections.begin(); ci != connections.end(); ++ci)
 	{
 		Connector& conn = *ci;
-		Identifier destID = conn.getDestination();
+		Identifier destID = conn.getDestination().getObjectIdentifier();
 		if (destID != Identifier::nullID()) {
 			InternalComponent intComp (EntityIdentifier::nullEID(), destID, "");
 			//cerr << entity.getEntityIdentifier() << " connects to " << destID << endl;

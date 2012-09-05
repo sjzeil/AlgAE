@@ -134,7 +134,7 @@ public:
 	void globalVar(std::string label, const Object& value)
 	{
 		ActivationRecord* arec = *(activationStack.begin());
-		arec->var(label, value);
+		arec->var(label, Identifier(value));
 	}
 
 

@@ -29,6 +29,20 @@ ActivationRecordImpl::~ActivationRecordImpl()
 	}
 }
 
+/**
+ * Show a variable as the "this" parameter of the current activation.
+ * Variables portrayed by this call are shown as labeled ("this")
+ * pointers to the actual value.
+ *
+ * @param label  the variable name (optional, can be "" or null)
+ * @param param  the variable/value
+ * @return a reference to this breakpoint
+ */
+void ActivationRecordImpl::thisParam (const Identifier& oid)
+{
+	params.thisParam = new SimpleReference(oid);
+}
+
 
 /**
  * Show a variable as a parameter of the current activation
@@ -56,7 +70,7 @@ void ActivationRecordImpl::refParam (std::string  label, const Identifier& value
 {
 	SimpleReference* sref = new SimpleReference(value);
 	artificialReferences.push_back (sref);
-	param (label, *sref);
+	param (label, Identifier(*sref));
 }
 
 
@@ -86,7 +100,7 @@ void ActivationRecordImpl::refVar (std::string  label, const Identifier& value)
 {
 	SimpleReference* sref = new SimpleReference(value);
 	artificialReferences.push_back (sref);
-	var(label, *sref);
+	var(label, Identifier(*sref));
 }
 
 
