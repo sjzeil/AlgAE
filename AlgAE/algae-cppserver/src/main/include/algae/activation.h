@@ -90,8 +90,8 @@ public:
 	template <typename Object>
 	Activation& param(std::string label, const Object& value)
 	{
-		EntityIdentifier eid(Identifier(value), label);
-		arecord->param(label, eid);
+		Identifier id (value);
+		arecord->param(label, id);
 		return this;
 	}
 
@@ -124,8 +124,8 @@ public:
 	template <typename Object>
 	Activation& var(std::string label, const Object& value)
 	{
-		EntityIdentifier eid(Identifier(value), label);
-		arecord->var(label, eid);
+		Identifier id(value);
+		arecord->var(label, id);
 		return this;
 	}
 

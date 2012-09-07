@@ -68,27 +68,21 @@ void ActivationParamsRenderer::getComponents(ComponentCollector& components) con
 	int depth = instance->onStack->size() - instance->height;
 	bool detailed = (depth <= ActivationStackRenderer::getMaxDetailed());
 
-	if (instance->thisParam != Identifier::nullID())
+	if (instance->thisParam != 0)
 	{
-		SimpleReference thisPtr (Identifier::nullID());
-		if (detailed)
-		{
-			thisPtr.set(instance->thisParam);
-		}
-
-		components.add (thisPtr, "this");
+		components.add (*(instance->thisParam), "this");
 		components.add ('.');
 	}
-	components.add(instance->name);
-	components.add('(');
+	components.add(instance->name + "(");
 	int i = 0;
 
 	for (ActivationRecord::const_iterator it = instance->parameters.begin(); it != instance->parameters.end(); ++it)
 	{
 		if (i > 0)
 			components.add(',');
+		++i;
 		const LabeledComponent& c = *it;
-		if (detailed || typeid(c.oid.getType()) == typeid(SimpleReference))
+		if (detailed || typeid(c.oid.getType()) != typeid(SimpleReference))
 		{
 			components.addComponent(c.oid, c.label);
 		} else {

@@ -32,10 +32,16 @@ struct ActivationParams {
 		ActivationStack* onStack;
 		int height;
 		std::list<LabeledComponent> parameters;
-		Identifier thisParam;
+		SimpleReference* thisParam;
 
 		ActivationParams (std::string nm, ActivationStack* stck)
-		 : name(nm), onStack(stck), height(-1), thisParam(Identifier::nullID()) {}
+		 : name(nm), onStack(stck), height(-1), thisParam(0) {}
+
+		~ActivationParams()
+		{
+			if (thisParam != 0)
+				delete thisParam;
+		}
 };
 
 struct ActivationLocals {
@@ -97,7 +103,7 @@ public:
 	 * @param param  the variable/value
 	 * @return a reference to this breakpoint
 	 */
-	void thisParam (const Identifier& oid) {params.thisParam = oid;}
+	void thisParam (const Identifier& oid);
 
 	/**
 	 * Show a variable as a local variable of the current activation

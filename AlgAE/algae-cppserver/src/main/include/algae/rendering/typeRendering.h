@@ -18,6 +18,8 @@
 #include <algae/rendering/componentCollector.h>
 #include <algae/rendering/specialization.h>
 
+#include <algae/memoryModel/simpleReference.h>
+
 #include <algae/snapshot/identifier.h>
 
 #include <string>

@@ -22,7 +22,7 @@ namespace algae {
  *
  */
 
-SimpleReference::SimpleReference(Identifier theRefersTo, double theMinAngle, double theMaxAngle)
+SimpleReference::SimpleReference(const Identifier& theRefersTo, double theMinAngle, double theMaxAngle)
 : color(Color::LightGray), maxAngle(theMaxAngle), minAngle(theMinAngle), refersTo(theRefersTo)
 {
 }

@@ -33,7 +33,7 @@ private:
 
 public:
 
-	SimpleReference(Identifier refersTo, double minAngle = 0.0, double maxAngle = 360.0);
+	SimpleReference(const Identifier& refersTo, double minAngle = 0.0, double maxAngle = 360.0);
 
 	void set (Identifier newRefersTo)
 	{

@@ -47,13 +47,13 @@ class MemoryModelRenderingTests : public ::testing::Test {
 	  {
 		stack.push("foo");
 		fooAR = &stack.top();
-		fooAR->param("i2", i2);
-		fooAR->var("s2", s2);
+		fooAR->param("i2", Identifier(i2));
+		fooAR->var("s2", Identifier(s2));
 
 		stack.push("bar");
 		barAR = &stack.top();
-		barAR->param("i3", i3);
-		barAR->var("s3", s3);
+		barAR->param("i3", Identifier(i3));
+		barAR->var("s3", Identifier(s3));
 
 		mm.globalVar("i1", i1);
 		mm.globalVar("s1", s1);
@@ -78,7 +78,7 @@ class MemoryModelRenderingTests : public ::testing::Test {
   {
 	  Identifier ancestor = ident;
 	  while (ancestor != Identifier::nullID() && ancestor != expectedAncestor)
-	     ancestor = snap->getEntities().lower_bound(ancestor)->second.getEntityIdentifier().getContainer();
+	     ancestor = snap->getEntities().lower_bound(ancestor)->second.getEntityIdentifier().getContainer().getObjectIdentifier();
 	  return (ancestor == expectedAncestor);
   }
 
@@ -140,7 +140,7 @@ TEST_F (MemoryModelRenderingTests, Components) {
 	int lineNumber = 314;
 	snap = mm.renderInto(description, SourceLocation(fileName, lineNumber));
 
-	EXPECT_NE (Identifier::nullID(), getParent(Identifier(stack)));
+	EXPECT_NE (Identifier::nullID(), getParent(Identifier(stack)).getObjectIdentifier());
 	EXPECT_TRUE (hasAncestor(Identifier(*fooAR), Identifier(stack)));
 	EXPECT_TRUE (hasAncestor(Identifier(*barAR), Identifier(stack)));
 

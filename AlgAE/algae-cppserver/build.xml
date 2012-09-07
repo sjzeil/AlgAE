@@ -16,8 +16,6 @@
 	<property name="test_classpath" refid="maven.test.classpath"/>
 
 	
-	
-	
 	<target name="compile">
 		<taskdef resource="cpptasks.tasks" classpathref="ant.tasks.classpath"/>
 	    <mkdir dir="target/bin"/>
@@ -44,20 +42,20 @@
         <taskdef resource="cpptasks.tasks" classpathref="ant.tasks.classpath"/>
 
 	    <mkdir dir="target/test-bin"/>
-	    <cc name="g++"
+	 	<cc name="g++"
 			outtype="executable" 
 		    subsystem="console" 
 		    outfile="target/test-bin/runAllTests"
 		    objdir="target/test-bin"
 		    debug="true"
 		>
-		   <includepath path="src/test/cpp/gtest"/> 
+	       <includepath path="src/test/cpp/gtest"/> 
 		   <includepath path="src/main/include"/> 
 		   <fileset dir="src/test/cpp" includes="*.cpp"/>
 		   <fileset dir="src/test/cpp/gtest" includes="*.cc"/>
+		   <libset dir="target" libs="algae-cppserver"/>
 		   <libset libs="stdc++"/>
 		   <libset libs="pthread"/>
-		   <libset dir="target" libs="algae-cppserver"/>
 		</cc>
 	</target>
 	
@@ -83,6 +81,14 @@
 		<antcall target="compile"/>
 		<antcall target="test-compile"/>
 		<!-- antcall target="test"/ -->
+	</target>
+	
+	<target name="clean">
+		<delete>
+	       <fileset dir="target">
+	           <include name="*"/>
+	       </fileset>
+	    </delete>
 	</target>
 	
 

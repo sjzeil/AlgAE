@@ -104,15 +104,15 @@ TEST_F (MemoryModelTests, Params) {
 	{
 		ActivationRecord& arec = stack.top();
 
-		arec.param("a", i1);
-		arec.param("b", s1);
+		arec.param("a", Identifier(i1));
+		arec.param("b", Identifier(s1));
 	}
 	stack.push ("bar");
 	{
 			ActivationRecord& arec = stack.top();
 
-			arec.param("c", i2);
-			arec.param("d", s2);
+			arec.param("c", Identifier(i2));
+			arec.param("d", Identifier(s2));
 	}
 	ActivationRecord& toprec = stack.top();
 	ActivationRecord::iterator p1 = toprec.beginParams();
@@ -137,15 +137,15 @@ TEST_F (MemoryModelTests, Vars) {
 	{
 		ActivationRecord& arec = stack.top();
 
-		arec.var("a", i1);
-		arec.var("b", s1);
+		arec.var("a", Identifier(i1));
+		arec.var("b", Identifier(s1));
 	}
 	stack.push ("bar");
 	{
 			ActivationRecord& arec = stack.top();
 
-			arec.var("c", i2);
-			arec.var("d", s2);
+			arec.var("c", Identifier(i2));
+			arec.var("d", Identifier(s2));
 	}
 	ActivationRecord& toprec = stack.top();
 	ActivationRecord::iterator p1 = toprec.beginLocals();
@@ -172,8 +172,8 @@ TEST_F (MemoryModelTests, Globals) {
 	{
 		ActivationRecord& arec = stack.top();
 
-		arec.var("a", i1);
-		arec.var("b", s1);
+		arec.var("a", Identifier(i1));
+		arec.var("b", Identifier(s1));
 	}
 	stack.push ("bar");
 
@@ -205,8 +205,8 @@ TEST_F (MemoryModelTests, Scopes) {
 	stack.push("foo");
 	ActivationRecord& arec = stack.top();
 
-	arec.var("a", i1);
-	arec.var("b", s1);
+	arec.var("a", Identifier(i1));
+	arec.var("b", Identifier(s1));
 	string expected[] = {string("a"), string("b"), string("c"), string("d")};
 
 	ActivationRecord& toprec = stack.top();
@@ -223,7 +223,7 @@ TEST_F (MemoryModelTests, Scopes) {
 
 	{
 		Scope scope1;
-		arec.var("c", i2);
+		arec.var("c", Identifier(i2));
 		ActivationRecord::iterator p1 = toprec.beginLocals();
 		ActivationRecord::iterator p2 = toprec.endLocals();
 
@@ -238,7 +238,7 @@ TEST_F (MemoryModelTests, Scopes) {
 		for (int i = 0; i < 5; ++i)
 		{
 			Scope scope2;
-			arec.var("d", s2);
+			arec.var("d", Identifier(s2));
 			ActivationRecord::iterator p1 = toprec.beginLocals();
 			ActivationRecord::iterator p2 = toprec.endLocals();
 

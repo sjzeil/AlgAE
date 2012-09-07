@@ -6,6 +6,7 @@
 #include <map>
 #include <string>
 #include <fstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -15,6 +16,12 @@ XMLTester::XMLTester (bool save, std::string prefix)
 : saving(save), fileNamePrefix(prefix)
 {}
 
+
+#ifdef _WIN64
+#define isWindows 1
+#elif _WIN32
+#define isWindows 1
+#endif
 
 
 /**
@@ -26,10 +33,14 @@ XMLTester::XMLTester (bool save, std::string prefix)
 std::string XMLTester::readXML()
 {
 	string classPath = "target/test-classes:../algae-common/target/classes:../algae-client/target/classes:target/test-classes";
+#ifdef isWindows
+    replace (classPath.begin(), classPath.end(), '/', '\\');
+    replace (classPath.begin(), classPath.end(), ':', ';');
+#endif
 
 	string fileName = fileNamePrefix + ((saving) ? "saved" : "in");
 	fields.clear();
-	string command = string("java -cp '" + classPath + "' edu.odu.cs.AlgAE.ReadEncodedXML < ") + fileName + " > xmlTest.out";
+	string command = string("java -cp " + classPath + " edu.odu.cs.AlgAE.ReadEncodedXML < ") + fileName + " > xmlTest.out";
 	system(command.c_str());
 	ifstream in ("xmlTest.out");
 	string line;

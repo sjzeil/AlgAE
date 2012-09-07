@@ -27,7 +27,7 @@ class Identifier {
 	friend std::ostream& operator<< (std::ostream& out, const Identifier& ident);
 public:
 	template <class T>
-	Identifier (const T& t);
+	explicit Identifier (const T& t);
 
 	Identifier()
 	: id(0), type(0)
