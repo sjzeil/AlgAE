@@ -91,7 +91,7 @@ class ActivationRenderingTests : public ::testing::Test {
 	  while (ancestor != Identifier::nullID() && ancestor != expectedAncestor)
 	     ancestor = snap->getEntities().lower_bound(ancestor)->second.getEntityIdentifier().getContainer().getObjectIdentifier();
 	  return (ancestor == expectedAncestor);
-  }
+
 
 };
 
