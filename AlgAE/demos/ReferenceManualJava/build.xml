@@ -1,0 +1,337 @@
+<project name="AlgAE Client" 
+	 default="package" basedir="." 
+	 xmlns:ivy="antlib:org.apache.ivy.ant"
+	 xmlns:jacoco="antlib:org.jacoco.ant">
+
+  <record name="ant.log" action="start" append="false" />
+	
+  <description>
+    AlgAE (Algorithm Animation Engine): Java examples for Reference Manual
+  </description>
+
+  <property name="projectName" value="algae-jrefman" />
+  <property name="version" value="4.0"/>
+
+  <tstamp>
+    <format property="build.date" pattern="yyyy-MM-dd" locale="en,US" />
+    <format property="build.dateTime" 
+	    pattern="yyyy-MM-dd HH:mm" locale="en,US" />    
+  </tstamp>
+  <property name="configuration" value="${os.name}" />
+  <property name="packageName" value="${projectName}-${version}.jar" />
+
+
+  <!-- === Directory Setup === -->
+
+  <property name="compile.src" location="src/main/java" />
+  <available file="${compile.src}" property="compile.src.exists" />
+  <property name="compile.data" location="src/main/data" />
+  <property name="thirdPartyLibs" location="lib" />
+  <property name="compile.dest" location="target/classes" />
+  <property name="data.dest" location="target/data" />
+  <property name="test.src" location="src/test/java" />
+  <available file="${test.src}" property="test.src.exists" />
+  <property name="test.dest" location="target/test-classes" />
+  <property name="test.reports" location="target/test_reports" />
+  <property name="reports.dir" location="target/project-reports/${version}" />	
+  <property name="webserver" value="forge350.cs.odu.edu"/>
+  <property name="website.path" value="/var/lib/gforge/chroot/home/groups/extract-core/htdocs/"/>
+
+
+  <!-- === Unit Test Setup === -->
+	
+
+  <fileset id="unitTestsExpectedToPass" dir="${test.dest}">
+    <include name="**/Test*.class" />
+    <exclude name="**/Test*$*.class" />
+  </fileset>
+
+ 
+  <!-- === Ivy Configuration Manager Setup === 
+       See also ivy.xml, ivysettings.xml, forge350-settings.xml
+  -->
+  <property name="ivy.install.version" value="2.3.0"/>
+  <property name="jsch.install.version" value="0.1.49"/>
+  <property name="ivy.jar.dir" value="${basedir}/ivy"/>
+  <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar"/>
+  <property name="jsch.jar.file" value="${ivy.jar.dir}/jsch.jar"/>
+  <property name="build.dir" value="build"/>
+  <property name="src.dir" value="src"/>
+
+  <target name="download-ivy" unless="skip.download">
+    <mkdir dir="${ivy.jar.dir}"/>
+    <echo message="installing ivy..."/>
+    <get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" 
+	 dest="${ivy.jar.file}" usetimestamp="true"/>
+  </target>
+
+  <target name="download-jsch" unless="skip.download">
+    <mkdir dir="${ivy.jar.dir}"/>
+    <echo message="installing jsch..."/>
+    <get src="http://repo1.maven.org/maven2/com/jcraft/jsch/${jsch.install.version}/jsch-${jsch.install.version}.jar" 
+	 dest="${jsch.jar.file}" usetimestamp="true"/>
+  </target>
+	
+  <target name="install-jsch" depends="download-jsch">
+  </target>
+	
+  <target name="install-ivy" depends="download-ivy"  unless="skip.download"
+	  description="--> install ivy">
+    <path id="ivy.lib.path">
+      <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+    </path>
+    <taskdef resource="org/apache/ivy/ant/antlib.xml" 
+	     uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+  </target>
+
+  <target name="retrieve-ivy" depends="install-ivy,install-jsch" unless="skip.download" description="Retrieve library dependencies">
+	  <ivy:retrieve/>
+  </target>
+
+  <target name="resolve-ivy" depends="retrieve-ivy" description="Resolve library dependencies">
+  	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+  		<classpath refid="test.classpath"/>
+  	</taskdef>
+  </target>
+
+  <!-- === Class Paths for Compilation and Execution === -->
+
+  <!-- Classpath for compilation of src/main/java -->
+  <path id="compile-datagen.classpath">
+    <pathelement location="${compile.dest}"/>
+    <pathelement location="../generatedSource/target/classes"/>
+    <fileset dir="${thirdPartyLibs}">
+      <filename name="*.jar"/>
+    </fileset>
+  </path>
+
+  <!-- Classpath for compilation of src/main/java -->
+  <path id="compile.classpath">
+    <fileset dir="${thirdPartyLibs}/">
+      <filename name="*.jar" />
+    </fileset>
+  </path>
+	
+ 
+  <!-- Classpath for compilation of src/test/java -->
+  <path id="test-compile.classpath">
+    <pathelement location="${compile.dest}" />
+    <pathelement location="${test.dest}" />
+    <fileset dir="${thirdPartyLibs}/">
+      <filename name="*.jar" />
+    </fileset>
+  </path>
+  
+  <!-- Classpath for execution of Unit tests -->
+  <path id="test.classpath">
+    <pathelement location="${compile.dest}" />
+    <pathelement location="${test.dest}" />
+    <fileset dir="${thirdPartyLibs}/">
+    	<include name="*.jar" />
+    	<exclude name="*-sources.jar" />
+    	<exclude name="*-javadoc.jar" />
+    </fileset>
+  </path>
+
+
+  <!-- === Targets and Tasks === -->
+
+  <!-- target name="setup" depends="resolve-ivy" -->
+  <target name="setup" depends="resolve-ivy">
+  </target>
+
+  
+  <target name="compile-source" depends="setup" description="Compile the main source code">
+    <mkdir dir="${compile.dest}" />
+    <javac srcdir="${compile.src}" destdir="${compile.dest}" classpathref="compile.classpath" 
+	   debug="true" includeantruntime="false"/>
+  </target>
+  
+  
+  <target name="test-compile" depends="compile-source" unless="test.skip" description="Compile unit test code.">
+    <mkdir dir="${test.dest}" />
+    <javac srcdir="${test.src}" destdir="${test.dest}" classpathref="test-compile.classpath" debug="true"  includeantruntime="false"/>
+  </target>
+
+  <target name="run-tests" depends="test-compile" if="test.src.exists" unless="test.skip"
+  	description="Perform unit testing">
+    <mkdir dir="${test.reports}" />
+  	<mkdir dir="${test.reports}/details"/>
+    <junit printsummary="on" haltonfailure="true" fork="true" forkmode="perTest">
+      <classpath refid="test.classpath" />
+      <jvmarg value="-Djava.library.path=${thirdPartyLibs}" />
+      <formatter type="xml" />
+      
+      <batchtest todir="${test.reports}/details">
+	<fileset refid="unitTestsExpectedToPass" />
+      </batchtest>
+    </junit>
+  </target>
+  	
+  <target name="all-tests" depends="test-compile,resolve-ivy" if="test.src.exists" unless="test.skip"
+  	description="Perform unit testing">
+    <mkdir dir="${test.reports}" />
+  	<mkdir dir="${test.reports}/details"/>
+  	<jacoco:coverage destfile="target/jacoco.exec">
+    	<junit printsummary="on" haltonfailure="false" fork="true" forkmode="perTest">
+      		<classpath refid="test.classpath" />
+      		<jvmarg value="-Djava.library.path=${thirdPartyLibs}" />
+      		<formatter type="xml" />
+      
+      		<batchtest todir="${test.reports}/details">
+      			<fileset dir="${test.dest}">
+      	    		<include name="**/Test*.class" />
+      	    		<exclude name="**/Test*$*.class" />
+      			</fileset>
+      		</batchtest>
+    	</junit>
+  	 </jacoco:coverage>
+  </target>
+	
+  <target name="testReport" depends="all-tests" description="Prepare HTML summary of unit testing">
+ 	<mkdir dir="${reports.dir}/junit"/>
+ 	<junitreport todir="${reports.dir}//junit">
+      <fileset dir="${test.reports}/details">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="target/project-reports/junit"/>
+    </junitreport>
+  </target>
+	
+  <target name="coverageReport" depends="all-tests,resolve-ivy" description="Prepare HTML summary of unit test coverage">
+	 	<mkdir dir="${reports.dir}//jacoco"/>
+  		<jacoco:report>
+  			<executiondata>
+  				<file file="target/jacoco.exec"/>
+ 		 	</executiondata>
+  			<structure name="Extract Core: test coverage report">
+  				<classfiles>
+  					<fileset dir="target/classes"/>
+  				</classfiles>
+  				<sourcefiles encoding="UTF-8">
+  					<fileset dir="src/main/java"/>
+  					<fileset dir="target/generated"/>
+  				</sourcefiles>
+  			</structure>
+  			<html destdir="${reports.dir}/jacoco"/>
+  		</jacoco:report>
+	</target>
+
+	<target name="javadoc" depends="setup" description="prepare Javadoc documentation">
+  	<mkdir dir="${reports.dir}/javadoc"/>
+  	<javadoc
+  	   destdir="${reports.dir}/javadoc"
+  	   classpathref="compile.classpath"
+  	   author="true"
+  	   version="true"
+  	   use="true"
+  	   windowtitle="Extract Core">
+
+  		<sourcefiles>
+		    <fileset dir="src/main/java" includes="**/*.java"/>
+  	    </sourcefiles>
+
+  	    <doctitle><![CDATA[<h1>AlgAE Client</h1>]]></doctitle>
+  	    <link offline="false" href="http://download.oracle.com/javase/6/docs/api/"/>
+  	  </javadoc>
+  </target>
+	
+	
+  <target name="ivyReport" depends="resolve-ivy" description="generate Ivy dependency reports">
+  	<mkdir dir="${reports.dir}/ivy"/>
+  	<ivy:report toDir="${reports.dir}/ivy"/>
+  </target>
+	
+
+  <target name="reports" depends="javadoc,testReport,ivyReport,coverageReport" description="Generate project reports">
+  </target>
+  
+	
+ 	
+  <target name="publish-reports" depends="reports" description="send project reports to web server">
+  	<tar destfile="target/project-reports.tz" compression="gzip">
+  		<tarfileset dir="target">
+  			<include name="project-reports/**/*"/>
+  		</tarfileset>
+  	</tar>
+  	<input message="login name for ${webserver}:" addproperty="scp.login"/>
+  	<input message="password for ${webserver}:" addproperty="scp.password"/>
+  	<scp file="target/project-reports.tz" sftp="true" 
+  	  remoteToDir="${scp.login}:${scp.password}@${webserver}:${website.path}"/>
+  	<sshexec host="${webserver}" username="${scp.login}" password="${scp.password}" 
+  		   command="cd ${website.path}; tar xzf project-reports.tz"/>
+  </target>
+	  
+
+  <target name="package" depends="run-tests" description="prepare the Jar file containing the binary library">
+    <jar destfile="target/${projectName}.jar">
+      <fileset dir="${compile.dest}">
+      </fileset>
+      <zipgroupfileset dir="lib">
+      	<include name="*.jar"/>
+      	<exclude name="*-src-*.jar"/>
+      	<exclude name="*-sources.jar"/>
+      	<exclude name="junit*.jar"/>
+      	<exclude name="hamcrest*.jar"/>
+      </zipgroupfileset>
+      <fileset dir="${compile.src}"/>
+      <manifest>
+	     <attribute name="Main-Class" value="edu.odu.cs.AlgAE.Demos.SortingDriver" />
+      </manifest>
+    </jar>
+
+    <jar destfile="target/${projectName}-src.jar">
+      <fileset dir="${compile.src}">
+      </fileset>
+    </jar>
+  	<!--
+    <zip basedir="${data.dest}" destfile="${target}/${projectName}-${version}.zip" />
+    <copy toDir="${target}/lib" overwrite="false" flatten="true">
+      <fileset refid="ThirdPartyJarsToDeploy"/>
+    </copy>
+    -->
+  </target>
+
+  <target name="pre-publish" depends="package,install-ivy">
+  	<ivy:resolve/>
+  </target>
+  	
+  <target name="publish-local" depends="pre-publish" description="--> publish this project in the local ivy repository">
+	    <ivy:publish resolver="local"
+	    	 pubrevision="${version}"
+	    	 status="release"
+			 update="true"
+			 overwrite="true"
+			 publishivy="true"
+             forcedeliver="true">
+	      <artifacts pattern="target/[artifact].[ext]"/>
+	    </ivy:publish>
+	</target>
+
+  <target name="publish" depends="publish-local" description="Publish the binary library on the Forge350 repository">
+    <ivy:publish resolver="Forge350Publish"
+         pubrevision="${version}"
+		 status="release"
+		 update="true"
+		 overwrite="true"
+		 publishivy="true">
+      <artifacts pattern="target/[artifact].[ext]"/>
+    </ivy:publish>
+  </target>
+
+  <target name="clean" description="Remove all normal build products">
+    <delete dir="target"/>
+  </target>
+
+  <target name="cleaner" depends="clean" description="Remove all normal build products and all downloaded 3rd party libraries">
+    <delete dir="lib"/>
+  </target>
+
+  <target name="cleanest" depends="cleaner" 
+	  description="Remove all normal build products, all downloaded 3rd party libraries, and the Ivy jars">
+    <delete dir="ivy"/>
+  </target>
+
+
+
+</project>

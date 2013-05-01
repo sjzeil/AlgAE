@@ -1,0 +1,16 @@
+<ivy-module version="2.0">
+    <info organisation="edu.odu.cs.algae" module="${projectName}"/>
+    <configurations>
+    	<conf name="release"  description="provide compiled binary"/>
+    	<conf name="dev" extends="release" description="development: also provides source code jar"/>
+    </configurations>
+    <publications>
+       <artifact name="${projectName}" conf="release" type="jar" ext="jar"/>
+       <artifact name="${projectName}-src" conf="dev" type="sources" ext="jar"/>
+    </publications>
+    <dependencies>
+	   <dependency org="junit" name="junit" rev="4.11"/>
+       <dependency org="edu.odu.cs.algae" name="algae-client" rev="latest.integration"/>
+       <dependency org="edu.odu.cs.algae" name="algae-jserver" rev="latest.integration"/>
+	</dependencies>
+</ivy-module>
