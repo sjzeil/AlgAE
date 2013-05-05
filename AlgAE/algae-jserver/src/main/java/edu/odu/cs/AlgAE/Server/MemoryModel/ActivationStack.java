@@ -10,6 +10,7 @@ import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.LocalIdentifier;
 import edu.odu.cs.AlgAE.Server.Animations.AnimationContext;
 import edu.odu.cs.AlgAE.Server.Animations.ContextAware;
+import edu.odu.cs.AlgAE.Server.Animations.LocalJavaAnimation;
 import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
 import edu.odu.cs.AlgAE.Server.Rendering.CompoundRenderer;
 import edu.odu.cs.AlgAE.Server.Rendering.DefaultRenderer;
@@ -76,11 +77,12 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 			stack.add(new ActivationRecord(thisObj, "*main*", this));
 		}
 		ArrayList<StackTraceElement> trimmedStack = new ArrayList<StackTraceElement>();
-		for (int i = 0; i < trace.length - 2; ++i) {
+		for (int i = 0; i < trace.length - 1; ++i) {
 			StackTraceElement ste = trace[i];
 			String className = ste.getClassName();
 			if (!className.equals(ActivationStack.class.getName()) &&
 					!className.equals(MemoryModel.class.getName()) &&
+					!className.equals(LocalJavaAnimation.class.getName()) &&
 					!className.equals(java.lang.Thread.class.getName())
 					) {
 						trimmedStack.add (ste);

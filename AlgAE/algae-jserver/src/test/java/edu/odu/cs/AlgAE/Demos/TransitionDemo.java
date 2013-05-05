@@ -7,6 +7,7 @@ import java.util.List;
 
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.Animations.LocalJavaAnimation;
+import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
@@ -136,28 +137,31 @@ public class TransitionDemo extends LocalJavaAnimation {
 		register ("createObject", new MenuFunction() {
 			@Override
 			public void selected() {
+				ActivationRecord ar = activate(root);
 				root.left = root.right = null;;
-				activate(root).breakHere("change");
+				ar.breakHere("change");
 				root.left = new Node("A", null, null);
-				activate(root).breakHere("changed");
+				ar.breakHere("changed");
 				root.right = new Node("B", root.left, null);
-				activate(root).breakHere("changed again");
+				ar.breakHere("changed again");
 			}
 		});
 		
 		register ("shiftPointers", new MenuFunction() {
 			@Override
 			public void selected() {
+				ActivationRecord ar = activate(root);
 				root.left = root.right = null;
+				ar.breakHere("start");
 				Node A = new Node("A", null, null);
 				root.left = A;
 				Node B = new Node("B", root.left, null);
 				root.right = B;
-				activate(root).breakHere("change");
+				ar.breakHere("change");
 				root.left = B;
-				activate(root).breakHere("changed");
+				ar.breakHere("changed");
 				root.right = A;
-				activate(root).breakHere("changed again");
+				ar.breakHere("changed again");
 			}
 		});
 

@@ -47,6 +47,8 @@ public class ActivationRecord implements ContextAware, CanBeRendered<ActivationR
 	private Stack<ScopeImpl> scopes;
 	private List<ObjectRenderer<?>> objectRenderers;
 	
+	private ActivationRenderer renderer;
+	
 	public ActivationRecord (Object thisObj, String function, ActivationStack stack) {
 		this.stack = stack;
 		thisObject = thisObj;
@@ -62,6 +64,7 @@ public class ActivationRecord implements ContextAware, CanBeRendered<ActivationR
 		scopes = new Stack<ScopeImpl>();
 		scopes.push(new ScopeImpl());
 		objectRenderers  = new LinkedList<ObjectRenderer<?>>();
+		renderer = new ActivationRenderer();
 	}
 	
 	
@@ -106,7 +109,7 @@ public class ActivationRecord implements ContextAware, CanBeRendered<ActivationR
 
 	@Override
 	public Renderer<ActivationRecord> getRenderer() {
-		return new ActivationRenderer();
+		return renderer;
 	}
 
 
@@ -250,6 +253,15 @@ public class ActivationRecord implements ContextAware, CanBeRendered<ActivationR
 	
 
 	private class ActivationRenderer implements Renderer<ActivationRecord> {
+		
+		private FunctionHeader functionHeader;
+		private FunctionLocals locals;
+		
+		
+		public ActivationRenderer() {
+			functionHeader = new FunctionHeader();
+			locals = new FunctionLocals();
+		}
 
 		@Override
 		public Color getColor(ActivationRecord obj) {
@@ -262,11 +274,12 @@ public class ActivationRecord implements ContextAware, CanBeRendered<ActivationR
 			if (obj != getStack().topOfStack()) {
 				components = getComponents(false);
 			} else {
-				Component header = new Component(new FunctionHeader(this));
+				Component header = new Component(functionHeader);
 				components.add (header);
 				if (getLocals().size() > 0) {
-					Component locals = new Component(new FunctionLocals(getLocals()));
-					components.add (locals);
+					locals.setLocals(getLocals());
+					Component localsComp = new Component(locals);
+					components.add (localsComp);
 				}
 			}
 			return components;
@@ -310,12 +323,12 @@ public class ActivationRecord implements ContextAware, CanBeRendered<ActivationR
 			return "";
 		}
 
+
+
+
 		public class FunctionHeader implements CanBeRendered<FunctionHeader>, Renderer<FunctionHeader> {
 
-			private ActivationRenderer arec;
-			
-			public FunctionHeader(ActivationRenderer ar) {
-				arec = ar;
+			public FunctionHeader() {
 			}
 
 			@Override
@@ -330,7 +343,7 @@ public class ActivationRecord implements ContextAware, CanBeRendered<ActivationR
 
 			@Override
 			public List<Component> getComponents(FunctionHeader obj) {
-				return arec.getComponents(true);
+				return ActivationRenderer.this.getComponents(true);
 			}
 
 			@Override
@@ -349,13 +362,16 @@ public class ActivationRecord implements ContextAware, CanBeRendered<ActivationR
 			}
 
 		}
+
 	}
+
 
 	public class FunctionLocals implements CanBeRendered<FunctionLocals>, Renderer<FunctionLocals> {
 
 		private List<Component> locals;
 		
-		public FunctionLocals(List<Component> locals) {
+		
+		public void setLocals(List<Component> locals) {
 			this.locals = locals;
 		}
 
