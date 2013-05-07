@@ -19,7 +19,7 @@ public class ArrayDemo extends LocalJavaAnimation {
 		return "This is a\n demo of arrays and array-like structures.";
 	}
 
-	private int[] a1;
+	private Integer[] a1;
 	private String[] a2;
 	private double[][] a3;
 	
@@ -36,7 +36,7 @@ public class ArrayDemo extends LocalJavaAnimation {
 
 			@Override
 			public void selected() {
-				a1 = new int[8];
+				a1 = new Integer[8];
 				for (int i = 0; i < a1.length; ++i)
 					a1[i] = i;
 				a2 = new String[4];
@@ -60,6 +60,19 @@ public class ArrayDemo extends LocalJavaAnimation {
 				arec.var("a1", a1).var("i",new Index(1,a1)).breakHere("show arrays 1");			
 			}
 		});
+		
+		register ("one array", new MenuFunction() {
+			@Override
+			public void selected() {
+				globalVar("a1g", a1);
+				ActivationRecord arec = LocalJavaAnimation.activate(ArrayDemo.class);
+				//arec.var("a1", a1);
+				arec.breakHere("show arrays 1");
+				arec.breakHere("show arrays 2");
+				arec.breakHere("show arrays 3");
+			}
+		});
+
 
 		register ("arrays", new MenuFunction() {
 			@Override
@@ -72,8 +85,10 @@ public class ArrayDemo extends LocalJavaAnimation {
 				arec.pushScope();
 				arec.var("a3",a3);
 				arec.breakHere("show arrays 3");
+				Index index = new Index(0, a1, a2);
 				for (int i = 0; i < Math.min(a1.length, a2.length); ++i) {
-					arec.var("i",new Index(i,a1,a2));
+					index.set(i);
+					arec.var("i",index);
 					arec.breakHere("looking at " + i);
 				}
 				arec.popScope();
