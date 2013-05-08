@@ -1,9 +1,14 @@
 package edu.odu.cs.AlgAE.Server;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import edu.odu.cs.AlgAE.Common.Applets.AppletLifetimeSupport;
@@ -210,10 +215,33 @@ public class Server implements ContextAware, AppletLifetimeSupport
 	{
 		String contents = "Could not load " + fileName + "\n";
 		
-		String resourceName = "/" + container.getPackage().getName().replace(".", "/") + "/" + fileName;
+		String resourceName = "/" + fileName.replace('\\', '/');
 		
 		InputStream resourceIn = container.getResourceAsStream(resourceName);
 		//System.err.println ("resourceIn: " + resourceIn);
+		
+		if (resourceIn == null) {
+			// Should not happen in actual operation (running from a Jar), but
+			// is common when running/debugging from Eclipse or other IDEs
+			String classPath = System.getProperty("java.class.path");
+			String[] cpDirectories = classPath.split(System.getProperty("path.separator"));
+			ArrayList<String> directories = new ArrayList<String>(Arrays.asList(cpDirectories));
+			directories.add("src/main/java".replace('/', File.separatorChar));
+			directories.add("src/test/java".replace('/', File.separatorChar));
+			for (String dir: directories) {
+				File base = new File(dir);
+				File sourceFile = new File(base, fileName);
+				if (sourceFile.exists()) {
+					try {
+						resourceIn = new FileInputStream(sourceFile);
+						break;
+					} catch (FileNotFoundException e) {
+						resourceIn = null;
+					}
+				}
+			}
+		}
+		
 		if (resourceIn != null) {
 			StringBuffer contentBuf = new StringBuffer();
 			BufferedReader in = new BufferedReader (new InputStreamReader(resourceIn));

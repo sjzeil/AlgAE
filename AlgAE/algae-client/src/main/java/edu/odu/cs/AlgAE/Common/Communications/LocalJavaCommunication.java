@@ -21,8 +21,8 @@ public class LocalJavaCommunication implements ClientProxy, ServerCommunications
 	
 	private BlockingQueue<ClientMessage> clientMessages;
 	private BlockingQueue<ServerMessage> serverMessages;
-	private boolean debugSend = true;
-	private boolean debugReceive = true;
+	private boolean debugSend = false;
+	private boolean debugReceive = false;
 	private AppletLifetimeSupport localServer;
 	
 	
