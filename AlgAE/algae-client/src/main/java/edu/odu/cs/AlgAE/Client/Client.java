@@ -15,6 +15,8 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -23,6 +25,7 @@ import java.util.List;
 import javax.help.CSH;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
+import javax.help.HelpSetException;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -150,20 +153,38 @@ public class Client extends AppletMenuSupport {
 		JMenuItem helpItem = new JMenuItem ("Help");
 		helpMenu.add (helpItem);
 
-		String helpHS = "Help/helpset.hs";
+		String helpHS = "edu/odu/cs/AlgAE/Client/Help/helpset.hs";
 		ClassLoader cl = Client.class.getClassLoader();
-		try {
-			URL hsURL = HelpSet.findHelpSet(cl, helpHS);
-			hs = new HelpSet(null, hsURL);
-		} catch (Exception ee) {
-			System.err.println( "HelpSet " + ee.getMessage());
+		System.err.println ("Class loader: " + cl);
+		URL hsURL = HelpSet.findHelpSet(cl, helpHS);
+		if (hsURL == null) {
+			// Most likely indicates we are running from an IDE rather than
+			// from a fully packaged JAR
+			String fileName = "src/main/resources/" + helpHS;
+			fileName = fileName.replace('/', File.separatorChar);
+			File possibleHelp = new File(fileName);
+			if (possibleHelp.exists())
+				try {
+					hsURL = possibleHelp.toURI().toURL();
+				} catch (MalformedURLException e1) {
+					System.err.println ("Could not convert " + fileName + " to url: " + e1);
+				}
 		}
-		if (hs != null) {
-			hb = hs.createHelpBroker();
+		if (hsURL != null) {
+			try {
+				hs = new HelpSet(null, hsURL);
+			} catch (HelpSetException e1) {
+				System.err.println("Problem loading help set from " + hsURL + ": " + e1);
+				e1.printStackTrace();
+			}
+			if (hs != null) {
+				hb = hs.createHelpBroker();
 
-			helpItem.addActionListener(new CSH.DisplayHelpFromSource (hb));
+				helpItem.addActionListener(new CSH.DisplayHelpFromSource (hb));
+			}
 		}
-		
+		else 
+			System.err.println ("**error: Could not locate help set files");
 		
 		JMenuItem aboutItem = new JMenuItem ("About AlgAE");
 		helpMenu.add (aboutItem);
