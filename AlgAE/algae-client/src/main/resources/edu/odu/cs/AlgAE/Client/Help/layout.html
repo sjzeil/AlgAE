@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE>layout</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.2  (Linux)">
+	<META NAME="CREATED" CONTENT="0;0">
+	<META NAME="CHANGEDBY" CONTENT="Steven Zeil">
+	<META NAME="CHANGED" CONTENT="20100702;12215200">
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<H1>Layout</H1>
+<P>The basic AlgAE window has three main components:</P>
+<P><IMG SRC="../images/AlgAE_layout.png" NAME="graphics1" ALIGN=LEFT WIDTH=741 HEIGHT=470 BORDER=0><BR><BR>
+</P>
+<OL>
+	<LI><P>The <I>drawing area</I> shows a picture of the data
+	structures being manipulated by the algorithm as it is running. Each
+	data object is portrayed as a box. Pointers or references between
+	objects are drawn as arrows.<BR><BR>AlgAE tries to arrange the boxes
+	on the page so that the interconnections between operations can be
+	perceived easily. If you don't like the arrange, you can move boxes
+	around by clicking on a box and dragging it to a new location.<BR>
+	<BR>Most animations will have a special object in the upper left
+	corner. This represents the <I>call stack</I> (a.k.a. the <I>activation
+	stack</I>) showing all function calls that are active at the moment,
+	including the parameters passed to those calls.<BR><BR>If the
+	picture of the data extends past the edges of the drawing area, then
+	scroll bars will appear that will allow you to move around the
+	viewing space.  You can also use the <I>zoom</I> control to zoom in
+	and out on the data picture.</P>
+	<LI><P>The <I>code area</I> shows the source code for the algorithm
+	that is running. The current line of code about to be executed is
+	highlighted in red.  You can use the scroll bars to view other parts
+	of the source code file. If the code being executed is split among
+	multiple files, you can use the selector at the bottom to look at
+	whichever file you want.</P>
+	<LI><P>The <I>I/O area</I> shows any output written by the code to
+	the standard output (i.e., cout in C++ or System.out in Java) and
+	has a text entry box at the bottom in which you can type any input
+	to be supplied to standard input (i.e., cin in C++ or System.in in
+	Java)</P>
+</OL>
+<P>The borders separating these 3 areas can be dragged from left to
+right or up and down to re-arrange the amount of space used for each
+area. For example, many algorithms will make little use of standard
+I/O, so you might want to give more room to the code area.</P>
+</BODY>
+</HTML>
