@@ -1,5 +1,5 @@
 <ivy-module version="2.0">
-    <info organisation="edu.odu.cs.algae" module="${projectName}"/>
+    <info organisation="${organization}" module="${projectName}"/>
     <configurations>
     	<conf name="release"  description="provide compiled binary"/>
     	<conf name="dev" extends="release" description="development: also provides source code jar"/>

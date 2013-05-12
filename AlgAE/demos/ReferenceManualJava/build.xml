@@ -10,6 +10,7 @@
   </description>
 
   <property name="projectName" value="algae-jrefman" />
+  <property name="organization" value="edu.odu.cs.algae" />
   <property name="version" value="4.0-SNAPSHOT"/>
 
   <tstamp>
@@ -36,6 +37,7 @@
   <property name="reports.dir" location="target/project-reports/${version}" />	
   <property name="webserver" value="forge350.cs.odu.edu"/>
   <property name="website.path" value="/var/lib/gforge/chroot/home/groups/extract-core/htdocs/"/>
+  <property name="deploy.dest" location="/home/zeil/public_html/AlgAE/$projectName}"/>
   <property name="keystore" value="myTestKey"/>
 
 
@@ -284,7 +286,20 @@
   	<input message="Please enter password for keystore ${keystore}:" addproperty="keystore.password" />
 
   	<signjar jar="target/${projectName}.jar" alias="${keystore}" storepass="${keystore.password}" verbose="true"/>
-
+  	
+  	
+  	<copy toDir="target">
+  		<fileset dir="src/main/data">
+  			<include name="**/*.html"/>
+  			<include name="**/*.jnlp"/>
+  		</fileset>
+  		<filterset>
+  			<filter token="JAR" value="${projectName}.jar"/>
+  			<filter token="PROJECT" value="${projectName}"/>
+  			<filter token="ORG" value="${organization}"/>
+  		</filterset>
+  	</copy>
+  	
     <jar destfile="target/${projectName}-src.jar">
       <fileset dir="${compile.src}">
       </fileset>
@@ -295,6 +310,16 @@
       <fileset refid="ThirdPartyJarsToDeploy"/>
     </copy>
     -->
+  </target>
+	
+	
+  <target name="deploy" depends="package">
+  	<mkdir dir="${deployment.dest}"/>
+  	<copy todir="${deployment.dest}">
+  		<fileset dir="target" includes="${projectName}.jar"/>
+  		<fileset dir="target" includes="*.html"/>
+  		<fileset dir="target" includes="*.jnlp"/>
+  	</copy>
   </target>
 
   <target name="pre-publish" depends="package,install-ivy">

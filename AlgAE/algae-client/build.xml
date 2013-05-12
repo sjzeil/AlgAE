@@ -10,7 +10,7 @@
   </description>
 
   <property name="projectName" value="algae-client" />
-  <property name="version" value="4.0"/>
+  <property name="version" value="4.0-SNAPSHOT"/>
 
   <tstamp>
     <format property="build.date" pattern="yyyy-MM-dd" locale="en,US" />

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+"> <!--  codebase="@JAR@" href="sorting.jnlp"> -->
+    <information>
+        <title>Sorting Demo from Reference Manual</title>
+        <vendor>ODU CS AlgAE project</vendor>
+    </information>
+    <resources>
+        <!-- Application Resources -->
+        <j2se version="1.6+"
+              href="http://java.sun.com/products/autodl/j2se"/>
+        <jar href="@JAR@" main="true" />
+    </resources>
+    <application-desc
+         name="Sorting Demo from Reference Manual"
+         main-class="edu.odu.cs.AlgAE.Demos.SortingDriver"
+         width="600"
+         height="400">
+     </application-desc>
+     <update check="background"/>
+</jnlp>
