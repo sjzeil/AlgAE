@@ -10,7 +10,7 @@
   </description>
 
   <property name="projectName" value="algae-jrefman" />
-  <property name="version" value="4.0"/>
+  <property name="version" value="4.0-SNAPSHOT"/>
 
   <tstamp>
     <format property="build.date" pattern="yyyy-MM-dd" locale="en,US" />
@@ -36,6 +36,7 @@
   <property name="reports.dir" location="target/project-reports/${version}" />	
   <property name="webserver" value="forge350.cs.odu.edu"/>
   <property name="website.path" value="/var/lib/gforge/chroot/home/groups/extract-core/htdocs/"/>
+  <property name="keystore" value="myTestKey"/>
 
 
   <!-- === Unit Test Setup === -->
@@ -279,6 +280,10 @@
 	     <attribute name="Main-Class" value="edu.odu.cs.AlgAE.Demos.SortingDriver" />
       </manifest>
     </jar>
+  	
+  	<input message="Please enter password for keystore ${keystore}:" addproperty="keystore.password" />
+
+  	<signjar jar="target/${projectName}.jar" alias="${keystore}" storepass="${keystore.password}" verbose="true"/>
 
     <jar destfile="target/${projectName}-src.jar">
       <fileset dir="${compile.src}">
