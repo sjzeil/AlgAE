@@ -25,6 +25,33 @@ public class ArrayDemo extends LocalJavaAnimation {
 	
 
 
+	void animatedFunction (Integer[] param1) {
+		ActivationRecord arec = LocalJavaAnimation.activate(ArrayDemo.class);
+		arec.refParam("param1", param1);
+		arec.breakHere("about to call");
+		animatedFunction2(param1);
+		arec.breakHere("called");
+	}
+
+	void animatedFunction2 (Integer[] param1) {
+		ActivationRecord arec = LocalJavaAnimation.activate(ArrayDemo.class);
+		arec.refParam("param1", a1);
+		arec.breakHere("show arrays 1");
+		arec.var("a2",a2);
+		arec.breakHere("show arrays 2");
+		arec.pushScope();
+		arec.var("a3",a3);
+		arec.breakHere("show arrays 3");
+		Index index = new Index(0, a1, a2);
+		for (int i = 0; i < Math.min(a1.length, a2.length); ++i) {
+			index.set(i);
+			arec.var("i",index);
+			arec.breakHere("looking at " + i);
+		}
+		arec.popScope();
+		arec.breakHere("show arrays 2 again");
+	}
+	
 	
 	
 	@Override
@@ -55,8 +82,7 @@ public class ArrayDemo extends LocalJavaAnimation {
 		register ("index", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationStack stack = getMemoryModel().getActivationStack();
-				ActivationRecord arec = stack.activate(ArrayDemo.class);
+				ActivationRecord arec = LocalJavaAnimation.activate(ArrayDemo.class);
 				arec.var("a1", a1).var("i",new Index(1,a1)).breakHere("show arrays 1");			
 			}
 		});
@@ -77,22 +103,7 @@ public class ArrayDemo extends LocalJavaAnimation {
 		register ("arrays", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord arec = LocalJavaAnimation.activate(ArrayDemo.class);
-				arec.var("a1", a1);
-				arec.breakHere("show arrays 1");
-				arec.var("a2",a2);
-				arec.breakHere("show arrays 2");
-				arec.pushScope();
-				arec.var("a3",a3);
-				arec.breakHere("show arrays 3");
-				Index index = new Index(0, a1, a2);
-				for (int i = 0; i < Math.min(a1.length, a2.length); ++i) {
-					index.set(i);
-					arec.var("i",index);
-					arec.breakHere("looking at " + i);
-				}
-				arec.popScope();
-				arec.breakHere("show arrays 2 again");
+				animatedFunction(a1);
 			}
 		});
 

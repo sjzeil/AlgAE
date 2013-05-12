@@ -73,26 +73,32 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 	public ActivationRecord activate (Object thisObj)
 	{
 		StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+		// Last two elements in the trace will be the Server thread run() function
+		// and the selected() function from the Algorithm menu. These are not included
+		// in the model.
+		int firstUserCall = trace.length - 2;
 		if (stack.size() == 0) {
 			stack.add(new ActivationRecord(thisObj, "*main*", this));
 		}
-		ArrayList<StackTraceElement> trimmedStack = new ArrayList<StackTraceElement>();
-		for (int i = 0; i < trace.length - 1; ++i) {
-			StackTraceElement ste = trace[i];
+		// The most recent function to be included in the model will 
+		// be the one that called this function we are in now
+		int lastUserCall = 0;
+		while (true) {
+			StackTraceElement ste = trace[lastUserCall];
 			String className = ste.getClassName();
-			if (!className.equals(ActivationStack.class.getName()) &&
-					!className.equals(MemoryModel.class.getName()) &&
-					!className.equals(LocalJavaAnimation.class.getName()) &&
-					!className.equals(java.lang.Thread.class.getName())
-					) {
-						trimmedStack.add (ste);
-					}		
+			if (className.equals(LocalJavaAnimation.class.getName())) {
+				break;
+			}
+			++lastUserCall;
 		}
-		String[] newStack = new String[trimmedStack.size() + 1];
-		for (int i = 0; i < trimmedStack.size(); ++i) {
-			newStack[i+1] = trimmedStack.get(trimmedStack.size() - i - 1).getMethodName(); 
-		}
+		++lastUserCall;
+		String[] newStack = new String[firstUserCall - lastUserCall + 1];
 		newStack[0] = "*main*";
+		int j = 1;
+		for (int call = firstUserCall - 1; call >= lastUserCall; call--) {
+			newStack[j] = trace[call].getMethodName();
+			++j;
+		}
 		
 		/**
 		 * If we already have calls on the stack, remove any that we appear to have
