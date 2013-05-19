@@ -321,7 +321,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 
 
 		/* (non-Javadoc)
-		 * @see edu.odu.cs.zeil.AlgAE.DataModel.Renderer#getColor(java.lang.Object)
+		 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getColor(java.lang.Object)
 		 */
 		@Override
 		public Color getColor(CallStackRendering obj) {
@@ -329,7 +329,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 		}
 
 		/* (non-Javadoc)
-		 * @see edu.odu.cs.zeil.AlgAE.DataModel.Renderer#getComponents(java.lang.Object)
+		 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getComponents(java.lang.Object)
 		 */
 		@Override
 		public List<Component> getComponents(CallStackRendering obj) {
@@ -345,7 +345,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 		}
 
 		/* (non-Javadoc)
-		 * @see edu.odu.cs.zeil.AlgAE.DataModel.Renderer#getConnections(java.lang.Object)
+		 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getConnections(java.lang.Object)
 		 */
 		@Override
 		public List<Connection> getConnections(CallStackRendering obj) {
@@ -353,7 +353,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 		}
 
 		/* (non-Javadoc)
-		 * @see edu.odu.cs.zeil.AlgAE.DataModel.Renderer#getMaxComponentsPerRow(java.lang.Object)
+		 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getMaxComponentsPerRow(java.lang.Object)
 		 */
 		@Override
 		public int getMaxComponentsPerRow(CallStackRendering obj) {
@@ -365,7 +365,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 		}
 
 		/* (non-Javadoc)
-		 * @see edu.odu.cs.zeil.AlgAE.DataModel.Renderer#getValue(java.lang.Object)
+		 * @see eedu.odu.cs.AlgAE.Server.Rendering.Renderer#getValue(java.lang.Object)
 		 */
 		@Override
 		public String getValue(CallStackRendering obj) {

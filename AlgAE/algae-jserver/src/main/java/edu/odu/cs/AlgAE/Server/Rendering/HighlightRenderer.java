@@ -42,7 +42,7 @@ public class HighlightRenderer<T> implements ObjectRenderer<T> {
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.odu.cs.zeil.AlgAE.DataModel.ObjectRenderer#appliesTo()
+	 * @see edu.odu.cs.AlgAE.Server.Rendering.ObjectRenderer#appliesTo()
 	 */
 	@Override
 	public T appliesTo() {

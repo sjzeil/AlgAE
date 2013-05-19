@@ -36,7 +36,7 @@ public class CompoundRenderer<T> implements Renderer<T> {
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.odu.cs.zeil.AlgAE.DataModel.Renderer#getColor(java.lang.Object)
+	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getColor(java.lang.Object)
 	 */
 	@Override
 	public Color getColor(T obj) {
@@ -49,7 +49,7 @@ public class CompoundRenderer<T> implements Renderer<T> {
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.odu.cs.zeil.AlgAE.DataModel.Renderer#getComponents()
+	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getComponents()
 	 */
 	@Override
 	public List<Component> getComponents(T obj) {
@@ -62,7 +62,7 @@ public class CompoundRenderer<T> implements Renderer<T> {
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.odu.cs.zeil.AlgAE.DataModel.Renderer#getConnections()
+	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getConnections()
 	 */
 	@Override
 	public List<Connection> getConnections(T obj) {
@@ -75,7 +75,7 @@ public class CompoundRenderer<T> implements Renderer<T> {
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.odu.cs.zeil.AlgAE.DataModel.Renderer#getMaxComponentsPerRow(java.lang.Object)
+	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getMaxComponentsPerRow(java.lang.Object)
 	 */
 	@Override
 	public int getMaxComponentsPerRow(T obj) {
@@ -88,7 +88,7 @@ public class CompoundRenderer<T> implements Renderer<T> {
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.odu.cs.zeil.AlgAE.DataModel.Renderer#getValue(java.lang.Object)
+	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getValue(java.lang.Object)
 	 */
 	@Override
 	public String getValue(T obj) {

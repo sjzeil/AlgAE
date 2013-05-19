@@ -24,7 +24,7 @@ public class ConnectionPoint implements BoundedRegion {
 	}
 	
 	/* (non-Javadoc)
-	 * @see edu.odu.cs.zeil.AlgAE.Coordinates.BoundedRegion#getBBox()
+	 * @see edu.odu.cs.AlgAE.Client.Layout.Coordinates.BoundedRegion#getBBox()
 	 */
 	@Override
 	public Rectangle2D getBBox() {

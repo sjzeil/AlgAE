@@ -10,7 +10,7 @@
   </description>
 
   <property name="projectName" value="algae-jserver" />
-  <property name="version" value="4.0-SNAPSHOT"/>
+  <property name="version" value="4.0"/>
 
   <tstamp>
     <format property="build.date" pattern="yyyy-MM-dd" locale="en,US" />
@@ -86,30 +86,20 @@
 
   <target name="retrieve-ivy" depends="install-ivy,install-jsch" unless="skip.download" description="Retrieve library dependencies">
 	  <ivy:retrieve/>
+	  <ivy:cachepath pathid="ivy.path" conf="release,dev" />
   </target>
 
   <target name="resolve-ivy" depends="retrieve-ivy" description="Resolve library dependencies">
-  	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+  	<!--taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
   		<classpath refid="test.classpath"/>
-  	</taskdef>
+  	</taskdef -->
   </target>
 
   <!-- === Class Paths for Compilation and Execution === -->
 
   <!-- Classpath for compilation of src/main/java -->
-  <path id="compile-datagen.classpath">
-    <pathelement location="${compile.dest}"/>
-    <pathelement location="../generatedSource/target/classes"/>
-    <fileset dir="${thirdPartyLibs}">
-      <filename name="*.jar"/>
-    </fileset>
-  </path>
-
-  <!-- Classpath for compilation of src/main/java -->
   <path id="compile.classpath">
-    <fileset dir="${thirdPartyLibs}/">
-      <filename name="*.jar" />
-    </fileset>
+  	<path refid="ivy.path"/>
   </path>
 	
  
@@ -117,20 +107,15 @@
   <path id="test-compile.classpath">
     <pathelement location="${compile.dest}" />
     <pathelement location="${test.dest}" />
-    <fileset dir="${thirdPartyLibs}/">
-      <filename name="*.jar" />
-    </fileset>
+  	<path refid="ivy.path"/>
   </path>
   
+	
   <!-- Classpath for execution of Unit tests -->
   <path id="test.classpath">
     <pathelement location="${compile.dest}" />
     <pathelement location="${test.dest}" />
-    <fileset dir="${thirdPartyLibs}/">
-    	<include name="*.jar" />
-    	<exclude name="*-sources.jar" />
-    	<exclude name="*-javadoc.jar" />
-    </fileset>
+  	<path refid="ivy.path"/>
   </path>
 
 
@@ -157,13 +142,13 @@
   	description="Perform unit testing">
     <mkdir dir="${test.reports}" />
   	<mkdir dir="${test.reports}/details"/>
-    <junit printsummary="on" haltonfailure="true" fork="true" forkmode="perTest">
-      <classpath refid="test.classpath" />
-      <jvmarg value="-Djava.library.path=${thirdPartyLibs}" />
+  	<junit printsummary="on" haltonfailure="false" fork="true" forkmode="perTest">
+      <classpath refid="test.classpath"/>
+      <!-- jvmarg value="-Djava.library.path=${thirdPartyLibs}" / -->
       <formatter type="xml" />
       
       <batchtest todir="${test.reports}/details">
-	<fileset refid="unitTestsExpectedToPass" />
+	    <fileset refid="unitTestsExpectedToPass" />
       </batchtest>
     </junit>
   </target>

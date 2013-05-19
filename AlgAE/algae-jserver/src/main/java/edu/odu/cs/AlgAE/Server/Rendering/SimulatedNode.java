@@ -79,7 +79,7 @@ public class SimulatedNode implements CanBeRendered<SimulatedNode>, Renderer<Sim
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.odu.cs.zeil.AlgAE.Snapshot.Rendering.Renderer#getColor(java.lang.Object)
+	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getColor(java.lang.Object)
 	 */
 	@Override
 	public Color getColor(SimulatedNode obj) {
@@ -87,7 +87,7 @@ public class SimulatedNode implements CanBeRendered<SimulatedNode>, Renderer<Sim
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.odu.cs.zeil.AlgAE.Snapshot.Rendering.Renderer#getComponents(java.lang.Object)
+	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getComponents(java.lang.Object)
 	 */
 	@Override
 	public List<Component> getComponents(SimulatedNode obj) {
@@ -100,7 +100,7 @@ public class SimulatedNode implements CanBeRendered<SimulatedNode>, Renderer<Sim
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.odu.cs.zeil.AlgAE.Snapshot.Rendering.Renderer#getConnections(java.lang.Object)
+	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getConnections(java.lang.Object)
 	 */
 	@Override
 	public List<Connection> getConnections(SimulatedNode obj) {
@@ -119,7 +119,7 @@ public class SimulatedNode implements CanBeRendered<SimulatedNode>, Renderer<Sim
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.odu.cs.zeil.AlgAE.Snapshot.Rendering.Renderer#getMaxComponentsPerRow(java.lang.Object)
+	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getMaxComponentsPerRow(java.lang.Object)
 	 */
 	@Override
 	public int getMaxComponentsPerRow(SimulatedNode obj) {
@@ -127,7 +127,7 @@ public class SimulatedNode implements CanBeRendered<SimulatedNode>, Renderer<Sim
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.odu.cs.zeil.AlgAE.Snapshot.Rendering.CanBeRendered#getRenderer()
+	 * @see eedu.odu.cs.AlgAE.Server.Rendering.CanBeRendered#getRenderer()
 	 */
 	@Override
 	public Renderer<SimulatedNode> getRenderer() {

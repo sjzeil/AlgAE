@@ -32,7 +32,7 @@ public class GlassBox implements CanBeRendered<GlassBox>, Renderer<GlassBox> {
 	}
 	
 	/* (non-Javadoc)
-	 * @see edu.odu.cs.zeil.AlgAE.Snapshot.Rendering.CanBeRendered#getRenderer()
+	 * @see edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered#getRenderer()
 	 */
 	@Override
 	public Renderer<GlassBox> getRenderer() {
@@ -40,7 +40,7 @@ public class GlassBox implements CanBeRendered<GlassBox>, Renderer<GlassBox> {
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.odu.cs.zeil.AlgAE.Snapshot.Rendering.Renderer#getColor(java.lang.Object)
+	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getColor(java.lang.Object)
 	 */
 	@Override
 	public Color getColor(GlassBox obj) {
@@ -48,7 +48,7 @@ public class GlassBox implements CanBeRendered<GlassBox>, Renderer<GlassBox> {
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.odu.cs.zeil.AlgAE.Snapshot.Rendering.Renderer#getComponents(java.lang.Object)
+	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getComponents(java.lang.Object)
 	 */
 	@Override
 	public List<Component> getComponents(GlassBox obj) {
@@ -56,7 +56,7 @@ public class GlassBox implements CanBeRendered<GlassBox>, Renderer<GlassBox> {
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.odu.cs.zeil.AlgAE.Snapshot.Rendering.Renderer#getConnections(java.lang.Object)
+	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getConnections(java.lang.Object)
 	 */
 	@Override
 	public List<Connection> getConnections(GlassBox obj) {
@@ -64,7 +64,7 @@ public class GlassBox implements CanBeRendered<GlassBox>, Renderer<GlassBox> {
 	}
 
 	/* Use space-packing layout
-	 * @see edu.odu.cs.zeil.AlgAE.Snapshot.Rendering.Renderer#getMaxComponentsPerRow(java.lang.Object)
+	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getMaxComponentsPerRow(java.lang.Object)
 	 */
 	@Override
 	public int getMaxComponentsPerRow(GlassBox obj) {
@@ -72,7 +72,7 @@ public class GlassBox implements CanBeRendered<GlassBox>, Renderer<GlassBox> {
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.odu.cs.zeil.AlgAE.Snapshot.Rendering.Renderer#getValue(java.lang.Object)
+	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getValue(java.lang.Object)
 	 */
 	@Override
 	public String getValue(GlassBox obj) {
