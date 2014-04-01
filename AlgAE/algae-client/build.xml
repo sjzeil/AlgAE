@@ -34,8 +34,8 @@
   <property name="test.dest" location="target/test-classes" />
   <property name="test.reports" location="target/test_reports" />
   <property name="reports.dir" location="target/project-reports/${version}" />	
-  <property name="webserver" value="forge350.cs.odu.edu"/>
-  <property name="website.path" value="/var/lib/gforge/chroot/home/groups/extract-core/htdocs/"/>
+  <property name="webserver" value="atria.cs.odu.edu"/>
+  <property name="website.path" value="/home/zeil/public_html/AlgAE/Reports"/>
 
 
   <!-- === Unit Test Setup === -->
@@ -133,13 +133,16 @@
   <target name="compile-source" depends="setup" description="Compile the main source code">
     <mkdir dir="${compile.dest}" />
     <javac srcdir="${compile.src}" destdir="${compile.dest}" classpathref="compile.classpath" 
+    	source="1.7" target="1.7"
 	   debug="true" includeantruntime="false"/>
   </target>
   
   
   <target name="test-compile" depends="compile-source" unless="test.skip" description="Compile unit test code.">
     <mkdir dir="${test.dest}" />
-    <javac srcdir="${test.src}" destdir="${test.dest}" classpathref="test-compile.classpath" debug="true"  includeantruntime="false"/>
+    <javac srcdir="${test.src}" destdir="${test.dest}" classpathref="test-compile.classpath" debug="true"  
+    	source="1.7" target="1.7"
+	    includeantruntime="false"/>
   </target>
 
   <target name="run-tests" depends="test-compile" if="test.src.exists" unless="test.skip"
@@ -282,20 +285,8 @@
   	<ivy:resolve/>
   </target>
   	
-  <target name="publish-local" depends="pre-publish" description="--> publish this project in the local ivy repository">
-	    <ivy:publish resolver="local"
-	    	 pubrevision="${version}"
-	    	 status="release"
-			 update="true"
-			 overwrite="true"
-			 publishivy="true"
-             forcedeliver="true">
-	      <artifacts pattern="target/[artifact].[ext]"/>
-	    </ivy:publish>
-	</target>
-
-  <target name="publish" depends="publish-local" description="Publish the binary library on the Forge350 repository">
-    <ivy:publish resolver="Forge350Publish"
+  <target name="publish" depends="pre-publish" description="Publish the binary library on the Forge350 repository">
+    <ivy:publish resolver="archiva-publish"
          pubrevision="${version}"
 		 status="release"
 		 update="true"
