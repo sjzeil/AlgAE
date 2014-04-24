@@ -1,9 +1,11 @@
+# LICENSE
+
 This Educational Community License (the "License") applies
 to any original work of authorship (the "Original Work") whose owner
 (the "Licensor") has placed the following notice immediately following
 the copyright notice for the Original Work:
 
-Copyright (c) 2011 Steven J Zeil, Old Dominion University
+Copyright (c) 2011-2014 Steven J Zeil, Old Dominion University
 
 Licensed under the Educational Community License version 1.0
 
