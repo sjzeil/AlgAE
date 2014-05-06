@@ -22,7 +22,6 @@
     <ant dir="AlgAE/algae-client" target="build"/>
     <ant dir="AlgAE/algae-jserver" target="build"/>
     <ant dir="AlgAE/algae-referenceManual" target="build"/>
-    <ant dir="AlgAE/demos/FordTopp-BST" target="build"/>
     <ant dir="AlgAE/demos/ReferenceManualJava" target="build"/>
   </target>
   
