@@ -1,5 +1,5 @@
 <project name="AlgAE Java Server" 
-	 default="build" basedir="." 
+	 default="publish-local" basedir="." 
 	 xmlns:ivy="antlib:org.apache.ivy.ant"
 	 xmlns:jacoco="antlib:org.jacoco.ant">
 
@@ -283,6 +283,16 @@
   <target name="pre-publish" depends="package,install-ivy">
   	<ivy:resolve/>
   </target>
+	
+  <target name="publish-local" depends="pre-publish" description="Publish the binary library in the default local repository">
+    <ivy:publish resolver="local"
+         pubrevision="${version}"
+		 overwrite="true"
+		 >
+      <artifacts pattern="target/[artifact].[ext]"/>
+   </ivy:publish>
+  </target>
+
 
   <target name="publish" depends="pre-publish" description="Publish the binary library on the Forge350 repository">
     <ivy:publish resolver="archiva-publish"

@@ -1,5 +1,5 @@
 <project name="AlgAE Client" 
-	 default="build" basedir="." 
+	 default="publish-local" basedir="." 
 	 xmlns:ivy="antlib:org.apache.ivy.ant"
 	 xmlns:jacoco="antlib:org.jacoco.ant">
 
@@ -158,6 +158,16 @@
 	<fileset refid="unitTestsExpectedToPass" />
       </batchtest>
     </junit>
+ 	<mkdir dir="${reports.dir}/junit"/>
+ 	<junitreport todir="${reports.dir}//junit">
+      <fileset dir="${test.reports}/details">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="target/project-reports/junit"
+      	styledir="../junit-stylesheets"
+      />
+    </junitreport>
+
   </target>
   	
   <target name="all-tests" depends="test-compile,resolve-ivy" if="test.src.exists" unless="test.skip"
@@ -289,6 +299,16 @@
   	<ivy:resolve/>
   </target>
   	
+  <target name="publish-local" depends="pre-publish" description="Publish the binary library in the default local repository">
+    <ivy:publish resolver="local"
+         pubrevision="${version}"
+		 overwrite="true"
+		 >
+      <artifacts pattern="target/[artifact].[ext]"/>
+    </ivy:publish>
+  </target>
+	
+<!--
   <target name="publish" depends="pre-publish" description="Publish the binary library on the Forge350 repository">
     <ivy:publish resolver="archiva-publish"
          pubrevision="${version}"
@@ -299,7 +319,8 @@
       <artifacts pattern="target/[artifact].[ext]"/>
     </ivy:publish>
   </target>
-
+-->
+	
   <target name="clean" description="Remove all normal build products">
     <delete dir="target"/>
   </target>
