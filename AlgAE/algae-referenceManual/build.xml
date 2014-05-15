@@ -34,11 +34,11 @@
     <move file="${reports.dir}/latex/referenceManual.pdf" todir="target"/>			
   </target>
   
-  <target name="publish" description="build and pusblish all subprojects">
+  <target name="publish" description="build and publish">
   </target>
   
-  <target name="clean" description="clean all subprojects">
-    <delete dir="target"/>
+  <target name="clean" description="clean">
+    <delete dir="reports"/>
   </target>
   
   
