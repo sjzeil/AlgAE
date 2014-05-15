@@ -3,8 +3,22 @@
 	<title>Sorting Demo</title>
 </head>
 <body>
+   <p align="center">
+       <applet code="@MAINCLASS@"
+            archive="@JAR@,javahelp.jar"
+            width="800" height="600"
+            <param name="permissions" value="default" />
+            <param name="inline" value="1" />
+       </applet>
+    </p>
+    
 	<p>
-	   Use the button below to launch the AlgAE sorting demo.
+	   The applet should open in a separate window within a few seconds. (You may need to
+	   authorize the running of the applet to your browser, first.)
+	</p>
+	<p>
+	   If that does not seem to work, 
+	   use the button below to launch the AlgAE sorting demo.
 	</p>
     <!-- ... -->
     <script src=
@@ -15,7 +29,7 @@
         var dir = location.href.substring(0,
             location.href.lastIndexOf('/')+1);
         var url = dir + "sorting.jnlp";
-        deployJava.createWebStartLaunchButton(url, '1.6.0');
+        deployJava.createWebStartLaunchButton(url, '1.7.0');
     </script>
     <!-- ... -->
 </body>

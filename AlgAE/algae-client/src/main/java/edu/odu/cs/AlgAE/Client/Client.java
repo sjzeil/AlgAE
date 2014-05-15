@@ -168,6 +168,8 @@ public class Client extends AppletMenuSupport {
 					hsURL = possibleHelp.toURI().toURL();
 				} catch (MalformedURLException e1) {
 					System.err.println ("Could not convert " + fileName + " to url: " + e1);
+				} catch (Exception e2) {
+					System.err.println ("Unexpected exception converting " + fileName + " to url: " + e2);
 				}
 		}
 		if (hsURL != null) {

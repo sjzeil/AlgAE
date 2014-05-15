@@ -11,8 +11,9 @@
 
   <property name="projectName" value="algae-jrefman" />
   <property name="organization" value="edu.odu.cs.algae" />
-  <property name="version" value="4.0-SNAPSHOT"/>
-
+  <property name="version" value="4.0"/>
+  <property name="mainClassName" value="edu.odu.cs.AlgAE.Demos.SortingDriver" />
+	
   <tstamp>
     <format property="build.date" pattern="yyyy-MM-dd" locale="en,US" />
     <format property="build.dateTime" 
@@ -20,7 +21,7 @@
   </tstamp>
   <property name="configuration" value="${os.name}" />
   <property name="packageName" value="${projectName}-${version}.jar" />
-
+  
 
   <!-- === Directory Setup === -->
 
@@ -38,8 +39,10 @@
   <property name="webserver" value="forge350.cs.odu.edu"/>
   <property name="website.path" value="/var/lib/gforge/chroot/home/groups/extract-core/htdocs/"/>
   <property name="deploy.dest" location="/home/zeil/public_html/AlgAE/$projectName}"/>
-  <property name="keystore" value="myTestKey"/>
-
+  <property name="developersKeystore" location="../../devKeystore"/>
+  <property name="deploymentKeystore" location="${user.dir}/keystore"/> <!-- move to external property file? -->
+  <available file="${deploymentKeystore}" property="keystore.exists" />
+	  
 
   <!-- === Unit Test Setup === -->
 	
@@ -151,12 +154,10 @@
   </target>
   
   
-  <target name="test-compile" depends="compile-source" unless="test.skip" description="Compile unit test code.">
+  <target name="test-compile" depends="compile-source" if="test.src.exists" unless="test.skip" description="Compile unit test code.">
     <mkdir dir="${test.dest}" />
-  	<!--
     <javac srcdir="${test.src}" destdir="${test.dest}" 
     	classpathref="test-compile.classpath" debug="true"  includeantruntime="false"/>
-    	-->
   </target>
 
   <target name="run-tests" depends="test-compile" if="test.src.exists" unless="test.skip"
@@ -174,123 +175,56 @@
     </junit>
   </target>
   	
-  <target name="all-tests" depends="test-compile,resolve-ivy" if="test.src.exists" unless="test.skip"
-  	description="Perform unit testing">
-    <mkdir dir="${test.reports}" />
-  	<mkdir dir="${test.reports}/details"/>
-  	<jacoco:coverage destfile="target/jacoco.exec">
-    	<junit printsummary="on" haltonfailure="false" fork="true" forkmode="perTest">
-      		<classpath refid="test.classpath" />
-      		<jvmarg value="-Djava.library.path=${thirdPartyLibs}" />
-      		<formatter type="xml" />
-      
-      		<batchtest todir="${test.reports}/details">
-      			<fileset dir="${test.dest}">
-      	    		<include name="**/Test*.class" />
-      	    		<exclude name="**/Test*$*.class" />
-      			</fileset>
-      		</batchtest>
-    	</junit>
-  	 </jacoco:coverage>
-  </target>
-	
-  <target name="testReport" depends="all-tests" description="Prepare HTML summary of unit testing">
- 	<mkdir dir="${reports.dir}/junit"/>
- 	<junitreport todir="${reports.dir}//junit">
-      <fileset dir="${test.reports}/details">
-        <include name="TEST-*.xml"/>
-      </fileset>
-      <report format="frames" todir="target/project-reports/junit"/>
-    </junitreport>
-  </target>
-	
-  <target name="coverageReport" depends="all-tests,resolve-ivy" description="Prepare HTML summary of unit test coverage">
-	 	<mkdir dir="${reports.dir}//jacoco"/>
-  		<jacoco:report>
-  			<executiondata>
-  				<file file="target/jacoco.exec"/>
- 		 	</executiondata>
-  			<structure name="Extract Core: test coverage report">
-  				<classfiles>
-  					<fileset dir="target/classes"/>
-  				</classfiles>
-  				<sourcefiles encoding="UTF-8">
-  					<fileset dir="src/main/java"/>
-  					<fileset dir="target/generated"/>
-  				</sourcefiles>
-  			</structure>
-  			<html destdir="${reports.dir}/jacoco"/>
-  		</jacoco:report>
-	</target>
 
-	<target name="javadoc" depends="setup" description="prepare Javadoc documentation">
-  	<mkdir dir="${reports.dir}/javadoc"/>
-  	<javadoc
-  	   destdir="${reports.dir}/javadoc"
-  	   classpathref="compile.classpath"
-  	   author="true"
-  	   version="true"
-  	   use="true"
-  	   windowtitle="Extract Core">
-
-  		<sourcefiles>
-		    <fileset dir="src/main/java" includes="**/*.java"/>
-  	    </sourcefiles>
-
-  	    <doctitle><![CDATA[<h1>AlgAE Client</h1>]]></doctitle>
-  	    <link offline="false" href="http://download.oracle.com/javase/6/docs/api/"/>
-  	  </javadoc>
-  </target>
-	
-	
-  <target name="ivyReport" depends="resolve-ivy" description="generate Ivy dependency reports">
-  	<mkdir dir="${reports.dir}/ivy"/>
-  	<ivy:report toDir="${reports.dir}/ivy"/>
-  </target>
-	
-
-  <target name="reports" depends="javadoc,testReport,ivyReport,coverageReport" description="Generate project reports">
-  </target>
-  
-	
- 	
-  <target name="publish-reports" depends="reports" description="send project reports to web server">
-  	<tar destfile="target/project-reports.tz" compression="gzip">
-  		<tarfileset dir="target">
-  			<include name="project-reports/**/*"/>
-  		</tarfileset>
-  	</tar>
-  	<input message="login name for ${webserver}:" addproperty="scp.login"/>
-  	<input message="password for ${webserver}:" addproperty="scp.password"/>
-  	<scp file="target/project-reports.tz" sftp="true" 
-  	  remoteToDir="${scp.login}:${scp.password}@${webserver}:${website.path}"/>
-  	<sshexec host="${webserver}" username="${scp.login}" password="${scp.password}" 
-  		   command="cd ${website.path}; tar xzf project-reports.tz"/>
-  </target>
-	  
-
-  <target name="package" depends="run-tests" description="prepare the Jar file containing the binary library">
+  <target name="build" depends="run-tests" description="prepare the Jar file containing the binary library">
     <jar destfile="target/${projectName}.jar">
       <fileset dir="${compile.dest}">
       </fileset>
-      <zipgroupfileset dir="lib">
-      	<include name="*.jar"/>
-      	<exclude name="*-src-*.jar"/>
-      	<exclude name="*-sources.jar"/>
-      	<exclude name="junit*.jar"/>
-      	<exclude name="hamcrest*.jar"/>
-      </zipgroupfileset>
+      <zipfileset src="lib/algae-client-${version}.jar">
+      	<include name="**/*"/>
+      	<exclude name="META-INF/**/*"/>
+      </zipfileset>
+      <zipfileset includes="**/*.class" src="lib/algae-jserver-${version}.jar"/>
       <fileset dir="${compile.src}"/>
       <manifest>
-	     <attribute name="Main-Class" value="edu.odu.cs.AlgAE.Demos.SortingDriver" />
+	     <attribute name="Main-Class" value="${mainClassName}" />
       </manifest>
     </jar>
+  	<!-- We immediately self-certify the jar because browsers are so painful about loading
+  	     applets from file:// locations, making debugging painful -->
+  	<copy file="target/${projectName}.jar" tofile="target/selfcert-${projectName}.jar"/>
+  	<signjar jar="target/selfcert-${projectName}.jar"
+  	         keystore="${developersKeystore}"
+  	         alias="devKey" 
+  	         storepass="developer" 
+  	         verbose="true"/>
+  	<copy toDir="target">
+  		<fileset dir="src/main/data">
+  			<include name="**/*.html"/>
+  			<include name="**/*.jnlp"/>
+  		</fileset>
+  		<filterset>
+  			<filter token="JAR" value="selfcert-${projectName}.jar"/>
+  			<filter token="MAINCLASS" value="${mainClassName}"/>
+  			<filter token="PROJECT" value="${projectName}"/>
+  			<filter token="ORG" value="${organization}"/>
+  		</filterset>
+  	</copy>
+  	<copy toFile="javahelp.jar">
+  		<fileset dir="lib">
+  			<include name="javahelp-*.jar"/> 
+  			<exclude name="javahelp*-*sources.jar"/> 
+		    <exclude name="javahelp*-*javadoc.jar"/> 
+  		</fileset>
+  	</copy>	
+  </target>
   	
+  <target name="sign-jar" depends="build" if="keystore-exists">
   	<input message="Please enter password for keystore ${keystore}:" addproperty="keystore.password" />
-
   	<signjar jar="target/${projectName}.jar" alias="${keystore}" storepass="${keystore.password}" verbose="true"/>
-  	
-  	
+  </target>  	
+  
+  <target name="package" depends="sign-jar" description="Prepare zip file with signed jar and accompanying html file">
   	<copy toDir="target">
   		<fileset dir="src/main/data">
   			<include name="**/*.html"/>
@@ -298,62 +232,21 @@
   		</fileset>
   		<filterset>
   			<filter token="JAR" value="${projectName}.jar"/>
+  			<filter token="MAINCLASS" value="${mainClassName}"/>
   			<filter token="PROJECT" value="${projectName}"/>
   			<filter token="ORG" value="${organization}"/>
   		</filterset>
   	</copy>
-  	
-    <jar destfile="target/${projectName}-src.jar">
-      <fileset dir="${compile.src}">
-      </fileset>
-    </jar>
-  	<!--
-    <zip basedir="${data.dest}" destfile="${target}/${projectName}-${version}.zip" />
-    <copy toDir="${target}/lib" overwrite="false" flatten="true">
-      <fileset refid="ThirdPartyJarsToDeploy"/>
-    </copy>
-    -->
+    <zip basedir="target" destfile="target/${projectName}-${version}.zip">
+    	<fileset dir="target">
+    		<include name="${projectName}.jar"/>
+    		<include name="javahelp.jar"/>
+    		<include name="*.html"/>
+	        <include name="*.jnlp"/>
+    	</fileset>
+    </zip>
   </target>
 	
-  <target name="build" depends="run-tests">
-  </target>
-	
-	
-  <target name="deploy" depends="package">
-  	<mkdir dir="${deployment.dest}"/>
-  	<copy todir="${deployment.dest}">
-  		<fileset dir="target" includes="${projectName}.jar"/>
-  		<fileset dir="target" includes="*.html"/>
-  		<fileset dir="target" includes="*.jnlp"/>
-  	</copy>
-  </target>
-
-  <target name="pre-publish" depends="package,install-ivy">
-  	<ivy:resolve/>
-  </target>
-  	
-  <target name="publish-local" depends="pre-publish" description="--> publish this project in the local ivy repository">
-	    <ivy:publish resolver="local"
-	    	 pubrevision="${version}"
-	    	 status="release"
-			 update="true"
-			 overwrite="true"
-			 publishivy="true"
-             forcedeliver="true">
-	      <artifacts pattern="target/[artifact].[ext]"/>
-	    </ivy:publish>
-	</target>
-
-  <target name="publish" depends="publish-local" description="Publish the binary library on the Forge350 repository">
-    <ivy:publish resolver="Forge350Publish"
-         pubrevision="${version}"
-		 status="release"
-		 update="true"
-		 overwrite="true"
-		 publishivy="true">
-      <artifacts pattern="target/[artifact].[ext]"/>
-    </ivy:publish>
-  </target>
 
   <target name="clean" description="Remove all normal build products">
     <delete dir="target"/>
