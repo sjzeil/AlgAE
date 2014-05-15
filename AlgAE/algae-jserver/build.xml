@@ -1,5 +1,5 @@
 <project name="AlgAE Java Server" 
-	 default="package" basedir="." 
+	 default="build" basedir="." 
 	 xmlns:ivy="antlib:org.apache.ivy.ant"
 	 xmlns:jacoco="antlib:org.jacoco.ant">
 
@@ -273,6 +273,12 @@
     </copy>
     -->
   </target>
+
+
+  <target name="build" depends="package" 
+  	      description="generate software, run tests, and prepare reports">
+  </target>
+
 
   <target name="pre-publish" depends="package,install-ivy">
   	<ivy:resolve/>

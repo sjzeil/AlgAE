@@ -1,5 +1,5 @@
-<project name="AlgAE Client" 
-	 default="package" basedir="." 
+<project name="AlgAE Demos from reference manual" 
+	 default="build" basedir="." 
 	 xmlns:ivy="antlib:org.apache.ivy.ant"
 	 xmlns:jacoco="antlib:org.jacoco.ant">
 
@@ -153,7 +153,10 @@
   
   <target name="test-compile" depends="compile-source" unless="test.skip" description="Compile unit test code.">
     <mkdir dir="${test.dest}" />
-    <javac srcdir="${test.src}" destdir="${test.dest}" classpathref="test-compile.classpath" debug="true"  includeantruntime="false"/>
+  	<!--
+    <javac srcdir="${test.src}" destdir="${test.dest}" 
+    	classpathref="test-compile.classpath" debug="true"  includeantruntime="false"/>
+    	-->
   </target>
 
   <target name="run-tests" depends="test-compile" if="test.src.exists" unless="test.skip"
@@ -310,6 +313,9 @@
       <fileset refid="ThirdPartyJarsToDeploy"/>
     </copy>
     -->
+  </target>
+	
+  <target name="build" depends="run-tests">
   </target>
 	
 	

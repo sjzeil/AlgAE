@@ -1,0 +1,45 @@
+<project name="AlgAE top-level" 
+	 default="build" basedir=".">
+  
+  <record name="ant.log" action="start" append="false" />
+  
+  <description>
+    AlgAE (Algorithm Animation Engine): top level build, used mainly
+    by Continuous Integration systems.
+  </description>
+  
+  <property name="projectName" value="algae" />
+  <property name="version" value="4.0"/>
+  
+  <property name="configuration" value="${os.name}" />
+  
+  <!-- === Directory Setup === -->
+  
+  <property name="reports.dir" location="AlgAE/reports/" />	
+  
+  
+  <target name="build" description="build all subprojects">
+    <ant dir="AlgAE/algae-client" target="build"/>
+    <ant dir="AlgAE/algae-jserver" target="build"/>
+    <ant dir="AlgAE/algae-referenceManual" target="build"/>
+    <ant dir="AlgAE/demos/ReferenceManualJava" target="build"/>
+  </target>
+  
+  <target name="publish" description="build and pusblish all subprojects">
+    <ant dir="AlgAE/algae-client" target="publish"/>
+    <ant dir="AlgAE/algae-jserver" target="publish"/>
+    <ant dir="AlgAE/algae-referenceManual" target="publish"/>
+    <ant dir="AlgAE/demos/FordTopp-BST" target="publish"/>
+    <ant dir="AlgAE/demos/ReferenceManualJava" target="publish"/>
+  </target>
+  
+  <target name="clean" description="clean all subprojects">
+    <ant dir="AlgAE/algae-client" target="clean"/>
+    <ant dir="AlgAE/algae-jserver" target="clean"/>
+    <ant dir="AlgAE/algae-referenceManual" target="clean"/>
+    <ant dir="AlgAE/demos/FordTopp-BST" target="clean"/>
+    <ant dir="AlgAE/demos/ReferenceManualJava" target="clean"/>
+  </target>
+  
+  
+</project>

@@ -1,0 +1,45 @@
+<project name="AlgAE reference manual" 
+	 default="build" basedir=".">
+  
+  <record name="ant.log" action="start" append="false" />
+  
+  <description>
+    AlgAE (Algorithm Animation Engine): reference manual
+  </description>
+  
+  <property name="projectName" value="algae-refman" />
+  <property name="version" value="4.0"/>
+  
+  <property name="configuration" value="${os.name}" />
+  
+  <!-- === Directory Setup === -->
+  
+  <property name="reports.dir" location="target/reports/" />	
+  
+  
+  <target name="build" description="build all subprojects">
+  	<mkdir dir="${reports.dir}/latex"/>
+  	<copy todir="${reports.dir}/latex"  overwrite="false">
+  		<fileset dir="src/main/latex/referenceManual"/>
+  	</copy>
+  	<copy todir="${reports.dir}/latex"  overwrite="false">
+  		<fileset dir="../demos/ReferenceManualJava/src/main/java"/>
+  	</copy>
+  	<exec executable="pdflatex" dir="${reports.dir}/latex">
+  		<arg value="referenceManual.tex"/>
+  	</exec>
+  	<exec executable="pdflatex" dir="${reports.dir}/latex">
+  		<arg value="referenceManual.tex"/>
+  	</exec>
+    <move file="${reports.dir}/latex/referenceManual.pdf" todir="target"/>			
+  </target>
+  
+  <target name="publish" description="build and pusblish all subprojects">
+  </target>
+  
+  <target name="clean" description="clean all subprojects">
+    <delete dir="target"/>
+  </target>
+  
+  
+</project>
