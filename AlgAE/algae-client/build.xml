@@ -149,7 +149,7 @@
   	description="Perform unit testing">
     <mkdir dir="${test.reports}" />
   	<mkdir dir="${test.reports}/details"/>
-    <junit printsummary="on" haltonfailure="true" fork="true" forkmode="perTest">
+    <junit printsummary="on" haltonfailure="false" fork="true" forkmode="perTest">
       <classpath refid="test.classpath" />
       <jvmarg value="-Djava.library.path=${thirdPartyLibs}" />
       <formatter type="xml" />
