@@ -18,6 +18,7 @@
   <property name="reports.dir" location="AlgAE/reports/" />	
   
   
+<<<<<<< HEAD
   <target name="build" description="build main subprojects">
     <ant dir="AlgAE/algae-client" target="publish-local"/>
     <ant dir="AlgAE/algae-jserver" target="publish-local"/>
@@ -30,6 +31,16 @@
 
 	
 	<target name="publish" description="build and pusblish all subprojects">
+=======
+  <target name="build" description="build all subprojects">
+    <ant dir="AlgAE/algae-client" target="build"/>
+    <ant dir="AlgAE/algae-jserver" target="build"/>
+    <ant dir="AlgAE/algae-referenceManual" target="build"/>
+    <ant dir="AlgAE/demos/ReferenceManualJava" target="build"/>
+  </target>
+  
+  <target name="publish" description="build and pusblish all subprojects">
+>>>>>>> refs/remotes/origin/master
     <ant dir="AlgAE/algae-client" target="publish"/>
     <ant dir="AlgAE/algae-jserver" target="publish"/>
     <ant dir="AlgAE/algae-referenceManual" target="publish"/>

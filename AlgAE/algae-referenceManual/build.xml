@@ -34,11 +34,19 @@
     <move file="${reports.dir}/latex/referenceManual.pdf" todir="target"/>			
   </target>
   
+<<<<<<< HEAD
   <target name="publish" description="build and publish">
   </target>
   
   <target name="clean" description="clean">
     <delete dir="reports"/>
+=======
+  <target name="publish" description="build and pusblish all subprojects">
+  </target>
+  
+  <target name="clean" description="clean all subprojects">
+    <delete dir="target"/>
+>>>>>>> refs/remotes/origin/master
   </target>
   
   
