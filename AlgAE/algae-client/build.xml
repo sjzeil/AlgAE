@@ -1,9 +1,5 @@
 <project name="AlgAE Client" 
-<<<<<<< HEAD
 	 default="publish-local" basedir="." 
-=======
-	 default="build" basedir="." 
->>>>>>> refs/remotes/origin/master
 	 xmlns:ivy="antlib:org.apache.ivy.ant"
 	 xmlns:jacoco="antlib:org.jacoco.ant">
 
