@@ -8,7 +8,7 @@
   </description>
   
   <property name="projectName" value="algae-refman" />
-  <property name="version" value="4.0"/>
+  <property file="shared.properties"/>
   
   <property name="configuration" value="${os.name}" />
   
@@ -34,19 +34,11 @@
     <move file="${reports.dir}/latex/referenceManual.pdf" todir="target"/>			
   </target>
   
-<<<<<<< HEAD
   <target name="publish" description="build and publish">
   </target>
   
   <target name="clean" description="clean">
     <delete dir="reports"/>
-=======
-  <target name="publish" description="build and pusblish all subprojects">
-  </target>
-  
-  <target name="clean" description="clean all subprojects">
-    <delete dir="target"/>
->>>>>>> refs/remotes/origin/master
   </target>
   
   

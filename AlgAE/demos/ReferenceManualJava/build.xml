@@ -10,8 +10,9 @@
   </description>
 
   <property name="projectName" value="algae-jrefman" />
+  <property file="shared.properties"/>
+
   <property name="organization" value="edu.odu.cs.algae" />
-  <property name="version" value="4.0"/>
   <property name="mainClassName" value="edu.odu.cs.AlgAE.Demos.SortingDriver" />
 	
   <tstamp>
