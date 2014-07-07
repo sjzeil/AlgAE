@@ -1,7 +1,8 @@
 #AlgAE  - Algorithm Animation Engine
 
 AlgAE   is   a  framework   for   quick   construction  of   algorithm
-animations. AlgAE  is aimed at computer science  instructors who teach courses in programming and data structures either for distance students 
+animations. AlgAE  is aimed at computer science  instructors who teach courses
+in programming and data structures either for distance students 
 (web-based) or in live classrooms using projectors  to  display  computer video  output.
 
 AlgAE allows the instructor to take typical Java code from a course's
