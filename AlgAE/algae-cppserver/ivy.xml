@@ -1,0 +1,33 @@
+<ivy-module version="2.0">
+    <info organisation="edu.odu.cs.algae" module="${projectName}"/>
+    <configurations>
+        <conf name="build"  
+	      description="things needed to compile and run non-test code"
+	      />
+        <conf name="test" 
+	      description="Needed for unit testing"
+	      />
+        <conf name="integration" 
+	      description="Needed for integration and system"
+	      />
+        <conf name="reports" 
+	      description="Needed for reports generation"
+	      />
+        <conf name="all" description="all dependencies"
+	      />
+    </configurations>
+    <publications>
+       <artifact name="${projectName}" type="jar" ext="jar"/>
+       <artifact name="${projectName}-src" type="sources" ext="zip"/>
+    </publications>
+    <dependencies>
+        <dependency org="junit" name="junit" 
+		rev="4.11" 
+		conf="test,integration,reports,all->default"/>
+      <dependency org="ant-contrib" name="cpptasks" 
+        rev="1.0b5"
+        conf="build->default"/>
+       <dependency org="edu.odu.cs.algae" name="algae-client" 
+         rev="latest.integration" conf="test,all->dev"/>
+	</dependencies>
+</ivy-module>

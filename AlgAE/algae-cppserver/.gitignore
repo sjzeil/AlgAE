@@ -1,3 +1,5 @@
 /target
 /xmlTest.saved
 /.settings
+/ivy
+/lib
