@@ -32,7 +32,7 @@ import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
  */
 public class DemoClientVisually  implements ServerProxy {
 	
-	private Client client;
+	private GUIClient client;
 	private ArrayBlockingQueue<ClientMessage> script;
 	private Snapshot lastSnap;
 
@@ -50,7 +50,7 @@ public class DemoClientVisually  implements ServerProxy {
 	public void runAsMain () {
 			JFrame window = new JFrame("Client Test");
 			
-			client = new Client (this);
+			client = new GUIClient (this);
 			client.init(false);
 			window.setJMenuBar(client.buildMenu());
 

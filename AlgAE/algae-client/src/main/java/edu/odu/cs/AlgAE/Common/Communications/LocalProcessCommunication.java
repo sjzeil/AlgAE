@@ -33,6 +33,7 @@ public class LocalProcessCommunication implements ServerCommunications {
 	private boolean debugReceive = true;
 	private File pathToExecutable;
 	private CommunicationsManager manager;
+	private final int QueueCapacity = 4;
 	
 	
 	/**
@@ -40,7 +41,6 @@ public class LocalProcessCommunication implements ServerCommunications {
 	 */
 	public LocalProcessCommunication(File pathToExecutable)
 	{
-		final int QueueCapacity = 4;
 		clientMessages = new ArrayBlockingQueue<ClientMessage>(QueueCapacity);
 		serverMessages = new ArrayBlockingQueue<ServerMessage>(QueueCapacity);
 		this.pathToExecutable = pathToExecutable;
@@ -52,7 +52,6 @@ public class LocalProcessCommunication implements ServerCommunications {
 	 */
 	public LocalProcessCommunication()
 	{
-		final int QueueCapacity = 4;
 		clientMessages = new ArrayBlockingQueue<ClientMessage>(QueueCapacity);
 		serverMessages = new ArrayBlockingQueue<ServerMessage>(QueueCapacity);
 		this.pathToExecutable = null;
@@ -167,7 +166,7 @@ public class LocalProcessCommunication implements ServerCommunications {
 		
 		private Process process = null;
 		private boolean stopping = false;
-		private final String EndOfClientMessageMarker = "<<<>>>";
+		private final String EndOfClientMessageMarker = "</message";
 		private BufferedReader fromServer;
 		private PrintStream toServer;
 		
@@ -176,7 +175,7 @@ public class LocalProcessCommunication implements ServerCommunications {
 		{
 			StringBuffer msgBuf = new StringBuffer();
 			String line = fromServer.readLine();
-			while (line != null && !line.equals(EndOfClientMessageMarker)) {
+			while (line != null && !line.contains(EndOfClientMessageMarker)) {
 				msgBuf.append(line);
 				line = fromServer.readLine();
 			}
