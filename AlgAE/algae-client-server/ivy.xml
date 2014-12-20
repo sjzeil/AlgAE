@@ -1,0 +1,34 @@
+<ivy-module version="2.0">
+    <info organisation="edu.odu.cs.algae" module="${projectName}"/>
+    <configurations>
+        <conf name="build"  
+	      description="things needed to compile and run non-test code"
+	      />
+        <conf name="test" 
+	      description="Needed for unit testing"
+	      />
+        <conf name="integration" 
+	      description="Needed for integration and system"
+	      />
+        <conf name="reports" 
+	      description="Needed for reports generation"
+	      />
+        <conf name="all" description="all dependencies"
+	      />
+    </configurations>
+    <publications>
+       <artifact name="${projectName}" conf="build" type="jar" ext="jar"/>
+       <artifact name="${projectName}-src" conf="build" type="sources" ext="jar"/>
+    </publications>
+    <dependencies>
+        <dependency org="junit" name="junit" 
+		  rev="4.11" 
+		  conf="test,integration,reports,all->default"/>
+       <dependency org="javax.help" name="javahelp" 
+          rev="2.0.05"
+		  conf="build,integration,all->default"/>
+       <dependency org="org.jacoco" name="org.jacoco.ant" 
+          rev="latest.integration"
+          conf="test,integration,reports,all->default"/>
+	</dependencies>
+</ivy-module>

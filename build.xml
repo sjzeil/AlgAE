@@ -20,7 +20,6 @@
   
   <target name="build" description="build main subprojects">
     <ant dir="AlgAE/algae-client" target="publish-local" inheritAll="false"/>
-    <ant dir="AlgAE/algae-jserver" target="publish-local" inheritAll="false"/>
     <ant dir="AlgAE/demos/ReferenceManualJava" target="build" inheritAll="false"/>
   </target>
   
@@ -31,13 +30,11 @@
 	
 	<target name="publish" description="build and publish main subprojects">
     <ant dir="AlgAE/algae-client" target="publish" inheritAll="false"/>
-    <ant dir="AlgAE/algae-jserver" target="publish" inheritAll="false"/>
     <ant dir="AlgAE/demos/ReferenceManualJava" target="publish" inheritAll="false"/>
   </target>
   
   <target name="clean" description="clean all subprojects">
     <ant dir="AlgAE/algae-client" target="clean" inheritAll="false"/>
-    <ant dir="AlgAE/algae-jserver" target="clean" inheritAll="false"/>
     <ant dir="AlgAE/algae-referenceManual" target="clean" inheritAll="false"/>
     <ant dir="AlgAE/demos/FordTopp-BST" target="clean" inheritAll="false"/>
     <ant dir="AlgAE/demos/ReferenceManualJava" target="clean" inheritAll="false"/>
