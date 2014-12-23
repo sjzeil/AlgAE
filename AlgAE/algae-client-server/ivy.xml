@@ -13,6 +13,9 @@
         <conf name="reports" 
 	      description="Needed for reports generation"
 	      />
+	    <conf name="findbugs" 
+	      description="used for findbugs resource location"
+	      />
         <conf name="all" description="all dependencies"
 	      />
     </configurations>
@@ -26,9 +29,15 @@
 		  conf="test,integration,reports,all->default"/>
        <dependency org="javax.help" name="javahelp" 
           rev="2.0.05"
-		  conf="build,integration,all->default"/>
+		  conf="build,integration,findbugs,test,all->default"/>
        <dependency org="org.jacoco" name="org.jacoco.ant" 
           rev="latest.integration"
           conf="test,integration,reports,all->default"/>
+       <dependency org="com.puppycrawl.tools" name="checkstyle"
+           rev="6.1.1"
+           conf="reports,all->default"/>
+       <dependency org="com.google.code.findbugs" name="findbugs"
+           rev="3.0.0"
+           conf="reports,findbugs,all->default"/>
 	</dependencies>
 </ivy-module>

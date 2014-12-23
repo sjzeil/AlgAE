@@ -3,14 +3,15 @@
 	 xmlns:ivy="antlib:org.apache.ivy.ant"
 	 xmlns:jacoco="antlib:org.jacoco.ant">
 
-  <record name="ant.log" action="start" append="false" />
+  <record name="ant.log" action="start" append="false"/>
 	
   <description>
     AlgAE (Algorithm Animation Engine): Java Client and Server
   </description>
 
   <property name="projectName" value="algae" />
-  <property file="../shared.properties"/>
+  <property name="sharedPropertiesFile" location="../../shared.properties"/>
+  <property file="${sharedPropertiesFile}"/>
 
   <tstamp>
     <format property="build.date" pattern="yyyy-MM-dd" locale="en,US" />
@@ -18,7 +19,7 @@
 	    pattern="yyyy-MM-dd HH:mm" locale="en,US" />    
   </tstamp>
   <property name="configuration" value="${os.name}" />
-  <property name="packageName" value="${projectName}-${version}.jar" />
+  <property name="packageName" value="${projectName}-${build.version}.jar" />
 
 
   <!-- === Directory Setup === -->
@@ -26,14 +27,14 @@
   <property name="compile.src" location="src/main/java" />
   <available file="${compile.src}" property="compile.src.exists" />
   <property name="compile.data" location="src/main/data" />
-  <property name="thirdPartyLibs" location="lib" />
   <property name="compile.dest" location="target/classes" />
   <property name="data.dest" location="target/data" />
   <property name="test.src" location="src/test/java" />
   <available file="${test.src}" property="test.src.exists" />
   <property name="test.dest" location="target/test-classes" />
-  <property name="test.reports" location="target/test_reports" />
-  <property name="reports.dir" location="target/project-reports/${version}" />	
+  <property name="test.reports" location="target/reports" />
+  <property name="reports.dir" location="target/reports" />	
+  <property name="reports.data.dir" location="target/report-data" />	
   <property name="webserver" value="atria.cs.odu.edu"/>
   <property name="website.path" value="/home/zeil/public_html/AlgAE/Reports"/>
 
@@ -50,7 +51,7 @@
   <!-- === Ivy Configuration Manager Setup === 
        See also ivy.xml, ivysettings.xml, forge350-settings.xml
   -->
-  <property name="ivy.install.version" value="2.3.0"/>
+  <property name="ivy.install.version" value="2.4.0-rc1"/>
   <property name="jsch.install.version" value="0.1.49"/>
   <property name="ivy.jar.dir" value="${basedir}/ivy"/>
   <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar"/>
@@ -70,24 +71,30 @@
       <path id="ivy.lib.path">
         <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
       </path>
-      <taskdef resource="org/apache/ivy/ant/antlib.xml" 
-  	     uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
     </target>
     
     <target name="resolve-ivy" depends="install-ivy">
-      <ivy:retrieve/>
-      <echo>ivy.default.ivy.user.dir is ${ivy.default.ivy.user.dir}</echo>
-    </target>  
-
+      <ivy:settings file="${user.home}/ivysettings.xml"/>
+      <ivy:resolve/>
+    	<taskdef resource="org/apache/ivy/ant/antlib.xml" 
+    	  	     uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
 
   <!-- === Class Paths for Compilation and Execution === -->
 
 
-    <ivy:cachepath conf="build" pathid="ivy.build.classpath"/>
-    <ivy:cachepath conf="test" pathid="ivy.test.classpath"/>
-    <ivy:cachepath conf="integration" pathid="ivy.integration.classpath"/>
-    <ivy:cachepath conf="reports" pathid="ivy.reports.classpath"/>
-    
+      <ivy:cachepath conf="build" pathid="ivy.build.classpath"/>
+      <ivy:cachepath conf="test" pathid="ivy.test.classpath"/>
+      <ivy:cachepath conf="integration" pathid="ivy.integration.classpath"/>
+      <ivy:cachepath conf="reports" pathid="ivy.reports.classpath"/>
+      <ivy:cachepath conf="findbugs" pathid="ivy.findbugs.classpath"/>
+
+      <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+      	 <classpath refid="ivy.test.classpath"/>
+      </taskdef>
+
+    </target>  
+
+	
   	<path id="build.classpath">
       <path refid="ivy.build.classpath"/>
     </path>
@@ -95,10 +102,7 @@
   <!-- Classpath for compilation of src/main/java -->
   <path id="compile.classpath">
   	<pathelement location="${compile.dest}"/>
-  	<path refid="ivy.path"/>
-  	<!--fileset dir="${thirdPartyLibs}/">
-      <filename name="*.jar" />
-    </fileset-->
+  	<path refid="ivy.build.classpath"/>
   </path>
 	
  
@@ -106,7 +110,7 @@
   <path id="test-compile.classpath">
     <pathelement location="${compile.dest}" />
     <pathelement location="${test.dest}" />
-  	<path refid="ivy.build.classpath"/>
+  	<path refid="ivy.test.classpath"/>
   </path>
   
   <!-- Classpath for execution of Unit tests -->
@@ -132,70 +136,41 @@
   </target>
   
   
-  <target name="test-compile" depends="compile-source" unless="test.skip" description="Compile unit test code.">
+  <target name="compile-tests" depends="compile-source" unless="test.skip" description="Compile unit test code.">
     <mkdir dir="${test.dest}" />
     <javac srcdir="${test.src}" destdir="${test.dest}" classpathref="test-compile.classpath" debug="true"  
     	source="1.7" target="1.7"
 	    includeantruntime="false"/>
   </target>
 
-  <target name="run-tests" depends="test-compile" if="test.src.exists" unless="test.skip"
+  <target name="run-tests" depends="compile-tests" if="test.src.exists" unless="test.skip"
   	description="Perform unit testing">
-    <mkdir dir="${test.reports}" />
-  	<mkdir dir="${test.reports}/details"/>
-    <junit printsummary="on" haltonfailure="false" fork="true" forkmode="perTest">
-      <classpath refid="test.classpath" />
-      <jvmarg value="-Djava.library.path=${thirdPartyLibs}" />
-      <formatter type="xml" />
+  	<mkdir dir="${reports.data.dir}/junit"/>
+  	<jacoco:coverage destfile="target/jacoco.exec">
+  	   <junit printsummary="on" haltonfailure="false" fork="true" forkmode="perTest">
+           <classpath refid="test.classpath" />
+           <formatter type="xml" />
       
-      <batchtest todir="${test.reports}/details">
-	<fileset refid="unitTestsExpectedToPass" />
-      </batchtest>
-    </junit>
+           <batchtest todir="${reports.data.dir}/junit">
+	          <fileset refid="unitTestsExpectedToPass" />
+           </batchtest>
+      </junit>
+  	</jacoco:coverage>
  	<mkdir dir="${reports.dir}/junit"/>
- 	<junitreport todir="${reports.dir}//junit">
-      <fileset dir="${test.reports}/details">
+ 	<junitreport todir="${reports.data.dir}/junit">
+      <fileset dir="${reports.data.dir}/junit">
         <include name="TEST-*.xml"/>
       </fileset>
-      <report format="frames" todir="target/project-reports/junit"
+      <report format="frames" todir="${reports.dir}/junit"
       	styledir="../junit-stylesheets"
       />
     </junitreport>
 
   </target>
   	
-  <target name="all-tests" depends="test-compile,resolve-ivy" if="test.src.exists" unless="test.skip"
-  	description="Perform unit testing">
-    <mkdir dir="${test.reports}" />
-  	<mkdir dir="${test.reports}/details"/>
-  	<jacoco:coverage destfile="target/jacoco.exec">
-    	<junit printsummary="on" haltonfailure="false" fork="true" forkmode="perTest">
-      		<classpath refid="test.classpath" />
-      		<jvmarg value="-Djava.library.path=${thirdPartyLibs}" />
-      		<formatter type="xml" />
-      
-      		<batchtest todir="${test.reports}/details">
-      			<fileset dir="${test.dest}">
-      	    		<include name="**/Test*.class" />
-      	    		<exclude name="**/Test*$*.class" />
-      			</fileset>
-      		</batchtest>
-    	</junit>
-  	 </jacoco:coverage>
-  </target>
 	
-  <target name="testReport" depends="all-tests" description="Prepare HTML summary of unit testing">
- 	<mkdir dir="${reports.dir}/junit"/>
- 	<junitreport todir="${reports.dir}//junit">
-      <fileset dir="${test.reports}/details">
-        <include name="TEST-*.xml"/>
-      </fileset>
-      <report format="frames" todir="target/project-reports/junit"/>
-    </junitreport>
-  </target>
-	
-  <target name="coverageReport" depends="all-tests,resolve-ivy" description="Prepare HTML summary of unit test coverage">
-	 	<mkdir dir="${reports.dir}//jacoco"/>
+  <target name="coverageReport" depends="run-tests,resolve-ivy" description="Prepare HTML summary of unit test coverage">
+	 	<mkdir dir="${reports.dir}/jacoco"/>
   		<jacoco:report>
   			<executiondata>
   				<file file="target/jacoco.exec"/>
@@ -206,7 +181,6 @@
   				</classfiles>
   				<sourcefiles encoding="UTF-8">
   					<fileset dir="src/main/java"/>
-  					<fileset dir="target/generated"/>
   				</sourcefiles>
   			</structure>
   			<html destdir="${reports.dir}/jacoco"/>
@@ -227,7 +201,7 @@
 		    <fileset dir="src/main/java" includes="**/*.java"/>
   	    </sourcefiles>
 
-  	    <doctitle><![CDATA[<h1>AlgAE Client</h1>]]></doctitle>
+  	    <doctitle><![CDATA[<h1>AlgAE Client-Server</h1>]]></doctitle>
   	    <link offline="false" href="http://download.oracle.com/javase/6/docs/api/"/>
   	  </javadoc>
   </target>
@@ -238,8 +212,56 @@
   	<ivy:report toDir="${reports.dir}/ivy"/>
   </target>
 	
+	
+	  <target name="checkstyle" depends="resolve-ivy" 
+	          description="run Checkstyle">
+	    <taskdef resource="checkstyletask.properties"
+	             classpathref="ivy.reports.classpath"/>
+	    <mkdir dir="${reports.dir}/checkstyle"/>
+	    <mkdir dir="${reports.data.dir}/checkstyle"/>
+	    <checkstyle config="checkstyle.xml"
+	                failOnViolation="false"
+	                >
+	      <fileset dir="src/main/java" includes="**/*.java"/>
+	      <classpath path="target/classes"/>
+	      <!-- formatter type="plain"/ -->
+	      <formatter type="xml" tofile="${reports.data.dir}/checkstyle/checkstyle.xml"/>
+	    </checkstyle>
+	    <xslt in ="${reports.data.dir}/checkstyle/checkstyle.xml"
+	          out="${reports.dir}/checkstyle/checkstyle.html"
+	    	  style="../checkstyle-noframes.xsl">
+	      <!-- style>
+	        <javaresource name="checkstyle-noframes.xsl" classpathref="ivy.reports.classpath"/>
+	      </style -->
+	    </xslt>
+	  </target>
+	  
+	  <target name="findbugs" depends="compile-source" 
+	          description="run FindBugs.">
+	    <taskdef classname="edu.umd.cs.findbugs.anttask.FindBugsTask"
+	             name="findbugs" classpathref="ivy.reports.classpath"/>
+	    <mkdir dir="${reports.dir}/findbugs"/>
+	    <mkdir dir="${reports.data.dir}/findbugs"/>
+	    <findbugs output="xml:withMessages" 
+	              classpathref="ivy.reports.classpath" 
+	              pluginList=""
+	              outputFile="${reports.data.dir}/findbugs/findbugs.xml"
+	              >
+	      <auxclasspath refid="test.classpath"/>
+	      <sourcepath path="src/main/java"/>
+	      <class location="target/classes"/>
+	    </findbugs>
+	    
+	    <xslt in ="${reports.data.dir}/findbugs/findbugs.xml"
+	          out="${reports.dir}/findbugs/findbugs.html">
+	      <style>
+	        <javaresource name="fancy.xsl" classpathref="ivy.findbugs.classpath"/>
+	      </style>
+	    </xslt>
+	  </target>
 
-  <target name="reports" depends="javadoc,testReport,ivyReport,coverageReport" description="Generate project reports">
+
+  <target name="reports" depends="javadoc,ivyReport,coverageReport,checkstyle,findbugs" description="Generate project reports">
   </target>
   
 	
@@ -260,7 +282,7 @@
 	  
 
   <target name="package" depends="run-tests" description="prepare the Jar file containing the binary library">
-    <jar destfile="target/${projectName}.jar">
+    <jar destfile="target/${packageName}.jar">
       <fileset dir="${compile.dest}">
       </fileset>
       <fileset dir="src/main/resources">
@@ -273,19 +295,19 @@
       -->
     </jar>
 
-    <jar destfile="target/${projectName}-src.jar">
+    <jar destfile="target/${packageName}-src.jar">
       <fileset dir="${compile.src}">
       </fileset>
     </jar>
   	<!--
-    <zip basedir="${data.dest}" destfile="${target}/${projectName}-${version}.zip" />
+    <zip basedir="${data.dest}" destfile="${target}/${projectName}-${build.version}.zip" />
     <copy toDir="${target}/lib" overwrite="false" flatten="true">
       <fileset refid="ThirdPartyJarsToDeploy"/>
     </copy>
     -->
   </target>
 
-  <target name="build" depends="package" 
+  <target name="build" depends="package,reports" 
   	      description="generate software, run tests, and prepare reports">
   </target>
 
@@ -295,7 +317,7 @@
   	
   <target name="publish-local" depends="pre-publish" description="Publish the binary library in the default local repository">
     <ivy:publish resolver="local"
-         pubrevision="${version}"
+         pubrevision="${build.version}"
 		 overwrite="true"
 		 >
       <artifacts pattern="target/[artifact].[ext]"/>
@@ -320,7 +342,6 @@
   </target>
 
   <target name="cleaner" depends="clean" description="Remove all normal build products and all downloaded 3rd party libraries">
-    <delete dir="lib"/>
   </target>
 
   <target name="cleanest" depends="cleaner" 
