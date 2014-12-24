@@ -99,14 +99,14 @@
     <path refid="ivy.build.classpath"/>
   </path>
   
-  <!-- Classpath for compilation of src/main/java -->
+  <!-- Classpath for compilation of project code -->
   <path id="compile.classpath">
     <pathelement location="${compile.dest}"/>
     <path refid="ivy.build.classpath"/>
   </path>
   
  
-  <!-- Classpath for compilation of src/test/java -->
+  <!-- Classpath for compilation of unit tests -->
   <path id="test-compile.classpath">
     <pathelement location="${compile.dest}" />
     <pathelement location="${test.dest}" />

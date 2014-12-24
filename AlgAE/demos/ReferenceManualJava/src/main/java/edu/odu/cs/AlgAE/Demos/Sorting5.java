@@ -1,6 +1,6 @@
 package edu.odu.cs.AlgAE.Demos;//!
 
-import static edu.odu.cs.AlgAE.Server.Animations.LocalJavaAnimation.activate;
+import static edu.odu.cs.AlgAE.Server.LocalAnimation.activate;
 
 import java.awt.Color;
 

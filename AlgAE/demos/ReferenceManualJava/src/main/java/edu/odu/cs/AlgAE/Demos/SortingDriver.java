@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.odu.cs.AlgAE.Server.MenuFunction;
-import edu.odu.cs.AlgAE.Server.Animations.LocalJavaAnimation;
+import edu.odu.cs.AlgAE.Server.Animations.LocalJavaAnimationApplet;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
 import edu.odu.cs.AlgAE.Server.Rendering.Renderer;
 
 
-public class SortingDriver extends LocalJavaAnimation {
+public class SortingDriver extends LocalJavaAnimationApplet {
 
 	public SortingDriver() {
 		super("Sorting Algorithms");

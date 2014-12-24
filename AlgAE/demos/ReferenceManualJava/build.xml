@@ -10,7 +10,7 @@
   </description>
 
   <property name="projectName" value="algae-jrefman" />
-  <property file="shared.properties"/>
+  <property file="../../shared.properties"/>
 
   <property name="organization" value="edu.odu.cs.algae" />
   <property name="mainClassName" value="edu.odu.cs.AlgAE.Demos.SortingDriver" />
@@ -29,16 +29,16 @@
   <property name="compile.src" location="src/main/java" />
   <available file="${compile.src}" property="compile.src.exists" />
   <property name="compile.data" location="src/main/data" />
-  <property name="thirdPartyLibs" location="lib" />
   <property name="compile.dest" location="target/classes" />
   <property name="data.dest" location="target/data" />
   <property name="test.src" location="src/test/java" />
   <available file="${test.src}" property="test.src.exists" />
   <property name="test.dest" location="target/test-classes" />
   <property name="test.reports" location="target/test_reports" />
-  <property name="reports.dir" location="target/project-reports/${version}" />	
-  <property name="webserver" value="forge350.cs.odu.edu"/>
-  <property name="website.path" value="/var/lib/gforge/chroot/home/groups/extract-core/htdocs/"/>
+  <property name="reports.dir" location="target/reports" />	
+  <property name="reports.data.dir" location="target/report-data" />
+	
+  <!-- Deployment Information -->
   <property name="deploy.dest" location="/home/zeil/public_html/AlgAE/$projectName}"/>
   <property name="developersKeystore" location="../../devKeystore"/>
   <property name="deploymentKeystore" location="${user.dir}/keystore"/> <!-- move to external property file? -->
@@ -57,7 +57,7 @@
   <!-- === Ivy Configuration Manager Setup === 
        See also ivy.xml, ivysettings.xml, forge350-settings.xml
   -->
-  <property name="ivy.install.version" value="2.3.0"/>
+  <property name="ivy.install.version" value="2.4.0-rc1"/>
   <property name="jsch.install.version" value="0.1.49"/>
   <property name="ivy.jar.dir" value="${basedir}/ivy"/>
   <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar"/>
@@ -91,54 +91,41 @@
 	     uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
   </target>
 
-  <target name="retrieve-ivy" depends="install-ivy,install-jsch" unless="skip.download" description="Retrieve library dependencies">
-	  <ivy:retrieve/>
-  </target>
-
-  <target name="resolve-ivy" depends="retrieve-ivy" description="Resolve library dependencies">
+  <target name="resolve-ivy" depends="install-ivy" description="Resolve library dependencies">
+    <ivy:settings file="${user.home}/ivysettings.xml"/>
+    <ivy:resolve/>
   	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
   		<classpath refid="test.classpath"/>
   	</taskdef>
+  	
+  	<ivy:cachepath conf="build" pathid="ivy.build.classpath"/>
+  	<ivy:cachepath conf="test" pathid="ivy.test.classpath"/>
   </target>
 
   <!-- === Class Paths for Compilation and Execution === -->
 
-  <!-- Classpath for compilation of src/main/java -->
-  <path id="compile-datagen.classpath">
-    <pathelement location="${compile.dest}"/>
-    <pathelement location="../generatedSource/target/classes"/>
-    <fileset dir="${thirdPartyLibs}">
-      <filename name="*.jar"/>
-    </fileset>
-  </path>
-
-  <!-- Classpath for compilation of src/main/java -->
-  <path id="compile.classpath">
-    <fileset dir="${thirdPartyLibs}/">
-      <filename name="*.jar" />
-    </fileset>
-  </path>
 	
+  <!-- Classpath for compilation of project code -->
+  <path id="compile.classpath">
+    <pathelement location="${compile.dest}"/>
+    <path refid="ivy.build.classpath"/>
+  </path>
+	  
  
-  <!-- Classpath for compilation of src/test/java -->
+  <!-- Classpath for compilation of unit tests -->
   <path id="test-compile.classpath">
     <pathelement location="${compile.dest}" />
     <pathelement location="${test.dest}" />
-    <fileset dir="${thirdPartyLibs}/">
-      <filename name="*.jar" />
-    </fileset>
+    <path refid="ivy.test.classpath"/>
   </path>
-  
+	  
   <!-- Classpath for execution of Unit tests -->
   <path id="test.classpath">
     <pathelement location="${compile.dest}" />
     <pathelement location="${test.dest}" />
-    <fileset dir="${thirdPartyLibs}/">
-    	<include name="*.jar" />
-    	<exclude name="*-sources.jar" />
-    	<exclude name="*-javadoc.jar" />
-    </fileset>
+    <path refid="ivy.test.classpath"/>
   </path>
+
 
 
   <!-- === Targets and Tasks === -->
@@ -148,24 +135,31 @@
   </target>
 
   
-  <target name="compile-source" depends="setup" description="Compile the main source code">
+  <target name="compile-source" depends="setup" 
+  	description="Compile the main source code">
     <mkdir dir="${compile.dest}" />
     <javac srcdir="${compile.src}" destdir="${compile.dest}" classpathref="compile.classpath" 
 	   debug="true" includeantruntime="false"/>
   </target>
   
   
-  <target name="test-compile" depends="compile-source" if="test.src.exists" unless="test.skip" description="Compile unit test code.">
+  <target name="test-compile" depends="compile-source" if="test.src.exists" unless="test.skip" 
+  	description="Compile unit test code.">
     <mkdir dir="${test.dest}" />
-    <javac srcdir="${test.src}" destdir="${test.dest}" 
-    	classpathref="test-compile.classpath" debug="true"  includeantruntime="false"/>
+    <javac 
+    	srcdir="${test.src}" 
+    	destdir="${test.dest}" 
+    	classpathref="test-compile.classpath" debug="true"  
+    	includeantruntime="false"/>
   </target>
 
   <target name="run-tests" depends="test-compile" if="test.src.exists" unless="test.skip"
   	description="Perform unit testing">
     <mkdir dir="${test.reports}" />
   	<mkdir dir="${test.reports}/details"/>
-    <junit printsummary="on" haltonfailure="true" fork="true" forkmode="perTest">
+    <junit printsummary="on" 
+    	haltonfailure="true" 
+    	fork="true" forkmode="perTest">
       <classpath refid="test.classpath" />
       <jvmarg value="-Djava.library.path=${thirdPartyLibs}" />
       <formatter type="xml" />
@@ -177,7 +171,8 @@
   </target>
   	
 
-  <target name="build" depends="run-tests" description="prepare the Jar file containing the binary library">
+  <target name="build" depends="run-tests" 
+  	description="prepare the Jar file containing the binary library">
     <jar destfile="target/${projectName}.jar">
       <fileset dir="${compile.dest}">
       </fileset>
@@ -221,11 +216,17 @@
   </target>
   	
   <target name="sign-jar" depends="build" if="keystore-exists">
-  	<input message="Please enter password for keystore ${keystore}:" addproperty="keystore.password" />
-  	<signjar jar="target/${projectName}.jar" alias="${keystore}" storepass="${keystore.password}" verbose="true"/>
+  	<input message="Please enter password for keystore ${keystore}:" 
+  		addproperty="keystore.password" />
+  	<signjar 
+  		jar="target/${projectName}.jar" 
+  		alias="${keystore}" 
+  		storepass="${keystore.password}" 
+  		verbose="true"/>
   </target>  	
   
-  <target name="package" depends="sign-jar" description="Prepare zip file with signed jar and accompanying html file">
+  <target name="package" depends="sign-jar" 
+  	description="Prepare zip file with signed jar and accompanying html file">
   	<copy toDir="target">
   		<fileset dir="src/main/data">
   			<include name="**/*.html"/>

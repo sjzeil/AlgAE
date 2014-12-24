@@ -134,6 +134,32 @@ public abstract class LocalJavaAnimationApplet extends AnimationApplet implement
 	}
 
 	
+	/**
+	 * Pops up a dialog box prompting for an input, pausing the
+	 * animation until a satisfactory input value is obtained from the
+	 * human operator.
+	 * 
+	 * @param prompt  Text of the prompt message to be displayed
+	 * @param requiredPattern regular expression describing an acceptable input value
+	 * @return a human-entered string matching the requiredPattern
+	 */
+	public String promptForInput(String prompt, String requiredPattern) {
+		return server.promptForInput(prompt, requiredPattern);
+	}
+
+
+	/**
+	 * Pops up a dialog box prompting for an input, pausing the
+	 * animation until a satisfactory input value is obtained from the
+	 * human operator.
+	 * 
+	 * @param prompt  Text of the prompt message to be displayed
+	 * @return a human-entered string
+	 */
+	public String promptForInput(String prompt) {
+		return promptForInput(prompt, ".*");
+	}
+
 	
 }
 

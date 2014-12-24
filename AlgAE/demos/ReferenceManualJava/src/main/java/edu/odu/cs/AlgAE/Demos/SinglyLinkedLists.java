@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 
-import static edu.odu.cs.AlgAE.Server.Animations.LocalJavaAnimation.activate;
+import static edu.odu.cs.AlgAE.Server.LocalAnimation.activate;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
