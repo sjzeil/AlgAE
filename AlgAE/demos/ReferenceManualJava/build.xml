@@ -92,7 +92,8 @@
   </target>
 
   <target name="resolve-ivy" depends="install-ivy" description="Resolve library dependencies">
-    <ivy:settings file="${user.home}/ivysettings.xml"/>
+    <!-- ivy:settings file="${user.home}/ivysettings.xml"/ -->
+  	<ivy:settings file="ivysettings.xml"/>
     <ivy:resolve/>
   	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
   		<classpath refid="test.classpath"/>
