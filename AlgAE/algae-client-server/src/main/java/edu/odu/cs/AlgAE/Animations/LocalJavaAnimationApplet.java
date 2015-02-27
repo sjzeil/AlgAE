@@ -1,10 +1,10 @@
-package edu.odu.cs.AlgAE.Server.Animations;
+package edu.odu.cs.AlgAE.Animations;
 
 import java.io.InputStream;
 
 import edu.odu.cs.AlgAE.Client.GUIClient;
 import edu.odu.cs.AlgAE.Common.Applets.AnimationApplet;
-import edu.odu.cs.AlgAE.Server.LocalAnimation;
+import edu.odu.cs.AlgAE.Animations.LocalAnimation;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
 

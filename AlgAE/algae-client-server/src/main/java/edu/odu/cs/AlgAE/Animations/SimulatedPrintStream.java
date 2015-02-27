@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.odu.cs.AlgAE.Server.Animations;
+package edu.odu.cs.AlgAE.Animations;
 
 import edu.odu.cs.AlgAE.Common.Communications.CapturedOutputMessage;
 import edu.odu.cs.AlgAE.Common.Communications.ClientCommunications;

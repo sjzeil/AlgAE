@@ -1,4 +1,4 @@
-package edu.odu.cs.AlgAE.Server;
+package edu.odu.cs.AlgAE.Animations;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,6 +13,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import edu.odu.cs.AlgAE.Animations.AnimationContext;
+import edu.odu.cs.AlgAE.Animations.ContextAware;
+import edu.odu.cs.AlgAE.Animations.MenuBuilder;
+import edu.odu.cs.AlgAE.Animations.SimulatedPrintStream;
 import edu.odu.cs.AlgAE.Client.Client;
 import edu.odu.cs.AlgAE.Common.Applets.AppletLifetimeSupport;
 import edu.odu.cs.AlgAE.Common.Communications.AckMessage;
@@ -27,10 +31,8 @@ import edu.odu.cs.AlgAE.Common.Communications.SourceCodeMessage;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SnapshotDiff;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
-import edu.odu.cs.AlgAE.Server.Animations.AnimationContext;
-import edu.odu.cs.AlgAE.Server.Animations.ContextAware;
-import edu.odu.cs.AlgAE.Server.Animations.MenuBuilder;
-import edu.odu.cs.AlgAE.Server.Animations.SimulatedPrintStream;
+import edu.odu.cs.AlgAE.Server.MenuFunction;
+import edu.odu.cs.AlgAE.Server.Server;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
 

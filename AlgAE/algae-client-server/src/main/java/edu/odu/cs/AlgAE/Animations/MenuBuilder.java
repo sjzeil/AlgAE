@@ -1,4 +1,4 @@
-package edu.odu.cs.AlgAE.Server.Animations;
+package edu.odu.cs.AlgAE.Animations;
 
 public interface MenuBuilder {
 	/**

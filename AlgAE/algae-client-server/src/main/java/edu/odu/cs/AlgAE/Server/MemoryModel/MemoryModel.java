@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.odu.cs.AlgAE.Animations.AnimationContext;
+import edu.odu.cs.AlgAE.Animations.ContextAware;
 import edu.odu.cs.AlgAE.Common.Snapshot.Connector;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
 import edu.odu.cs.AlgAE.Common.Snapshot.EntityIdentifier;
@@ -13,8 +15,6 @@ import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.LocalIdentifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
-import edu.odu.cs.AlgAE.Server.Animations.AnimationContext;
-import edu.odu.cs.AlgAE.Server.Animations.ContextAware;
 import edu.odu.cs.AlgAE.Server.Rendering.Renderer;
 import edu.odu.cs.AlgAE.Server.Utilities.Index;
 import edu.odu.cs.AlgAE.Server.Utilities.SimpleReference;

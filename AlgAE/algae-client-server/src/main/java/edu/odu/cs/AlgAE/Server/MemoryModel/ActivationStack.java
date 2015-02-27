@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.odu.cs.AlgAE.Animations.AnimationContext;
+import edu.odu.cs.AlgAE.Animations.ContextAware;
 import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.LocalIdentifier;
-import edu.odu.cs.AlgAE.Server.LocalAnimation;
-import edu.odu.cs.AlgAE.Server.Animations.AnimationContext;
-import edu.odu.cs.AlgAE.Server.Animations.ContextAware;
+import edu.odu.cs.AlgAE.Animations.LocalAnimation;
 import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
 import edu.odu.cs.AlgAE.Server.Rendering.CompoundRenderer;
 import edu.odu.cs.AlgAE.Server.Rendering.DefaultRenderer;

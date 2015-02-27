@@ -1,29 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ivy-settings>
-  <settings defaultResolver="default" />
-  <credentials host="forge350.cs.odu.edu"
-               username="deployer" passwd="deployer0"
-               realm="Repository Archiva Managed internal Repository"/>
-  <resolvers>
-    <chain name="default">
-      <filesystem name="localFileResolver">
-	<artifact pattern="${user.home}/.ivy2/local-cache/[artifact]-[revision].[ext]"/>
-      </filesystem>
-      <ibiblio name="archiva-snapshot" m2compatible="true" root="http://forge350.cs.odu.edu/archiva/repository/snapshots" />
-      <ibiblio name="archiva-internal" m2compatible="true" root="http://forge350.cs.odu.edu/archiva/repository/internal" />
-    </chain>
-
-    <url name="archiva-publish" m2compatible="true">
-        <artifact pattern=
-          "http://forge350.cs.odu.edu/archiva/repository/internal/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
-        <ivy pattern="http://forge350.cs.odu.edu/archiva/repository/internal/[organisation]/[module]/[revision]/ivy-[revision].xml" />
-    </url>
-
-    <filesystem name="local">
-      <artifact 
-	  pattern="${user.home}/.ivy2/local-cache/[artifact]-[revision].[ext]"/>
-    </filesystem>
-
-
-  </resolvers>
-</ivy-settings>
+<ivysettings>
+  <settings defaultResolver="default"/>
+  <include file="forge350-settings.xml"/>
+  <!-- include url="${ivy.default.settings.dir}/ivysettings-public.xml"/ -->
+  <include url="${ivy.default.settings.dir}/ivysettings-shared.xml"/>
+  <include url="${ivy.default.settings.dir}/ivysettings-local.xml"/>
+  <include url="${ivy.default.settings.dir}/ivysettings-main-chain.xml"/>
+  <include url="${ivy.default.settings.dir}/ivysettings-default-chain.xml"/>
+</ivysettings>

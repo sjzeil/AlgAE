@@ -1,0 +1,14 @@
+
+BUILD FAILED
+
+Target "all" does not exist in the project "AlgAE Demos from reference manual". 
+	at org.apache.tools.ant.Project.tsort(Project.java:1906)
+	at org.apache.tools.ant.Project.topoSort(Project.java:1814)
+	at org.apache.tools.ant.Project.topoSort(Project.java:1777)
+	at org.apache.tools.ant.Project.executeTarget(Project.java:1364)
+	at org.apache.tools.ant.helper.DefaultExecutor.executeTargets(DefaultExecutor.java:41)
+	at org.apache.tools.ant.Project.executeTargets(Project.java:1248)
+	at org.apache.tools.ant.Main.runBuild(Main.java:851)
+	at org.apache.tools.ant.Main.startAnt(Main.java:235)
+	at org.apache.tools.ant.launch.Launcher.run(Launcher.java:280)
+	at org.apache.tools.ant.launch.Launcher.main(Launcher.java:109)

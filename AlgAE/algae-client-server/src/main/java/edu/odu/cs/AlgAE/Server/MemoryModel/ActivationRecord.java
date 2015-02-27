@@ -10,12 +10,12 @@ import java.util.Stack;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import edu.odu.cs.AlgAE.Animations.AnimationContext;
+import edu.odu.cs.AlgAE.Animations.ContextAware;
+import edu.odu.cs.AlgAE.Animations.SimulatedPrintStream;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
-import edu.odu.cs.AlgAE.Server.LocalAnimation;
-import edu.odu.cs.AlgAE.Server.Animations.AnimationContext;
-import edu.odu.cs.AlgAE.Server.Animations.ContextAware;
-import edu.odu.cs.AlgAE.Server.Animations.SimulatedPrintStream;
+import edu.odu.cs.AlgAE.Animations.LocalAnimation;
 import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
 import edu.odu.cs.AlgAE.Server.Rendering.HighlightRenderer;
 import edu.odu.cs.AlgAE.Server.Rendering.ObjectRenderer;
