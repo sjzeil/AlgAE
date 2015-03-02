@@ -3,13 +3,13 @@
  */
 package edu.odu.cs.AlgAE.Animations;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
@@ -17,11 +17,13 @@ import java.io.PrintStream;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.sun.xml.internal.stream.buffer.stax.StreamReaderBufferCreator;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 
-import edu.odu.cs.AlgAE.Common.Communications.ForceShutDownMessage;
+import edu.odu.cs.AlgAE.Common.Communications.MenuMessage;
 import edu.odu.cs.AlgAE.Common.Communications.ServerMessage;
 import edu.odu.cs.AlgAE.Common.Communications.ServerMessage.ServerMessageTypes;
+import edu.odu.cs.AlgAE.Common.Communications.SnapshotMessage;
 
 /**
  * @author zeil
@@ -67,11 +69,13 @@ public class TestJavaStandAloneServer {
 		};
 		server.runAsMain();
 		writeToServer.println(new ServerMessage(ServerMessageTypes.Start, "starting"));
-		writeToServer.println(new ServerMessage(ServerMessageTypes.ShutDown, "stopping"));
-		
-		String line = readFromServer.readLine();
-		assertTrue (line.contains("<start"));
-		
+		JsonReader reader = new JsonReader(readFromServer);
+		Gson gson = new Gson();
+		MenuMessage menuMsg = gson.fromJson(reader, MenuMessage.class);
+		assertNotNull(menuMsg);
+		SnapshotMessage snapMsg = gson.fromJson(reader, SnapshotMessage.class);
+		assertNotNull(snapMsg);
+		writeToServer.println(new ServerMessage(ServerMessageTypes.ShutDown, "stopping"));		
 	}
 
 }

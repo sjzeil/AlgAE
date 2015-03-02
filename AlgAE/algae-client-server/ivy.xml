@@ -24,6 +24,9 @@
        <artifact name="${projectName}-src" conf="build" type="sources" ext="jar"/>
     </publications>
     <dependencies>
+        <dependency org="com.google.code.gson" name="gson" 
+          rev="2.3.1"
+          conf="build,integration,findbugs,test,all->default"/>
         <dependency org="junit" name="junit" 
 		  rev="4.11" 
 		  conf="test,integration,reports,all->default"/>

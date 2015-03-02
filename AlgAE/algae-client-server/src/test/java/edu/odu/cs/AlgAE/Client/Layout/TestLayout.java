@@ -14,7 +14,7 @@ import edu.odu.cs.AlgAE.Common.Snapshot.Connector;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
 import edu.odu.cs.AlgAE.Common.Snapshot.EntityIdentifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
-import edu.odu.cs.AlgAE.Common.Snapshot.RemoteIdentifier;
+import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
 
@@ -35,32 +35,32 @@ public class TestLayout {
     	s.setDescriptor("first snapshot");
     	s.setBreakpointLocation(new SourceLocation("foo.java", 1));
 
-    	Entity stack = new Entity(new RemoteIdentifier(stackID));
+    	Entity stack = new Entity(new Identifier(stackID));
     	stack.setColor(Color.lightGray);
     	stack.setMaxComponentsPerRow(1);
     	s.add(stack);
     	s.setActivationStack(stack.getEntityIdentifier());
 
-    	Entity mainAct = new Entity(new RemoteIdentifier(mainActID), stack, "call0");
+    	Entity mainAct = new Entity(new Identifier(mainActID), stack, "call0");
     	mainAct.setValue("main()");
     	mainAct.setColor(Color.cyan);
     	s.add(mainAct);
     	stack.getComponents().add(mainAct.getEntityIdentifier());
 
-    	Entity fooAct = new Entity(new RemoteIdentifier(fooActID), stack, "call1");
+    	Entity fooAct = new Entity(new Identifier(fooActID), stack, "call1");
     	fooAct.setValue("foo(");
     	fooAct.setColor(Color.cyan);
     	fooAct.setMaxComponentsPerRow(100);
     	s.add(fooAct);
     	stack.getComponents().add(fooAct.getEntityIdentifier());
     	
-    	Entity a = new Entity(new RemoteIdentifier(aID));
+    	Entity a = new Entity(new Identifier(aID));
     	a.setLabel("A");
     	a.setValue("42");
     	s.add(a);
     	s.setGlobal(a.getEntityIdentifier(), true);
 
-    	Entity b = new Entity(new RemoteIdentifier(bID));
+    	Entity b = new Entity(new Identifier(bID));
     	b.setLabel("B");
     	b.setValue("12");
     	s.add(b);
@@ -79,7 +79,7 @@ public class TestLayout {
 	private static void checkvar (Map<EntityIdentifier, Entity> entities, int objID, 
 			int cnt, String label, String value) {
 		assertEquals (cnt, countvar(entities, objID));
-		Identifier oid = new RemoteIdentifier(objID);
+		Identifier oid = new Identifier(objID);
 		EntityIdentifier eid;
 		eid = new EntityIdentifier(oid, label);
 		Entity e = entities.get(eid);
@@ -91,7 +91,7 @@ public class TestLayout {
 	}
 
 	private static int countvar (Map<EntityIdentifier, Entity> entities, int objID) {
-		Identifier id = new RemoteIdentifier (objID);
+		Identifier id = new Identifier (objID);
 		int count = 0;
 		for (EntityIdentifier eid: entities.keySet()) {
 			if (id.equals(eid.getObjectIdentifier())) {
@@ -131,7 +131,7 @@ public class TestLayout {
 		assertEquals (5, entities.keySet().size());
 		checkvar (entities, stackID, 1, null, null);
 		checkvar (entities, aID, 1, null, "42");
-		checksize (scene, new EntityIdentifier(new RemoteIdentifier(aID)), "A", 6, 9, 1, 2);
+		checksize (scene, new EntityIdentifier(new Identifier(aID)), "A", 6, 9, 1, 2);
 	}
 
     @Test
@@ -145,7 +145,7 @@ public class TestLayout {
 		assertEquals (5, entities.keySet().size());
 		checkvar (entities, stackID, 1, null, null);
 		checkvar (entities, aID, 1, null, "42");
-		checksize (scene, new EntityIdentifier(new RemoteIdentifier(aID)), "A", 6, 9, 1, 2);
+		checksize (scene, new EntityIdentifier(new Identifier(aID)), "A", 6, 9, 1, 2);
 	}
 
 

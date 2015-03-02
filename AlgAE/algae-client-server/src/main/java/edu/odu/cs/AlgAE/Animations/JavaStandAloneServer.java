@@ -1,31 +1,20 @@
 package edu.odu.cs.AlgAE.Animations;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
-import javax.swing.JFrame;
-
-import edu.odu.cs.AlgAE.Client.GUIClient;
-import edu.odu.cs.AlgAE.Common.Applets.AnimationApplet;
 import edu.odu.cs.AlgAE.Common.Communications.ClientMessage;
-import edu.odu.cs.AlgAE.Common.Communications.LocalJavaCommunication;
 import edu.odu.cs.AlgAE.Common.Communications.PromptForInputMessage;
 import edu.odu.cs.AlgAE.Common.Communications.ServerMessage;
 import edu.odu.cs.AlgAE.Common.Communications.StandardIOCommunication;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
-import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.Server;
 import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
-
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 /**
  *  A specialization of Server for Java standalone programs that will exchange messages
@@ -37,8 +26,6 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
 {
 
 	private static Logger logger = null; 
-	private static FileHandler loggerFile;
-	private static SimpleFormatter formatterTxt;
 	
 	private InputStream msgsIn;
 	private PrintStream msgsOut;
@@ -60,7 +47,7 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
 
 	public JavaStandAloneServer (String title, InputStream msgsIn, PrintStream msgsOut)
 	{
-		DefaultLogSetting.setupLogging(false,  "algae-server.log");
+		DefaultLogSetting.setupLogging(false,  "algae-server%u.log");
 		
 		this.msgsIn = msgsIn;
 		this.msgsOut = msgsOut;

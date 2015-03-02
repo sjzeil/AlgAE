@@ -7,13 +7,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.InputStream;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import edu.odu.cs.AlgAE.Common.Snapshot.Connector;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
 import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
-import edu.odu.cs.AlgAE.Common.Snapshot.RemoteIdentifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SnapshotDiff;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
@@ -24,13 +25,15 @@ import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
  */
 public class TestClientMessage {
 
-	private void xmlTest (ClientMessage msg, String mustInclude)
+	private void writeReadTest (ClientMessage msg, String mustInclude)
 	{
 		String className = msg.getClass().getSimpleName();
-		String msgXML = msg.toXML();
-		assertTrue (msgXML.contains(className));
-		assertTrue (msgXML.contains(mustInclude));
-		ClientMessage msg2 = ClientMessage.fromXML(msgXML);
+		String serializedMsg = msg.serialize();
+		assertTrue (serializedMsg.contains(className));
+		assertTrue (serializedMsg.contains(mustInclude));
+		@SuppressWarnings("deprecation")
+		InputStream stringIn = new java.io.StringBufferInputStream(serializedMsg);
+		ClientMessage msg2 = ClientMessage.load(stringIn);
 		assertEquals (className, msg2.getClass().getSimpleName());
 		assertEquals (msg, msg2);
 	}
@@ -39,25 +42,25 @@ public class TestClientMessage {
 	@Test
 	public void testAckXML() {
 		AckMessage message1 = new AckMessage();
-		xmlTest (message1, "Ack");
+		writeReadTest (message1, "Ack");
 	}
 	
 	
 	@Test
 	public void testCapturedOutputXML() {
 		String outp = "foobar";
-		xmlTest (new CapturedOutputMessage(outp), outp);
+		writeReadTest (new CapturedOutputMessage(outp), outp);
 	}
 
 	@Test
 	public void testForceShutDownXML() {
 		String param = "foobar";
-		xmlTest (new ForceShutDownMessage(param), param);
+		writeReadTest (new ForceShutDownMessage(param), param);
 	}
 
 	@Test
 	public void testMenuXML() {
-		String aboutStr = "All about\nthis animation";
+		String aboutStr = "All about";
 		String aboutStr2 = "Nothing about\nthis animation";
 		String[] menu1 = {"search", "sort", "insert"};
 		String[] menu2 = {"sort", "search", "insert"};
@@ -68,8 +71,8 @@ public class TestClientMessage {
 		assertFalse (msg1.equals(msg2));
 		assertFalse (msg1.equals(msg3));
 		
-		xmlTest (msg1, aboutStr);
-		xmlTest (msg2, menu1[1]);
+		writeReadTest (msg1, aboutStr);
+		writeReadTest (msg2, menu1[1]);
 	}
 
 	@Test
@@ -86,8 +89,8 @@ public class TestClientMessage {
 		assertFalse (msg1.equals(msg2));
 		assertFalse (msg1.equals(msg3));
 		
-		xmlTest (msg1, prompt1);
-		xmlTest (msg2, pattern1);
+		writeReadTest (msg1, prompt1);
+		writeReadTest (msg2, pattern1);
 	}
 	
 	
@@ -105,8 +108,8 @@ public class TestClientMessage {
 		assertFalse (msg1.equals(msg2));
 		assertFalse (msg1.equals(msg3));
 		
-		xmlTest (msg1, path1);
-		xmlTest (msg3, text2);
+		writeReadTest (msg1, path1);
+		writeReadTest (msg3, "for (int i");
 	}
 	
 	
@@ -119,12 +122,12 @@ public class TestClientMessage {
 	@Before
 	public void setup()
 	{
-		Identifier id1 = new RemoteIdentifier(1);
+		Identifier id1 = new Identifier(1);
 		entity1a = new Entity(id1);
-		Identifier id2 = new RemoteIdentifier(2);
+		Identifier id2 = new Identifier(2);
 		entity2 = new Entity(id2, "label2");
 		entity1b = new Entity(id1, entity2, "component1");
-		Identifier id3 = new RemoteIdentifier(3);
+		Identifier id3 = new Identifier(3);
 		entity3 = new Entity(id3, "labeled");
 		entity2.getComponents().add(entity1b.getEntityIdentifier());
 		entity3.getConnections().add(new Connector("link", entity3.getEntityIdentifier(),
@@ -149,8 +152,8 @@ public class TestClientMessage {
 	@Test
 	public void testSnapshotXML() {
 		SnapshotDiff sd = new SnapshotDiff(null, snap1);
-		xmlTest (new SnapshotMessage(sd, true), "component1");
-		xmlTest (new SnapshotMessage(sd, false), "link");
+		writeReadTest (new SnapshotMessage(sd, true), "component1");
+		writeReadTest (new SnapshotMessage(sd, false), "link");
 	}
 
 	

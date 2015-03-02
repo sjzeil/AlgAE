@@ -31,8 +31,8 @@ public class TestEntityIdentifier {
 
 	@BeforeClass
 	public static void setUpOnce()  {
-		id1 = new EntityIdentifier(new RemoteIdentifier(1), "entityA");
-		id2 = new EntityIdentifier(new RemoteIdentifier(2), id1, "entityB");
+		id1 = new EntityIdentifier(new Identifier(1), "entityA");
+		id2 = new EntityIdentifier(new Identifier(2), id1, "entityB");
 	}
 
 	@Test

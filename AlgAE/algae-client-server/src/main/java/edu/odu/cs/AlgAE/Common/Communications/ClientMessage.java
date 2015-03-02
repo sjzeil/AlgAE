@@ -4,10 +4,19 @@
 package edu.odu.cs.AlgAE.Common.Communications;
 
 import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.logging.Logger;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.JsonReader;
+
+import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 
 
 /**
@@ -20,7 +29,7 @@ import java.io.ByteArrayOutputStream;
  */
 public abstract class ClientMessage extends MessageBase {
 	
-	
+	private static Logger logger = Logger.getLogger(ClientMessage.class.getName()); 
 
 	/**
 	 * Construct a new client message
@@ -35,7 +44,7 @@ public abstract class ClientMessage extends MessageBase {
 	public abstract boolean equals (Object clientMessage);
 	
 	/**
-	 * Converts the message to XML that can be shipped over a network
+	 * Converts the message to a string that can be shipped over a network
 	 * (typically from a remote animation server).
 	 * 
 	 * This imposes some requirements on the subclasses of ClientMessage.
@@ -45,14 +54,16 @@ public abstract class ClientMessage extends MessageBase {
 	 *   
 	 * @return XML encoding of the message
 	 */
-	public String toXML()
+	public String serialize()
 	{
-		ByteArrayOutputStream byout = new ByteArrayOutputStream();
-		XMLEncoder out = new XMLEncoder(new BufferedOutputStream(byout));
-		out.writeObject(this);
-		out.close();
-		String XMLstr = byout.toString();
-		return XMLstr;
+		Gson gson = new Gson();
+		String className = getClass().getName();
+		if (className.contains(".")) {
+			className = className.substring(className.lastIndexOf('.')+1);
+		}
+		String json0 = gson.toJson(className);
+		String json = gson.toJson(this);
+		return json0 + "\n" + json;
 	}
 	
 	/**
@@ -64,20 +75,46 @@ public abstract class ClientMessage extends MessageBase {
 	 *        be a particularly useful one
 	 *   - All data required to reconstruct must be accessible via get/set function pairs
 	 *   
-	 * @param xml string containing the XML encoding of a client message 
+	 * @param serializedInput string containing the XML encoding of a client message 
 	 * @return a client message
 	 */
-	public static ClientMessage fromXML(String xml)
+	public static ClientMessage load(InputStream serializedInput)
 	{
-		XMLDecoder in = new XMLDecoder(new ByteArrayInputStream(xml.getBytes()));
-		ClientMessage msg = (ClientMessage)in.readObject();
-		in.close();
-		return msg;
+		Gson gson = new Gson();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(serializedInput));
+		JsonReader jreader = new JsonReader(reader);
+		jreader.setLenient(true);
+		String messageClass = gson.fromJson(jreader, String.class);
+		messageClass = ClientMessage.class.getPackage().getName()
+				+ "." + messageClass;
+		Class<ClientMessage> actualMessageClass;
+		try {
+			actualMessageClass = (Class<ClientMessage>)Class.forName(messageClass);
+			ClientMessage message = gson.fromJson(jreader, actualMessageClass);
+			return message;
+		} catch (ClassNotFoundException e) {
+			logger.severe("Unable to parse message, expected to have type " 
+					+ messageClass + ": " + e);
+			return new ForceShutDownMessage("protocol failure");
+		} catch (JsonSyntaxException e) {
+			logger.severe("Unable to parse message, for type " 
+					+ messageClass + ": " + e);
+			return new ForceShutDownMessage("protocol failure");
+		} catch (JsonIOException e) {
+			logger.severe("Unable to parse message, for type " 
+					+ messageClass + ": " + e);
+			return new ForceShutDownMessage("protocol failure");
+		}
 	}
 	
 	
+	//public abstract ClientMessage deserializex(String serializedInput);
+	
+	
 	public String toString() {
-		return toXML();
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String json = gson.toJson(this);
+		return json;
 	}
 	
 }

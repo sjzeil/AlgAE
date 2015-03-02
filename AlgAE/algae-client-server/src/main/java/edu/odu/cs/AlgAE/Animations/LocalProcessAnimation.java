@@ -1,17 +1,12 @@
 package edu.odu.cs.AlgAE.Animations;
 
 import java.io.File;
-import java.io.InputStream;
 
 import javax.swing.JFileChooser;
 
 import edu.odu.cs.AlgAE.Client.GUIClient;
 import edu.odu.cs.AlgAE.Common.Applets.AnimationApplet;
-import edu.odu.cs.AlgAE.Common.Communications.LocalJavaCommunication;
 import edu.odu.cs.AlgAE.Common.Communications.LocalProcessCommunication;
-import edu.odu.cs.AlgAE.Server.LocalServer;
-import edu.odu.cs.AlgAE.Server.MenuFunction;
-import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
 
 /**
  *  An AlgAE animation that works with a server running in a separate process on the same machine.

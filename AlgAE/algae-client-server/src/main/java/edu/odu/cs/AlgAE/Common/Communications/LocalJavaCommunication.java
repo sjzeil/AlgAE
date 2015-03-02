@@ -76,7 +76,6 @@ public class LocalJavaCommunication implements ClientCommunications, ServerCommu
 	@Override
 	public void sendToClient(ClientMessage message) throws InterruptedException {
 		logger.info("sendToClient: info");
-		logger.warning("sendToClient: info");
 		logger.fine("sendToClient: " + message);
 		clientMessages.put(message);
 		logger.finer("sendToClient: sent");

@@ -19,7 +19,7 @@ import edu.odu.cs.AlgAE.Common.Communications.SnapshotMessage;
 import edu.odu.cs.AlgAE.Common.Communications.SourceCodeMessage;
 import edu.odu.cs.AlgAE.Common.Snapshot.Connector;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
-import edu.odu.cs.AlgAE.Common.Snapshot.RemoteIdentifier;
+import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SnapshotDiff;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
@@ -73,8 +73,8 @@ public class DemoClientVisually  implements ServerCommunications {
 
 
 	private Snapshot generateSnapshot1(int k) {
-		Entity stk = new Entity(new RemoteIdentifier(1));
-		Entity global = new Entity(new RemoteIdentifier(2));
+		Entity stk = new Entity(new Identifier(1));
+		Entity global = new Entity(new Identifier(2));
 		stk.setColor(Color.magenta);
 		stk.setValue("stack");
 		global.setLabel("g");
@@ -93,10 +93,10 @@ public class DemoClientVisually  implements ServerCommunications {
 
 	
 	private Snapshot generateSnapshot2(int k) {
-		Entity stk = new Entity(new RemoteIdentifier(1));
-		Entity global = new Entity(new RemoteIdentifier(2));
-		Entity heapObj = new Entity(new RemoteIdentifier(3));
-		Entity component = new Entity(new RemoteIdentifier(4), heapObj, "component");
+		Entity stk = new Entity(new Identifier(1));
+		Entity global = new Entity(new Identifier(2));
+		Entity heapObj = new Entity(new Identifier(3));
+		Entity component = new Entity(new Identifier(4), heapObj, "component");
 		stk.setColor(Color.magenta);
 		stk.setValue("activation stack");
 		global.setLabel("g");

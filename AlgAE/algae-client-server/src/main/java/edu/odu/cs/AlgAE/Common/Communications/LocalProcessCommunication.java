@@ -3,6 +3,7 @@
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -127,23 +128,13 @@ public class LocalProcessCommunication implements ServerCommunications {
 		
 		private Process process = null;
 		private boolean stopping = false;
-		private final String EndOfClientMessageMarker = "</message";
-		private BufferedReader fromServer;
+		private BufferedInputStream fromServer;
 		private PrintStream toServer;
 		
 		
 		private ClientMessage readMsgFromServer() throws IOException
 		{
-			StringBuffer msgBuf = new StringBuffer();
-			String line = fromServer.readLine();
-			while (line != null && !line.contains(EndOfClientMessageMarker)) {
-				msgBuf.append(line);
-				line = fromServer.readLine();
-			}
-			if (line == null) {
-				throw new IOException("Lost communication with the server");
-			}
-			ClientMessage cmsg = ClientMessage.fromXML(msgBuf.toString());
+			ClientMessage cmsg = ClientMessage.load(fromServer);
 			return cmsg;
 		}
 		
@@ -167,7 +158,7 @@ public class LocalProcessCommunication implements ServerCommunications {
 			ProcessBuilder pb = new ProcessBuilder (pathToExecutable.getAbsolutePath());
 			try {
 				process = pb.start();
-				fromServer = new BufferedReader(new InputStreamReader((process.getInputStream())));
+				fromServer = new BufferedInputStream(process.getInputStream());
 				toServer = new PrintStream(new BufferedOutputStream(process.getOutputStream()));
 				
 				// Wait for first server message (Start) to appear from client

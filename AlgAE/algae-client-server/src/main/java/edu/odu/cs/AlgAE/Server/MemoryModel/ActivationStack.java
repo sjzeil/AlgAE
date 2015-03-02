@@ -9,7 +9,7 @@ import java.util.List;
 import edu.odu.cs.AlgAE.Animations.AnimationContext;
 import edu.odu.cs.AlgAE.Animations.ContextAware;
 import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
-import edu.odu.cs.AlgAE.Common.Snapshot.LocalIdentifier;
+import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
 import edu.odu.cs.AlgAE.Server.Rendering.CompoundRenderer;
@@ -170,7 +170,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 	 * @return a list of renderers, in the order they should be consulted.
 	 */
 	public <T> Renderer<T> getRenderer(T obj) {
-		Identifier id = new LocalIdentifier(obj);
+		Identifier id = new Identifier(obj);
 		CompoundRenderer<T> r = new CompoundRenderer<T>();
 		r.add(new DefaultRenderer<T>());
 		addTypeRenderers (r, obj);

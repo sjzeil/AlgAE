@@ -1,29 +1,125 @@
 package edu.odu.cs.AlgAE.Common.Snapshot;
 
+import java.lang.ref.WeakReference;
+import java.util.LinkedList;
+import java.util.ListIterator;
+
 /**
- * Unique identifiers for objects in memory.
+ * Unique identifiers for objects in memory, with support for the local Java server
+ * which needs to map objects to identifiers and vice versa.
  * 
  * @author zeil
  *
  */
-public abstract class Identifier {
-
-	/**
-	 * The implementation of this class is slightly complicated by the conflicting requirements that
-	 * 1) Identifiers must be serializable when supplied from external servers such as the C++
-	 *     animation server, which will supply them as long integer values.
-	 * 2) The local Java client needs support for mapping Identifiers to the objects that they identify and
-	 *     vice versa.
-	 * Hence it is actually easiest to provide a pair of implementations via subclasses.
-	 */
-
+public class Identifier {
 	
-	public abstract String toString();
+	private static final boolean keepClassNamesForDebugging = true;
+
+	private static final int hashTableSize = 7919; // prime
+	
+	private static class HashTableEntry {
+		WeakReference<Object> key;
+		int id;
 		
-	public abstract int hashCode();
+		public HashTableEntry(Object obj, int identifier) {
+			key = new WeakReference<Object>(obj);
+			id = identifier;
+		}
+	}
 	
-	public abstract boolean equals (Object obj);
+	private static class Bucket extends LinkedList<HashTableEntry> {}
 	
-	public abstract boolean isNull();
+	private static Bucket[] identifiers 
+	  = new Bucket[hashTableSize];
+	
+	private static int nextIdentifier = 1;
+	
+	private String className;
+	protected int id;
+
+	
+	private int getPossibleID(Object obj) {
+		if (obj == null) {
+			return 0;
+		}
+		int hash = obj.hashCode() % hashTableSize;
+		Bucket bucket = identifiers[hash];
+		if (bucket == null) {
+			return 0;
+		}
+		for (ListIterator<HashTableEntry> iter = bucket.listIterator(); iter.hasNext();) {
+			HashTableEntry entry = iter.next();
+			Object keyObj = entry.key.get();
+			if (keyObj == null) {
+				// This object is no longer in memory. Remove from the identifier table. 
+				iter.remove();
+			} else if (keyObj == obj) {
+				// Yes, that's ==, not equals. We are deliberately testing for 
+				// object identity.
+				return entry.id;
+			}
+		}
+		return 0;
+	}
+	
+
+	private int addID(Object obj) {
+		if (obj != null) {
+			int hash = obj.hashCode() % hashTableSize;
+			Bucket bucket = identifiers[hash];
+			if (bucket == null) {
+				bucket = new Bucket();
+				identifiers[hash] = bucket;
+			}
+			bucket.add (new HashTableEntry(obj, nextIdentifier));
+			++nextIdentifier;
+			return nextIdentifier-1;
+		} else {
+			return 0;
+		}
+	}
+	
+	public Identifier()
+	{
+		className = "";
+		id = 0;
+	}
+
+	public Identifier(Object instance) {
+		if (instance != null) {
+			if (keepClassNamesForDebugging) {
+				className = instance.getClass().getName();
+			}
+			id = getPossibleID(instance);
+			if (id == 0) {
+				id = addID(instance);
+			}
+		} else {
+			if (keepClassNamesForDebugging) {
+				className = "null";
+			}
+			id = 0;
+		}
+	}
+	
+	public String toString()
+	{
+		return className + "@" + id;
+	}
+		
+	public int hashCode() {
+		return id;
+	}
+	
+	public boolean equals (Object obj) {
+		if (obj == null || ! (obj instanceof Identifier)) {
+			return false;
+		}
+		return id == ((Identifier)obj).id;
+	}
+
+    public boolean isNull() {
+        return id == 0;
+    }
 
 }

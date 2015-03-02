@@ -3,10 +3,12 @@
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -30,19 +32,21 @@ public class StandardIOCommunication implements ClientCommunications {
 	private BlockingQueue<ServerMessage> serverMessages;
 	private boolean debugSend = true;
 	private boolean debugReceive = true;
-	private File pathToExecutable;
 	private CommunicationsManager manager;
 	private final int QueueCapacity = 4;
 	
+	private BufferedInputStream messagesIn;
+	private PrintStream messagesOut;
 	
 	/**
 	 * Create a new communications path between a server and client.
 	 */
-	public StandardIOCommunication()
+	public StandardIOCommunication(InputStream msgsIn, PrintStream msgsOut)
 	{
+		messagesIn = new BufferedInputStream(msgsIn);
+		messagesOut = msgsOut;
 		clientMessages = new ArrayBlockingQueue<ClientMessage>(QueueCapacity);
 		serverMessages = new ArrayBlockingQueue<ServerMessage>(QueueCapacity);
-		this.pathToExecutable = pathToExecutable;
 		manager = new CommunicationsManager();
 	}
 
@@ -105,21 +109,6 @@ public class StandardIOCommunication implements ClientCommunications {
 
 
 
-	/**
-	 * @return the pathToExecutable
-	 */
-	public File getPathToExecutable() {
-		return pathToExecutable;
-	}
-
-
-	/**
-	 * @param pathToExecutable the pathToExecutable to set
-	 */
-	public void setPathToExecutable(File pathToExecutable) {
-		this.pathToExecutable = pathToExecutable;
-	}
-
 	
 	private class CommunicationsManager extends Thread {
 		
@@ -132,16 +121,7 @@ public class StandardIOCommunication implements ClientCommunications {
 		
 		private ClientMessage readMsgFromServer() throws IOException
 		{
-			StringBuffer msgBuf = new StringBuffer();
-			String line = fromServer.readLine();
-			while (line != null && !line.contains(EndOfClientMessageMarker)) {
-				msgBuf.append(line);
-				line = fromServer.readLine();
-			}
-			if (line == null) {
-				throw new IOException("Lost communication with the server");
-			}
-			ClientMessage cmsg = ClientMessage.fromXML(msgBuf.toString());
+			ClientMessage cmsg = ClientMessage.load(messagesIn);
 			return cmsg;
 		}
 		

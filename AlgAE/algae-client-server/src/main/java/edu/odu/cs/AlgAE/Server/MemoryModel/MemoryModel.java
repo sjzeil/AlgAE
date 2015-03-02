@@ -12,7 +12,7 @@ import edu.odu.cs.AlgAE.Common.Snapshot.Connector;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
 import edu.odu.cs.AlgAE.Common.Snapshot.EntityIdentifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
-import edu.odu.cs.AlgAE.Common.Snapshot.LocalIdentifier;
+import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
 import edu.odu.cs.AlgAE.Server.Rendering.Renderer;
@@ -169,7 +169,7 @@ public class MemoryModel implements ContextAware
 
 	public Snapshot renderInto(String description, SourceLocation sourceLocation) {
 		Snapshot snap = new Snapshot(description, sourceLocation);
-		snap.setActivationStack(new EntityIdentifier(new LocalIdentifier(activationStack)));
+		snap.setActivationStack(new EntityIdentifier(new Identifier(activationStack)));
 		formClosure(snap);
 		normalize(snap);
 		return snap;
@@ -222,7 +222,7 @@ public class MemoryModel implements ContextAware
 			// to create an entity and add its components and connections to the queue
 			// for future processing.
 			InternalComponent c = queue.pop();
-			LocalIdentifier oid = new LocalIdentifier(c.component.getComponentObject());
+			Identifier oid = new Identifier(c.component.getComponentObject());
 			LinkedList<Entity> aliasesForEntity = snap.getEntities().get(oid);
 			if (aliasesForEntity == null) {
 				aliasesForEntity = new LinkedList<Entity>();
@@ -271,7 +271,7 @@ public class MemoryModel implements ContextAware
 					clabel = "\t" + componentCount;
 				++componentCount;
 				if (cobj != null) {
-					EntityIdentifier c_eid = new EntityIdentifier(new LocalIdentifier(cobj), eid, clabel);
+					EntityIdentifier c_eid = new EntityIdentifier(new Identifier(cobj), eid, clabel);
 					entity.getComponents().add(c_eid);
 					InternalComponent intComp = new InternalComponent(eid, new Component(cobj, clabel));
 					//System.err.println ("" + entity.getEntityIdentifier() + " has component " + c_eid);
@@ -284,7 +284,7 @@ public class MemoryModel implements ContextAware
 			for (Connection conn: connections) {
 				Object destObj = conn.getDestination();
 				Identifier destID = null;
-				destID = new LocalIdentifier(destObj);
+				destID = new Identifier(destObj);
 				Connector connector = new Connector(conn.getID(), eid, new EntityIdentifier(destID), 
 						conn.getMinAngle(), conn.getMaxAngle(), conn.getComponentIndex());
 				if (conn.getColor() != null)

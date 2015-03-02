@@ -59,12 +59,12 @@ public class TestSnapshot {
 	@Before
 	public void setup()
 	{
-		Identifier id1 = new RemoteIdentifier(1);
+		Identifier id1 = new Identifier(1);
 		entity1a = new Entity(id1);
-		Identifier id2 = new RemoteIdentifier(2);
+		Identifier id2 = new Identifier(2);
 		entity2 = new Entity(id2, "label2");
 		entity1b = new Entity(id1, entity2, "component1");
-		Identifier id3 = new RemoteIdentifier(3);
+		Identifier id3 = new Identifier(3);
 		entity3 = new Entity(id3, "labeled");
 		entity2.getComponents().add(entity1b.getEntityIdentifier());
 		entity3.getConnections().add(new Connector("link", entity3.getEntityIdentifier(),

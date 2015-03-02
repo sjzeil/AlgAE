@@ -32,7 +32,7 @@ public class DefaultLogSetting {
      */
 	public static void setupLogging(boolean isAnApplet, String logFileName) {
 		if (globalLogger == null) {
-			globalLogger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+			globalLogger = Logger.getLogger("");
 			if (!isAnApplet) {
 				try {
 					FileHandler handler = new FileHandler(logFileName);
@@ -52,11 +52,13 @@ public class DefaultLogSetting {
 				Handler[] handlers = globalLogger.getHandlers();
 			    if (handlers.length == 0) {
 			    	ConsoleHandler handler = new ConsoleHandler();
-			    	handler.setFormatter(new SimpleFormatter());
+			    	//handler.setFormatter(new SimpleFormatter());
 				    globalLogger.addHandler(handler);
 			    }					
 			}
-		    globalLogger.setLevel(DefaultLogSetting.defaultLevel);
+		    globalLogger.setLevel(Level.INFO);
+		    Logger myLoggers = Logger.getLogger("edu.odu.cs.AlgAE");
+		    myLoggers.setLevel(defaultLevel);
 		}
 	}
 

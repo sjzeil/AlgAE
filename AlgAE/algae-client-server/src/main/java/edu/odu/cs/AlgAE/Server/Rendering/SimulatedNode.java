@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.odu.cs.AlgAE.Animations.AnimationContext;
-import edu.odu.cs.AlgAE.Common.Snapshot.LocalIdentifier;
+import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 
@@ -26,11 +26,11 @@ public class SimulatedNode implements CanBeRendered<SimulatedNode>, Renderer<Sim
 	 * Cache of previously generated nodes.
 	 */
 	private static class NodeID {
-		LocalIdentifier list;
+		Identifier list;
 		int componentNum;
 		
 		public NodeID (List<?> list, int component, AnimationContext context) {
-			this.list = new LocalIdentifier(list);
+			this.list = new Identifier(list);
 			this.componentNum = component;
 		}
 		

@@ -14,7 +14,7 @@ import org.junit.Test;
 import edu.odu.cs.AlgAE.Animations.LocalJavaAnimationApplet;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
 import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
-import edu.odu.cs.AlgAE.Common.Snapshot.LocalIdentifier;
+import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
 import edu.odu.cs.AlgAE.Server.LocalServer;
@@ -59,7 +59,7 @@ public class TestMemoryRendering {
     
     
 	private void checkvar (Map<Identifier, LinkedList<Entity> > entities, Object obj, int len, String label, String value) {
-		LinkedList<Entity> list = entities.get(new LocalIdentifier(obj));
+		LinkedList<Entity> list = entities.get(new Identifier(obj));
 		assertNotNull(list);
 		assertEquals (len, list.size());
 		Entity e = list.getFirst();

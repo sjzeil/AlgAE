@@ -22,7 +22,6 @@ import edu.odu.cs.AlgAE.Common.Applets.AppletLifetimeSupport;
 import edu.odu.cs.AlgAE.Common.Communications.AckMessage;
 import edu.odu.cs.AlgAE.Common.Communications.ClientCommunications;
 import edu.odu.cs.AlgAE.Common.Communications.ClientMessage;
-import edu.odu.cs.AlgAE.Common.Communications.LocalJavaCommunication;
 import edu.odu.cs.AlgAE.Common.Communications.MenuMessage;
 import edu.odu.cs.AlgAE.Common.Communications.PromptForInputMessage;
 import edu.odu.cs.AlgAE.Common.Communications.ServerMessage;

@@ -34,10 +34,10 @@ public class TestIdentifier {
 
 	@BeforeClass
 	public static void setUpOnce()  {
-		id1 = new RemoteIdentifier();
-		id2 = new LocalIdentifier(id1);
-		id3 = new RemoteIdentifier(123);
-		id4 = new RemoteIdentifier(123);
+		id1 = new Identifier();
+		id2 = new Identifier(id1);
+		id3 = new Identifier(123);
+		id4 = new Identifier(123);
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class TestIdentifier {
 	@Test
 	public void testToString() {
 		assertTrue (id1.toString().contains("0"));
-		assertTrue (id2.toString().contains("Identifier"));
+		assertTrue (id2.toString().contains("@"));
 		assertTrue (id3.toString().contains("123"));
 		assertEquals (id3.toString(), id4.toString());
 	}
