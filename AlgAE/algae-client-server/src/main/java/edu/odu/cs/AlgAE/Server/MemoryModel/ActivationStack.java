@@ -10,7 +10,7 @@ import edu.odu.cs.AlgAE.Animations.AnimationContext;
 import edu.odu.cs.AlgAE.Animations.ContextAware;
 import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.LocalIdentifier;
-import edu.odu.cs.AlgAE.Animations.LocalAnimation;
+import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
 import edu.odu.cs.AlgAE.Server.Rendering.CompoundRenderer;
 import edu.odu.cs.AlgAE.Server.Rendering.DefaultRenderer;
@@ -86,7 +86,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 		while (true) {
 			StackTraceElement ste = trace[lastUserCall];
 			String className = ste.getClassName();
-			if (className.equals(LocalAnimation.class.getName())) {
+			if (className.equals(LocalServer.class.getName())) {
 				break;
 			}
 			++lastUserCall;

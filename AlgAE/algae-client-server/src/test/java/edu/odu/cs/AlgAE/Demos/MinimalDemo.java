@@ -1,13 +1,13 @@
 package edu.odu.cs.AlgAE.Demos;
 
-import static edu.odu.cs.AlgAE.Animations.LocalAnimation.algae;
+import static edu.odu.cs.AlgAE.Server.LocalServer.algae;
 
 import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 
 import edu.odu.cs.AlgAE.Animations.LocalJavaAnimationApplet;
-import edu.odu.cs.AlgAE.Animations.LocalAnimation;
+import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
@@ -141,7 +141,7 @@ public class MinimalDemo extends LocalJavaAnimationApplet {
 		
 		public void addFirst (String d)
 		{
-			ActivationRecord active = LocalAnimation.activate(this);//!
+			ActivationRecord active = LocalServer.activate(this);//!
 			active.param("d",d).breakHere("starting addFirst");//!
 			if (first == null) {
 				active.breakHere("adding first node");//!
@@ -156,7 +156,7 @@ public class MinimalDemo extends LocalJavaAnimationApplet {
 		
 		public boolean contains (String value)
 		{
-			ActivationRecord active = LocalAnimation.activate(this);
+			ActivationRecord active = LocalServer.activate(this);
 			LLNode current = first;
 			active.param("value",value).refVar("current", current).breakHere("contains: start at beginning");//!
 			while (current != null) {
@@ -201,7 +201,7 @@ public class MinimalDemo extends LocalJavaAnimationApplet {
 
 	
 	private void findSelected() {
-		LocalAnimation.activate(list).breakHere("Prompt for input");
+		LocalServer.activate(list).breakHere("Prompt for input");
 			String value = algae().promptForInput("Search for ...", "[0-9]+");
 			boolean found = list.contains (value);
 			if (found) {
@@ -261,7 +261,7 @@ public class MinimalDemo extends LocalJavaAnimationApplet {
 		register ("lots of locals", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord arec = LocalAnimation.activate(list);
+				ActivationRecord arec = LocalServer.activate(list);
 				//arec.breakHere("lots of locals").refVar("list", list);
 				//arec.breakHere("lots of locals").refVar("list", list).var("j", 1);
 				int[] array = new int[5];

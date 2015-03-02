@@ -5,6 +5,7 @@ package edu.odu.cs.AlgAE.Common.Communications;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.logging.Logger;
 
 /**
  * This is an implementation of Client-Server communications for animations
@@ -16,10 +17,10 @@ import java.util.concurrent.BlockingQueue;
  */
 public class LocalJavaCommunication implements ClientCommunications, ServerCommunications {
 	
+	private final static Logger logger = Logger.getLogger(LocalJavaCommunication.class.getName()); 
+	
 	private BlockingQueue<ClientMessage> clientMessages;
 	private BlockingQueue<ServerMessage> serverMessages;
-	private boolean debugSend = false;
-	private boolean debugReceive = false;
 	
 	
 
@@ -43,11 +44,9 @@ public class LocalJavaCommunication implements ClientCommunications, ServerCommu
 	 */
 	@Override
 	public void sendToServer(ServerMessage message) throws InterruptedException {
-		if (debugSend)
-			System.out.println ("sendToServer: " + message);
+		logger.fine("sendToServer: " + message);
 		serverMessages.put (message);
-		if (debugSend)
-			System.out.println ("sendToServer: sent");
+		logger.finer("sendToServer: sent");
 	}
 
 	/**
@@ -60,11 +59,9 @@ public class LocalJavaCommunication implements ClientCommunications, ServerCommu
 	 */
 	@Override
 	public ClientMessage getFromServer() throws InterruptedException {
-		if (debugReceive)
-			System.out.println ("getFromServer: starting");
+		logger.finer("getFromServer: starting");
 		ClientMessage msg = clientMessages.take();
-		if (debugReceive)
-			System.out.println ("getFromServer: " + msg);
+		logger.fine("getFromServer: " + msg);
 		return msg;
 	}
 
@@ -78,11 +75,11 @@ public class LocalJavaCommunication implements ClientCommunications, ServerCommu
 	 */
 	@Override
 	public void sendToClient(ClientMessage message) throws InterruptedException {
-		if (debugSend)
-			System.out.println ("sendToClient: " + message);
+		logger.info("sendToClient: info");
+		logger.warning("sendToClient: info");
+		logger.fine("sendToClient: " + message);
 		clientMessages.put(message);
-		if (debugSend)
-			System.out.println ("sendToClient: sent");
+		logger.finer("sendToClient: sent");
 	}
 
 	/**
@@ -95,32 +92,10 @@ public class LocalJavaCommunication implements ClientCommunications, ServerCommu
 	 */
 	@Override
 	public ServerMessage getFromClient() throws InterruptedException {
-		if (debugReceive)
-			System.out.println ("getFromClient: starting");
+		logger.finer("getFromClient: starting");
 		ServerMessage msg = serverMessages.take();
-		if (debugReceive)
-			System.out.println ("getFromClient: " + msg);
+		logger.fine("getFromClient: " + msg);
 		return msg;
-	}
-
-
-
-	/**
-	 * Turns message send debugging on and off
-	 * 
-	 * @param debugSend
-	 */
-	public void setDebugSend(boolean debugSend) {
-		this.debugSend = debugSend;
-	}
-
-
-	/**
-	 * Turns message receive debugging on and off
-	 * @param debugReceive the debugReceive to set
-	 */
-	public void setDebugReceive(boolean debugReceive) {
-		this.debugReceive = debugReceive;
 	}
 
 

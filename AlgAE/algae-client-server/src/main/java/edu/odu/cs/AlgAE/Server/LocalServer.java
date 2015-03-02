@@ -1,4 +1,4 @@
-package edu.odu.cs.AlgAE.Animations;
+package edu.odu.cs.AlgAE.Server;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,6 +20,7 @@ import edu.odu.cs.AlgAE.Animations.SimulatedPrintStream;
 import edu.odu.cs.AlgAE.Client.Client;
 import edu.odu.cs.AlgAE.Common.Applets.AppletLifetimeSupport;
 import edu.odu.cs.AlgAE.Common.Communications.AckMessage;
+import edu.odu.cs.AlgAE.Common.Communications.ClientCommunications;
 import edu.odu.cs.AlgAE.Common.Communications.ClientMessage;
 import edu.odu.cs.AlgAE.Common.Communications.LocalJavaCommunication;
 import edu.odu.cs.AlgAE.Common.Communications.MenuMessage;
@@ -31,8 +32,6 @@ import edu.odu.cs.AlgAE.Common.Communications.SourceCodeMessage;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SnapshotDiff;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
-import edu.odu.cs.AlgAE.Server.MenuFunction;
-import edu.odu.cs.AlgAE.Server.Server;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
 
@@ -44,12 +43,10 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
  * @author zeil
  *
  */
-public class LocalAnimation extends Server implements AnimationContext, ContextAware, AppletLifetimeSupport
+public class LocalServer extends Server implements AnimationContext, ContextAware, AppletLifetimeSupport
 {
 	private MemoryModel memoryModel;
-	
-	private LocalJavaCommunication communications;
-	
+		
 
 	/**
 	 *  The animation client, responsible for portraying data states sent by the server..
@@ -93,8 +90,8 @@ public class LocalAnimation extends Server implements AnimationContext, ContextA
 	
 	
 	
-	private static HashMap<Thread, WeakReference<LocalAnimation> > instances
-	= new HashMap<Thread, WeakReference<LocalAnimation> >();
+	private static HashMap<Thread, WeakReference<LocalServer> > instances
+	= new HashMap<Thread, WeakReference<LocalServer> >();
 
 	private HashSet<String> sourceCodeAlreadySent;
 
@@ -103,12 +100,9 @@ public class LocalAnimation extends Server implements AnimationContext, ContextA
 	 *  Constructor for AlgAE server.
 	 *  @param anim  Animation instance for which this is a server
 	 */
-	public LocalAnimation(Client client, MenuBuilder menuBuilder)
+	public LocalServer(Client client, MenuBuilder menuBuilder, ClientCommunications communications)
 	{
-		communications = new LocalJavaCommunication();
-				
 		this.client = client;
-		client.setServerAccess(communications);
 		setClientCommunications(communications);
 		
 		SimulatedPrintStream.setMsgQueue(communications);
@@ -202,7 +196,7 @@ public class LocalAnimation extends Server implements AnimationContext, ContextA
 		promptedInput = "";
 		ClientMessage promptMsg = new PromptForInputMessage(prompt, requiredPattern);
 		try {
-			communications.sendToClient(promptMsg);
+			getClientCommunications().sendToClient(promptMsg);
 			synchronized (client) {
 				client.wait();
 				return promptedInput;
@@ -326,7 +320,7 @@ public class LocalAnimation extends Server implements AnimationContext, ContextA
 	 */
 	public void registerInstance(Thread t)
 	{
-		instances.put(t, new WeakReference<LocalAnimation>(this));
+		instances.put(t, new WeakReference<LocalServer>(this));
 	}
 
 
@@ -410,7 +404,7 @@ public class LocalAnimation extends Server implements AnimationContext, ContextA
 	public void sendToClient (ClientMessage msg)
 	{
 		try {
-			communications.sendToClient(msg);
+			getClientCommunications().sendToClient(msg);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -475,7 +469,7 @@ public class LocalAnimation extends Server implements AnimationContext, ContextA
 	 *  
 	 * @return the animation associated with a thread
 	 */
-	public static LocalAnimation algae()
+	public static LocalServer algae()
 	{
 		return instances.get(Thread.currentThread()).get();
 	}
@@ -499,7 +493,7 @@ public class LocalAnimation extends Server implements AnimationContext, ContextA
 			public void doIt(String fileName) throws InterruptedException {
 				String sourceCode = load(fileName);
 				SourceCodeMessage msg = new SourceCodeMessage(fileName, sourceCode);
-				communications.sendToClient(msg);
+				getClientCommunications().sendToClient(msg);
 			}
 		};
 
@@ -528,7 +522,7 @@ public class LocalAnimation extends Server implements AnimationContext, ContextA
 			@Override
 			public void doIt(String msgDetail) throws InterruptedException {
 				AckMessage ack = new AckMessage();
-				communications.sendToClient(ack);
+				getClientCommunications().sendToClient(ack);
 			}
 		};
 
@@ -554,14 +548,14 @@ public class LocalAnimation extends Server implements AnimationContext, ContextA
 				if (aboutStr == null)
 					aboutStr = "";
 				MenuMessage msg = new MenuMessage(aboutStr, menuItemTitles);
-				communications.sendToClient(msg);
+				getClientCommunications().sendToClient(msg);
 				launcher.start();
 			}
 		};
 
 		public ServerThread() {
 			super("Server Message Handler");
-			msgActions = new HashMap<String, LocalAnimation.ServerThread.MessageAction>();
+			msgActions = new HashMap<String, LocalServer.ServerThread.MessageAction>();
 			msgActions.put(ServerMessageTypes.GetSourceCode .toString(), GetSourceCodeAction);
 			msgActions.put(ServerMessageTypes.InputSupplied.toString(), InputSuppliedAction);
 			msgActions.put(ServerMessageTypes.MenuItemSelected.toString(), MenuAction);
@@ -578,7 +572,7 @@ public class LocalAnimation extends Server implements AnimationContext, ContextA
 				Thread.yield();
 				ServerMessage msg;
 				try {
-					msg = communications.getFromClient();  // may block
+					msg = getClientCommunications().getFromClient();  // may block
 				} catch (InterruptedException e) {
 					stopped = true;
 					break;

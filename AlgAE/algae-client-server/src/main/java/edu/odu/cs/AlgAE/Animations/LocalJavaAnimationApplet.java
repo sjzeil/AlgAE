@@ -4,7 +4,8 @@ import java.io.InputStream;
 
 import edu.odu.cs.AlgAE.Client.GUIClient;
 import edu.odu.cs.AlgAE.Common.Applets.AnimationApplet;
-import edu.odu.cs.AlgAE.Animations.LocalAnimation;
+import edu.odu.cs.AlgAE.Common.Communications.LocalJavaCommunication;
+import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
 
@@ -24,16 +25,20 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
 public abstract class LocalJavaAnimationApplet extends AnimationApplet implements MenuBuilder
 {
 
-	private LocalAnimation server;
+	private LocalServer server;
 	private GUIClient client;
+	private LocalJavaCommunication communications;
+	
+	
 
 	public LocalJavaAnimationApplet (String title)
 	{
 		super(title);
 
-		client = new GUIClient();
+		communications = new LocalJavaCommunication();
+		client = new GUIClient(communications);
 		setClient(client);
-		server = new LocalAnimation(client, this);
+		server = new LocalServer(client, this, communications);
 		super.setServer(server);
 		out = server.out;
 		in = server.in;

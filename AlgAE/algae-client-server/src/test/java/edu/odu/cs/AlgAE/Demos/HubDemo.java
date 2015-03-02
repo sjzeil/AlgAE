@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.odu.cs.AlgAE.Animations.LocalJavaAnimationApplet;
-import edu.odu.cs.AlgAE.Animations.LocalAnimation;
+import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
@@ -48,7 +48,7 @@ public class HubDemo extends LocalJavaAnimationApplet {
 			edges.add (h);
 			lengths.add (len);
 			angles.add (angle);
-			ActivationRecord arec = LocalAnimation.activate(center);
+			ActivationRecord arec = LocalServer.activate(center);
 			arec.refParam("h", h).breakHere("added");
 		}
 		
@@ -57,7 +57,7 @@ public class HubDemo extends LocalJavaAnimationApplet {
 			edges.clear();
 			lengths.clear();
 			angles.clear();
-			ActivationRecord arec = LocalAnimation.activate(this);
+			ActivationRecord arec = LocalServer.activate(this);
 			arec.breakHere("cleared");
 		}
 
@@ -128,7 +128,7 @@ public class HubDemo extends LocalJavaAnimationApplet {
 		register ("add1", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord arec = LocalAnimation.activate(center);
+				ActivationRecord arec = LocalServer.activate(center);
 				arec.breakHere("Add 1");
 				center.add(new Hub('b'), 2, 5.0);
 				arec.breakHere("done");
@@ -139,7 +139,7 @@ public class HubDemo extends LocalJavaAnimationApplet {
 		register ("add4", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord arec = LocalAnimation.activate(center);
+				ActivationRecord arec = LocalServer.activate(center);
 				arec.breakHere("Add 4");
 				center.add(new Hub('b'), 2, 5.0);
 				center.add(new Hub('c'), 4, 95.0);
@@ -152,9 +152,9 @@ public class HubDemo extends LocalJavaAnimationApplet {
 		register ("clear", new MenuFunction() {
 			@Override
 			public void selected() {
-				LocalAnimation.activate(center).breakHere("clear1");
+				LocalServer.activate(center).breakHere("clear1");
 				center.clear();
-				LocalAnimation.activate(center).breakHere("clear2");
+				LocalServer.activate(center).breakHere("clear2");
 			}
 		});
 

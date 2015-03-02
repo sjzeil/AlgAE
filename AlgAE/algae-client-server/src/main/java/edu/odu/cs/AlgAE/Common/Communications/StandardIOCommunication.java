@@ -24,7 +24,7 @@ import edu.odu.cs.AlgAE.Common.Communications.ServerMessage.ServerMessageTypes;
  * @author zeil
  *
  */
-public class LocalProcessCommunication implements ServerCommunications {
+public class StandardIOCommunication implements ClientCommunications {
 	
 	private BlockingQueue<ClientMessage> clientMessages;
 	private BlockingQueue<ServerMessage> serverMessages;
@@ -38,7 +38,7 @@ public class LocalProcessCommunication implements ServerCommunications {
 	/**
 	 * Create a new communications path between a server and client.
 	 */
-	public LocalProcessCommunication(File pathToExecutable)
+	public StandardIOCommunication()
 	{
 		clientMessages = new ArrayBlockingQueue<ClientMessage>(QueueCapacity);
 		serverMessages = new ArrayBlockingQueue<ServerMessage>(QueueCapacity);
@@ -57,8 +57,7 @@ public class LocalProcessCommunication implements ServerCommunications {
 	 * @throws InterruptedException 
 	 * @see edu.odu.cs.AlgAE.Common.Communications.ServerCommunications#sendToServer(edu.odu.cs.AlgAE.Common.Communications.ServerMessage)
 	 */
-	@Override
-	public void sendToServer(ServerMessage message) throws InterruptedException {
+	private void sendToServer(ServerMessage message) throws InterruptedException {
 		if (debugSend)
 			System.out.println ("sendToServer: " + message);
 		serverMessages.put (message);
@@ -74,8 +73,7 @@ public class LocalProcessCommunication implements ServerCommunications {
 	 * @throws InterruptedException 
 	 * @see edu.odu.cs.AlgAE.Common.Communications.ServerCommunications#getFromServer()
 	 */
-	@Override
-	public ClientMessage getFromServer() throws InterruptedException {
+	private ClientMessage getFromServer() throws InterruptedException {
 		if (debugReceive)
 			System.out.println ("getFromServer: starting");
 		ClientMessage msg = clientMessages.take();
@@ -214,6 +212,24 @@ public class LocalProcessCommunication implements ServerCommunications {
 	 */
 	public void start() {
 		manager.start();
+	}
+
+
+
+
+	@Override
+	public void sendToClient(ClientMessage message) throws InterruptedException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+
+
+	@Override
+	public ServerMessage getFromClient() throws InterruptedException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

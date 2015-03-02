@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.odu.cs.AlgAE.Animations.LocalJavaAnimationApplet;
-import edu.odu.cs.AlgAE.Animations.LocalAnimation;
+import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
@@ -118,9 +118,9 @@ public class TransitionDemo extends LocalJavaAnimationApplet {
 			@Override
 			public void selected() {
 				root.color = Color.blue;
-				LocalAnimation.activate(root).breakHere("change");
+				LocalServer.activate(root).breakHere("change");
 				root.color = Color.yellow;
-				LocalAnimation.activate(root).breakHere("changed");
+				LocalServer.activate(root).breakHere("changed");
 			}
 		});
 
@@ -128,9 +128,9 @@ public class TransitionDemo extends LocalJavaAnimationApplet {
 			@Override
 			public void selected() {
 				root.data = "X";
-				LocalAnimation.activate(root).breakHere("change");
+				LocalServer.activate(root).breakHere("change");
 				root.data = "abcdef";
-				LocalAnimation.activate(root).breakHere("changed");
+				LocalServer.activate(root).breakHere("changed");
 				
 			}
 		});
@@ -138,7 +138,7 @@ public class TransitionDemo extends LocalJavaAnimationApplet {
 		register ("createObject", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord ar = LocalAnimation.activate(root);
+				ActivationRecord ar = LocalServer.activate(root);
 				root.left = root.right = null;;
 				ar.breakHere("change");
 				root.left = new Node("A", null, null);
@@ -151,7 +151,7 @@ public class TransitionDemo extends LocalJavaAnimationApplet {
 		register ("shiftPointers", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord ar = LocalAnimation.activate(root);
+				ActivationRecord ar = LocalServer.activate(root);
 				root.left = root.right = null;
 				ar.breakHere("start");
 				Node A = new Node("A", null, null);
@@ -174,11 +174,11 @@ public class TransitionDemo extends LocalJavaAnimationApplet {
 				root.left = A;
 				Node B = new Node("B", root.left, null);
 				root.right = B;
-				LocalAnimation.activate(root).breakHere("change");
+				LocalServer.activate(root).breakHere("change");
 				root.left = null;
-				LocalAnimation.activate(root).breakHere("changed");
+				LocalServer.activate(root).breakHere("changed");
 				root.right = null;
-				LocalAnimation.activate(root).breakHere("changed again");
+				LocalServer.activate(root).breakHere("changed again");
 			}
 		});
 		

@@ -17,7 +17,7 @@ import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.LocalIdentifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
-import edu.odu.cs.AlgAE.Animations.LocalAnimation;
+import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
 import edu.odu.cs.AlgAE.Server.Rendering.Renderer;
@@ -30,7 +30,7 @@ public class TestMemoryRendering {
 
      
     private LocalJavaAnimationApplet applet;
-    private LocalAnimation anim;
+    private LocalServer anim;
     
     @Before
     public void setUp() {
@@ -46,7 +46,7 @@ public class TestMemoryRendering {
 			public void buildMenu() {
 			}
     	};
-    	anim = (LocalAnimation)applet.getServer();
+    	anim = (LocalServer)applet.getServer();
     	anim.registerInstance(Thread.currentThread());
     	
     }

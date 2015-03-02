@@ -1,24 +1,63 @@
 package edu.odu.cs.AlgAE.Animations;
 
 import java.io.File;
+import java.io.InputStream;
 
 import javax.swing.JFileChooser;
 
+import edu.odu.cs.AlgAE.Client.GUIClient;
+import edu.odu.cs.AlgAE.Common.Applets.AnimationApplet;
+import edu.odu.cs.AlgAE.Common.Communications.LocalJavaCommunication;
+import edu.odu.cs.AlgAE.Common.Communications.LocalProcessCommunication;
+import edu.odu.cs.AlgAE.Server.LocalServer;
+import edu.odu.cs.AlgAE.Server.MenuFunction;
+import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
+
 /**
  *  An AlgAE animation that works with a server running in a separate process on the same machine.
+ *  Communications is via standard I/O with that process.
  *
  *  @author Steven J Zeil
  **/
-public class LocalProcessAnimation // extends Client
+public class LocalProcessAnimation extends AnimationApplet 
 {
 
-	// TODO make some sense of this
+	private GUIClient client;
+	private LocalProcessCommunication communications;
 	
-	public LocalProcessAnimation (String title, File server)
+
+	public LocalProcessAnimation (String title, File executable)
 	{
-		//super(title, new LocalProcessCommunication(server));
+		super(title);
+
+		communications = new LocalProcessCommunication(executable);
+		client = new GUIClient(communications);
+		setClient(client);
+		client.init(false);
+		client.start();
+		communications.start();
 	}
 
+
+	/**
+	 *  Supply a message to appear in the Help..About dialog.
+	 *  Typically, this indicates the origin of the source code
+	 *  being animated and the name of the person who prepared the
+	 *  animation.
+	 **/
+	//public abstract String about();
+
+
+	/**
+	 * Override this to call register (below) to set up the menu items that will
+	 * be displayed in the Algorithms menu and optionally to call registerStartingAction
+	 * to set up code to be animated immediately upon launch.
+	 */
+	//public abstract void buildMenu();
+
+
+
+	
 	
 
 
@@ -51,7 +90,7 @@ public class LocalProcessAnimation // extends Client
 	    }
 	    
 	    if (executable != null) {
-//	    	new LocalProcessAnimation(executable.getName(), executable).runAsMain();
+	    	new LocalProcessAnimation(executable.getName(), executable).runAsMain();
 	    }
 	}
 	

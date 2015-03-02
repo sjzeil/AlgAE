@@ -2,52 +2,227 @@ package edu.odu.cs.AlgAE.Demos;
 
 import static edu.odu.cs.AlgAE.Server.LocalServer.algae;
 
-import java.util.ArrayList;
+import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 
-import edu.odu.cs.AlgAE.Animations.LocalJavaAnimationApplet;
+import edu.odu.cs.AlgAE.Animations.JavaStandAloneServer;
 import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
-import edu.odu.cs.AlgAE.Server.Rendering.LinkedListRenderer;
+import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
+import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
+import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
+import edu.odu.cs.AlgAE.Server.Rendering.Renderer;
 import edu.odu.cs.AlgAE.Server.Utilities.Index;
-import edu.odu.cs.AlgAE.Server.Utilities.LinkedIterator;
 
+public class MinimalStandaloneDemo extends JavaStandAloneServer {
 
-public class ListRenderDemo extends LocalJavaAnimationApplet {
-
-	public ListRenderDemo() {
-		super("List Rendering Demo");
+	public MinimalStandaloneDemo() {
+		super("Minimal Standalone Demo", System.in, System.out);
 	}
 
 	@Override
 	public String about() {
-		return "List Rendering demo.";
+		return "This is a\nminimal demo.";
 	}
 
 	private int c = 0;
 	
 	
+	public class LLNode implements CanBeRendered<LLNode> {
+		public class NodeRenderer implements Renderer<LLNode> {
 
+			@Override
+			public Color getColor(LLNode obj) {
+				return Color.magenta;
+			}
 
-	private List<String> list = new LinkedList<String>();
-	private List<Integer> list2 = new ArrayList<Integer>();
+			@Override
+			public List<Component> getComponents(LLNode obj) {
+				return new LinkedList<Component>();
+			}
+
+			@Override
+			public List<Connection> getConnections(LLNode obj) {
+				LinkedList<Connection> links = new LinkedList<Connection>();
+				Connection c = new Connection(next, 85, 95);
+				c.setLabel("next");
+				links.add (c);
+				return links;
+			}
+
+			@Override
+			public int getMaxComponentsPerRow(LLNode obj) {
+				return 1;
+			}
+
+			@Override
+			public String getValue(LLNode obj) {
+				return data;
+			}
+
+		}
+		public String data;
+		public LLNode next;
+		
+		public LLNode (String data, LLNode nxt)
+		{
+			this.data = data;
+			next = nxt;
+		}
+		
+		public String toString() {
+			return data;
+		}
+		
+		public String getData()
+		{
+			return data;
+		}
+		
+		public LLNode getNext()
+		{
+			return next;
+		}
+
+		@Override
+		public Renderer<LLNode> getRenderer() {
+			return new NodeRenderer();
+		}
+		
+	}
+
+	public class LList implements CanBeRendered<LList> {
+		public class ListRenderer implements Renderer<LList> {
+
+			@Override
+			public Color getColor(LList obj) {
+				return Color.cyan;
+			}
+
+			@Override
+			public List<Component> getComponents(LList obj) {
+				return new LinkedList<Component>();
+			}
+
+			@Override
+			public List<Connection> getConnections(LList obj) {
+				Connection firstC = new Connection(first, 220, 230);
+				firstC.setLabel("first");
+				Connection lastC = new Connection(last, 130, 140);
+				lastC.setLabel("last");
+				List<Connection> links = new LinkedList<Connection>();
+				links.add (firstC);
+				links.add (lastC);
+				return links;
+			}
+
+			@Override
+			public int getMaxComponentsPerRow(LList obj) {
+				return 1;
+			}
+
+			@Override
+			public String getValue(LList obj) {
+				return "";
+			}
+
+		}
+
+		private LLNode first;
+		private LLNode last;
+		
+		public LList ()
+		{
+			first = last = null;
+		}
+
+		
+		public void addFirst (String d)
+		{
+			ActivationRecord active = LocalServer.activate(this);//!
+			active.param("d",d).breakHere("starting addFirst");//!
+			if (first == null) {
+				active.breakHere("adding first node");//!
+				first = last = new LLNode (d, null);
+			} else {
+				active.breakHere("adding node");//!
+//!				show_this_instead();
+				first = new LLNode (d, first);
+			}
+			active.breakHere("added first");//!
+		}
+		
+		public boolean contains (String value)
+		{
+			ActivationRecord active = LocalServer.activate(this);
+			LLNode current = first;
+			active.param("value",value).refVar("current", current).breakHere("contains: start at beginning");//!
+			while (current != null) {
+				active.refVar("current", current).breakHere("check contents of node");//!
+				if (current.data.equals(value))//!
+//!				if (current->data == value)  // fake C++
+				{
+					active.refVar("current", current).breakHere("contains: found it");//!
+					return true;
+				}
+				active.refVar("current", current).breakHere("contains: advance to next node");//!
+				current = current.next;
+			}
+			active.refVar("current", current).breakHere("contains: have looked at all nodes");//!
+			return false;
+		}
+		
+		public void clear()
+		{
+			first = last = null;
+		}
+
+		public void addLast (String d)
+		{
+			if (first == null) {
+				first = last = new LLNode (d, null);
+			} else {
+				last.next = new LLNode (d, null);
+				last = last.next;
+			}
+		}
+
+		//@Override
+		public Renderer<LList> getRenderer() {
+			return new ListRenderer();
+		}
+		
+	}
+
 	
+	private LList list = new LList();
 
+	
+	private void findSelected() {
+		LocalServer.activate(list).breakHere("Prompt for input");
+			String value = algae().promptForInput("Search for ...", "[0-9]+");
+			boolean found = list.contains (value);
+			if (found) {
+				out.println ("Found it!");
+			} else {
+				out.println ("Could not find it.");
+			}
+		}
+	
 
 	
 	@Override
 	public void buildMenu() {
 		
+		
 		registerStartingAction(new MenuFunction() {
 
 			@Override
 			public void selected() {
-				getMemoryModel().render(list.getClass(), new LinkedListRenderer<String>(true, false, LocalServer.algae()));
+				list = new LList();
 				globalVar("list", list);
-				globalVar("list2", list2);
 			}
 			
 		});
@@ -57,37 +232,22 @@ public class ListRenderDemo extends LocalJavaAnimationApplet {
 			@Override
 			public void selected() {
 				++c;
-				list.add (0, "" + c);
-				list2.add (0, c);
+				list.addFirst("" + c);
 			}
 		});
 
 		register ("find", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord arec = LocalServer.activate(getClass());
-				arec.breakHere("Prompt for input");
-				String value = algae().promptForInput("Search for ...", "[0-9]+");
-				ListIterator<String> it0 = list.listIterator();
-				ListIterator<String> it= new LinkedIterator<String>(it0, list, algae());
-				arec.var("it", it).var("value", value).breakHere("About to search");
-				boolean found = false;
-				arec.var("found", found);
-				while (it.hasNext() && !found) {
-					arec.breakHere("Iterator points to current element");
-					arec.pushScope();
-					String s = it.next();
-					found = value.equals(s);
-					arec.var("s", s).var("found", found).breakHere("Examined s");
-					arec.popScope();
-				}
+				findSelected();
+/*				Animation.activate(list).breakHere("Prompt for input").var("list", list);
+				String value = promptForInput("Search for ...", "[0-9]+");
+				boolean found = list.contains (value);
 				if (found) {
-					arec.breakHere("Found it!");
-					algae().out.println ("Found it!");
+					Animation.out.println ("Found it!");
 				} else {
-					arec.breakHere("Could not find it.");
-					algae().out.println ("Could not find it.");
-				}
+					Animation.out.println ("Could not find it.");
+				}*/
 			}
 		});
 
@@ -95,7 +255,6 @@ public class ListRenderDemo extends LocalJavaAnimationApplet {
 			@Override
 			public void selected() {
 				list.clear();
-				list2.clear();
 			}
 		});
 
@@ -115,7 +274,7 @@ public class ListRenderDemo extends LocalJavaAnimationApplet {
 				arec.refVar("list", list).var("j", 1).var("array", array).var("i", i).var("k", 4).breakHere("lots of locals");
 				for (int n = 0; n < 5; ++n)
 					arec.var("array[" + n + "]", array[n]);
-				arec.breakHere("expression locals");
+				arec.breakHere("local expressions");
 			}
 		});
 		
@@ -248,7 +407,7 @@ public class ListRenderDemo extends LocalJavaAnimationApplet {
 	
 	
 	public static void main (String[] args) {
-		ListRenderDemo demo = new ListRenderDemo();
+		MinimalStandaloneDemo demo = new MinimalStandaloneDemo();
 		demo.runAsMain();
 	}
 

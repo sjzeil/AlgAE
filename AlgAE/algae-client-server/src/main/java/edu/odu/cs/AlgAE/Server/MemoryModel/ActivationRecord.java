@@ -15,7 +15,7 @@ import edu.odu.cs.AlgAE.Animations.ContextAware;
 import edu.odu.cs.AlgAE.Animations.SimulatedPrintStream;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
-import edu.odu.cs.AlgAE.Animations.LocalAnimation;
+import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
 import edu.odu.cs.AlgAE.Server.Rendering.HighlightRenderer;
 import edu.odu.cs.AlgAE.Server.Rendering.ObjectRenderer;
@@ -432,7 +432,7 @@ public class ActivationRecord implements ContextAware, CanBeRendered<ActivationR
 	 * @return a human-entered string matching the requiredPattern
 	 */
 	public String promptForInput(String prompt, String requiredPattern) {
-		LocalAnimation anim = LocalAnimation.algae();
+		LocalServer anim = LocalServer.algae();
 		JPanel screenContext = anim.getClient(); 
 		String response = JOptionPane.showInputDialog(screenContext, prompt, 
 				"Input Requested", JOptionPane.QUESTION_MESSAGE);

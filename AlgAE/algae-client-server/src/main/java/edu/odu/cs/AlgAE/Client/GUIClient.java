@@ -174,7 +174,6 @@ public class GUIClient extends Client {
 
 		String helpHS = "edu/odu/cs/AlgAE/Client/Help/helpset.hs";
 		ClassLoader cl = GUIClient.class.getClassLoader();
-		System.err.println ("Class loader: " + cl);
 		URL hsURL = HelpSet.findHelpSet(cl, helpHS);
 		if (hsURL == null) {
 			// Most likely indicates we are running from an IDE rather than

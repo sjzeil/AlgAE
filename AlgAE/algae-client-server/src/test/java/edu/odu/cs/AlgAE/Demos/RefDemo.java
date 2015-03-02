@@ -1,7 +1,7 @@
 package edu.odu.cs.AlgAE.Demos;
 
 import edu.odu.cs.AlgAE.Animations.LocalJavaAnimationApplet;
-import edu.odu.cs.AlgAE.Animations.LocalAnimation;
+import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 import edu.odu.cs.AlgAE.Server.Utilities.SimpleReference;
@@ -22,7 +22,7 @@ public class RefDemo extends LocalJavaAnimationApplet {
 	
 	public void testRefs()
 	{
-		ActivationRecord arec = LocalAnimation.activate(RefDemo.class);
+		ActivationRecord arec = LocalServer.activate(RefDemo.class);
 		Integer one = new Integer(1);
 		Integer two = new Integer(2);
 		SimpleReference r1 = new SimpleReference(null, 90, 90);

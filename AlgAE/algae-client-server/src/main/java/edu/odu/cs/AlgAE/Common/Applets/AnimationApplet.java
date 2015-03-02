@@ -2,10 +2,18 @@ package edu.odu.cs.AlgAE.Common.Applets;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javax.swing.JApplet;
 import javax.swing.JFrame;
 
+import edu.odu.cs.AlgAE.Animations.DefaultLogSetting;
 import edu.odu.cs.AlgAE.Server.Server;
 
 
@@ -30,8 +38,7 @@ public class AnimationApplet extends JApplet
 	private int inlineDisplay;
 	final static int INLINE_DEFAULT = 0;
 	private boolean serverStarted = false;
-	
-	
+
 
 	public AnimationApplet (String title, AppletMenuSupport client, Server server)
 	{
@@ -55,6 +62,7 @@ public class AnimationApplet extends JApplet
 	 */
 	public void init ()
 	{
+		DefaultLogSetting.setupLogging(true, "algae.log");
 		inlineDisplay = INLINE_DEFAULT;
 		String inlineParam = getParameter("inline");
 		if (inlineParam != null) {
@@ -122,6 +130,8 @@ public class AnimationApplet extends JApplet
 	 */
 	public void runAsMain()
 	{
+		DefaultLogSetting.setupLogging(false, "algae.log");
+		
 		inlineDisplay = 0;
 		JFrame window = new JFrame(theTitle);
 		

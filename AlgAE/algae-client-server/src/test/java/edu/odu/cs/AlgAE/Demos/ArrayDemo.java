@@ -3,7 +3,7 @@ package edu.odu.cs.AlgAE.Demos;
 import java.util.ArrayList;
 
 import edu.odu.cs.AlgAE.Animations.LocalJavaAnimationApplet;
-import edu.odu.cs.AlgAE.Animations.LocalAnimation;
+import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 import edu.odu.cs.AlgAE.Server.Utilities.Index;
@@ -26,7 +26,7 @@ public class ArrayDemo extends LocalJavaAnimationApplet {
 
 
 	void animatedFunction (Integer[] param1) {
-		ActivationRecord arec = LocalAnimation.activate(ArrayDemo.class);
+		ActivationRecord arec = LocalServer.activate(ArrayDemo.class);
 		arec.refParam("param1", param1);
 		arec.breakHere("about to call");
 		animatedFunction2(param1);
@@ -34,7 +34,7 @@ public class ArrayDemo extends LocalJavaAnimationApplet {
 	}
 
 	void animatedFunction2 (Integer[] param1) {
-		ActivationRecord arec = LocalAnimation.activate(ArrayDemo.class);
+		ActivationRecord arec = LocalServer.activate(ArrayDemo.class);
 		arec.refParam("param1", a1);
 		arec.breakHere("show arrays 1");
 		arec.var("a2",a2);
@@ -82,7 +82,7 @@ public class ArrayDemo extends LocalJavaAnimationApplet {
 		register ("index", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord arec = LocalAnimation.activate(ArrayDemo.class);
+				ActivationRecord arec = LocalServer.activate(ArrayDemo.class);
 				arec.var("a1", a1).var("i",new Index(1,a1)).breakHere("show arrays 1");			
 			}
 		});
@@ -91,7 +91,7 @@ public class ArrayDemo extends LocalJavaAnimationApplet {
 			@Override
 			public void selected() {
 				globalVar("a1g", a1);
-				ActivationRecord arec = LocalAnimation.activate(ArrayDemo.class);
+				ActivationRecord arec = LocalServer.activate(ArrayDemo.class);
 				//arec.var("a1", a1);
 				arec.breakHere("show arrays 1");
 				arec.breakHere("show arrays 2");
@@ -111,7 +111,7 @@ public class ArrayDemo extends LocalJavaAnimationApplet {
 		register ("arrayLists", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord arec = LocalAnimation.activate(ArrayDemo.class);
+				ActivationRecord arec = LocalServer.activate(ArrayDemo.class);
 				ArrayList<Integer> a = new ArrayList<Integer>();
 				arec.var("a", a).breakHere("show list");
 				for (int i = 0; i < 3; ++i) {
@@ -131,7 +131,7 @@ public class ArrayDemo extends LocalJavaAnimationApplet {
 		register ("highlight", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord arec = LocalAnimation.activate(ArrayDemo.class);
+				ActivationRecord arec = LocalServer.activate(ArrayDemo.class);
 				arec.var("a2", a2).breakHere("show array");
 				for (int i = 0; i < 3; ++i) {
 					arec.highlight(a2[i]);
