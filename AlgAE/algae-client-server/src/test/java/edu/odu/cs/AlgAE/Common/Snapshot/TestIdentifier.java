@@ -5,16 +5,12 @@ package edu.odu.cs.AlgAE.Common.Snapshot;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
 
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+
 
 /**
  * @author zeil
@@ -27,17 +23,53 @@ public class TestIdentifier {
 	}
 
 
-	private static Identifier id1;
-	private static Identifier id2;
-	private static Identifier id3;
-	private static Identifier id4;
+	public static class A {
+		private char c;
+		public A() {
+			c = 'a';
+		}
+		
+		public int hashCode()
+		{
+			return 1;
+		}
+		
+		public boolean equals (Object obj) {
+			fail("equals invoked instead of ==");
+			return true;
+		}
+		
+		public String toString() {
+			return "" + c;
+		}
+	}
 
-	@BeforeClass
-	public static void setUpOnce()  {
+	
+	private A a1;
+	private A a2;
+	
+	private Identifier id1;
+	private Identifier id2;
+	private Identifier id3;
+	private Identifier id4;
+
+	@Before
+	public void setUpOnce()  {
+		a1 = new A();
+		a2 = new A();
 		id1 = new Identifier();
-		id2 = new Identifier(id1);
-		id3 = new Identifier(123);
-		id4 = new Identifier(123);
+		id2 = new Identifier(a1);
+		id3 = new Identifier(a2);
+		id4 = new Identifier(a2);
+	}
+	
+	
+
+	@Test
+	public void testLocalIdentifier() {
+		assertNotEquals (id1, id2);
+		assertNotEquals (id2, id3);
+		assertEquals (id3, id4);
 	}
 
 	/**
@@ -57,50 +89,10 @@ public class TestIdentifier {
 	 */
 	@Test
 	public void testToString() {
-		assertTrue (id1.toString().contains("0"));
-		assertTrue (id2.toString().contains("@"));
-		assertTrue (id3.toString().contains("123"));
+		assertNotEquals (id1.toString(), id2.toString());
+		assertNotEquals (id2.toString(), id3.toString());
 		assertEquals (id3.toString(), id4.toString());
 	}
 
-	/**
-	 * Test method for {@link edu.odu.cs.AlgAE.Common.Snapshot.Identifier#equals(java.lang.Object)}.
-	 */
-	@Test
-	public void testEqualsObject() {
-		assertEquals(id3, id4);
-		assertFalse(id1.equals(id2));
-		assertFalse(id1.equals(id3));
-		assertFalse(id2.equals(id3));
-		assertFalse(id2.equals(id1));
-		assertFalse(id2.equals(id3));
-	}
-
-	void xmlTest (Object x, String mustContain1, String mustContain2)
-	{
-		ByteArrayOutputStream byout = new ByteArrayOutputStream();
-		XMLEncoder out = new XMLEncoder(new BufferedOutputStream(byout));
-		out.writeObject(x);
-		out.close();
-		String xmlStr = byout.toString();
-		assertTrue (xmlStr.contains(x.getClass().getSimpleName()));
-		if (mustContain1.length() > 0)
-			assertTrue (xmlStr.contains(mustContain1));
-		if (mustContain2.length() > 0)
-			assertTrue (xmlStr.contains(mustContain2));
-		
-		XMLDecoder in = new XMLDecoder(new ByteArrayInputStream(xmlStr.getBytes()));
-		Object y = in.readObject();
-		
-		assertEquals (x, y);
-		in.close();
-	}
-	
-	@Test
-	public void testXML()
-	{
-		xmlTest (id1, "0", "Identifier");
-		xmlTest (id3, "123", "Identifier");
-	}
 
 }
