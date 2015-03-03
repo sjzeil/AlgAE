@@ -3,6 +3,7 @@
  */
 package edu.odu.cs.AlgAE.Animations;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -51,6 +52,19 @@ public class TestJavaStandAloneServer {
 						new PipedInputStream(out2)));
 		msgsOutFromServer = new PrintStream(out2, true);
 		
+	}
+	
+	
+	@Test
+	public void testPipes() throws Exception {
+		msgsOutFromServer.println("foo");
+		String line = readFromServer.readLine();
+		assertEquals("foo", line);
+		writeToServer.println("bar");;
+		byte[] buffer = new byte[3];
+		int len = msgsInToServer.read(buffer);
+		assertTrue(len >= 3);
+		assertEquals("bar", new String(buffer, "UTF-8"));
 	}
 	
 	@Test

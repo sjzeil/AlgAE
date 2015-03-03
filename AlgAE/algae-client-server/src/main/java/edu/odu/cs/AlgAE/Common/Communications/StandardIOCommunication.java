@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.logging.Logger;
 
 import edu.odu.cs.AlgAE.Common.Communications.ServerMessage.ServerMessageTypes;
 
@@ -28,24 +29,28 @@ import edu.odu.cs.AlgAE.Common.Communications.ServerMessage.ServerMessageTypes;
  */
 public class StandardIOCommunication implements ClientCommunications {
 	
-	private BlockingQueue<ClientMessage> clientMessages;
+	private final static Logger logger = Logger.getLogger(StandardIOCommunication.class.getName()); 
+	
+	
+	
 	private BlockingQueue<ServerMessage> serverMessages;
-	private boolean debugSend = true;
-	private boolean debugReceive = true;
 	private CommunicationsManager manager;
 	private final int QueueCapacity = 4;
 	
-	private BufferedInputStream messagesIn;
+	private BufferedReader messagesIn;
 	private PrintStream messagesOut;
+	
+	private boolean awaitingAck = true;
+	private boolean stopping = false;
+	private boolean started = false;
 	
 	/**
 	 * Create a new communications path between a server and client.
 	 */
 	public StandardIOCommunication(InputStream msgsIn, PrintStream msgsOut)
 	{
-		messagesIn = new BufferedInputStream(msgsIn);
+		messagesIn = new BufferedReader(new InputStreamReader(msgsIn));
 		messagesOut = msgsOut;
-		clientMessages = new ArrayBlockingQueue<ClientMessage>(QueueCapacity);
 		serverMessages = new ArrayBlockingQueue<ServerMessage>(QueueCapacity);
 		manager = new CommunicationsManager();
 	}
@@ -53,124 +58,39 @@ public class StandardIOCommunication implements ClientCommunications {
 
 
 
-	/**
-	 * Sends a message to the server - implementations are expected to be synchronized
-	 * and might block until the server acknowledges receipt.
-	 * 
-	 * @param message
-	 * @throws InterruptedException 
-	 * @see edu.odu.cs.AlgAE.Common.Communications.ServerCommunications#sendToServer(edu.odu.cs.AlgAE.Common.Communications.ServerMessage)
-	 */
-	private void sendToServer(ServerMessage message) throws InterruptedException {
-		if (debugSend)
-			System.out.println ("sendToServer: " + message);
-		serverMessages.put (message);
-		if (debugSend)
-			System.out.println ("sendToServer: sent");
-	}
-
-	/**
-	 * Receives a message from the server - implementations are expected to be synchronized
-	 * and will block if no message is available.
-	 * 
-	 * @param message
-	 * @throws InterruptedException 
-	 * @see edu.odu.cs.AlgAE.Common.Communications.ServerCommunications#getFromServer()
-	 */
-	private ClientMessage getFromServer() throws InterruptedException {
-		if (debugReceive)
-			System.out.println ("getFromServer: starting");
-		ClientMessage msg = clientMessages.take();
-		if (debugReceive)
-			System.out.println ("getFromServer: " + msg);
-		return msg;
-	}
-
-
-
-
-	/**
-	 * Turns message send debugging on and off
-	 * 
-	 * @param debugSend
-	 */
-	public void setDebugSend(boolean debugSend) {
-		this.debugSend = debugSend;
-	}
-
-
-	/**
-	 * Turns message receive debugging on and off
-	 * @param debugReceive the debugReceive to set
-	 */
-	public void setDebugReceive(boolean debugReceive) {
-		this.debugReceive = debugReceive;
-	}
-
-
 
 	
 	private class CommunicationsManager extends Thread {
-		
-		private Process process = null;
-		private boolean stopping = false;
-		private final String EndOfClientMessageMarker = "</message";
-		private BufferedReader fromServer;
-		private PrintStream toServer;
-		
-		
-		private ClientMessage readMsgFromServer() throws IOException
-		{
-			ClientMessage cmsg = ClientMessage.load(messagesIn);
-			return cmsg;
-		}
-		
-		public void shutdown() {
-			stopping = true;
-			try {
-				sleep (100);
-			} catch (InterruptedException e) {
-				return;
-			}
-			manager.interrupt();
-		}
-
-		private void writeMsgToServer(ServerMessage smsg) {
-			toServer.println (smsg);
-		}
-		
-		
+						
 		public void run()
 		{
-			ProcessBuilder pb = new ProcessBuilder (pathToExecutable.getAbsolutePath());
 			try {
-				process = pb.start();
-				fromServer = new BufferedReader(new InputStreamReader((process.getInputStream())));
-				toServer = new PrintStream(new BufferedOutputStream(process.getOutputStream()));
-				
-				// Wait for first server message (Start) to appear from client
-				while (serverMessages.size() == 0) {
-					synchronized (serverMessages) {
-						serverMessages.wait();
-					}
-				}
-				
-				// From here on, the server drives the communications. It may volunteer new messages to the
-			    // client at any time, and we should try to keep up, but it's OK if the server blocks because
+				// The server drives the communications. It may volunteer new messages to the
+				// client at any time, and we should try to keep up, but it's OK if the server blocks because
 				// we are falling behind.
-			    // After each message, it will wait for an acknowledgment from us before proceeding.
+				// After each message, it will wait for an acknowledgment from the client before
+				// proceeding.
 				// When it's ready for a new Client message, it will send a special Pull request, at which
-			    // point we respond with a client message if one is in the queue or block until that time.
+				// point we respond with a client message if one is in the queue or block until that time.
 				while (!stopping) {
-					ClientMessage cmsg = readMsgFromServer();
-					ServerMessage smsg;
-					if (cmsg instanceof PullMessage) {
-						smsg = serverMessages.take(); // can block
-					} else {
-						clientMessages.put(cmsg); // can block (particularly if a long sequence of snapshots is being sent)
-						smsg = new ServerMessage(ServerMessageTypes.Ack);
+					String line = messagesIn.readLine();
+					if (line == null) {
+						line = "Shutdown:";
 					}
-					writeMsgToServer (smsg);
+					if (line.startsWith("Shutdown:")) {
+						stopping = true;
+						serverMessages.put(new ServerMessage(ServerMessageTypes.ShutDown));
+					} else if (line.startsWith("Ack:")) {
+						synchronized (manager) {
+							awaitingAck = false;
+							manager.notifyAll();
+						}
+					} else {
+						int divider = line.indexOf(':');
+						String kind = (divider > 0) ? line.substring(0, divider) : line;
+						String detail = (divider > 0) ? line.substring(divider+1) : "";
+						serverMessages.put(new ServerMessage(kind, detail));
+					}
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -180,10 +100,6 @@ public class StandardIOCommunication implements ClientCommunications {
 					e.printStackTrace();
 			}
 		}
-
-
-		
-		
 	}
 
 
@@ -191,6 +107,7 @@ public class StandardIOCommunication implements ClientCommunications {
 	 * Start the threads monitoring communications between the client and server
 	 */
 	public void start() {
+		started = true;
 		manager.start();
 	}
 
@@ -199,8 +116,16 @@ public class StandardIOCommunication implements ClientCommunications {
 
 	@Override
 	public void sendToClient(ClientMessage message) throws InterruptedException {
-		// TODO Auto-generated method stub
-		
+		if (!started) {
+			start();
+		}
+		synchronized (manager) {
+			while (!awaitingAck) {
+				manager.wait();
+			}
+			awaitingAck = false;
+		}
+		messagesOut.println(message.serialize());
 	}
 
 
@@ -208,8 +133,10 @@ public class StandardIOCommunication implements ClientCommunications {
 
 	@Override
 	public ServerMessage getFromClient() throws InterruptedException {
-		// TODO Auto-generated method stub
-		return null;
+		if (!started) {
+			start();
+		}
+		return serverMessages.take();
 	}
 	
 	

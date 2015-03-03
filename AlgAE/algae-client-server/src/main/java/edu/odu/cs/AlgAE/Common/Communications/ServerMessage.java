@@ -43,6 +43,17 @@ public class ServerMessage extends MessageBase {
 	/**
 	 * Construct a new server message
 	 * 
+	 * @param messageKind type of message
+	 * @param detail variant content of server messages
+	 */
+	public ServerMessage(String messageKind, String detail) {
+		super(messageKind);
+		this.detail = detail;
+	}
+
+	/**
+	 * Construct a new server message
+	 * 
 	 */
 	public ServerMessage() {
 		super("*uninitialized*");
