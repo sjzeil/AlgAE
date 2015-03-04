@@ -3,9 +3,7 @@
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
-import java.beans.XMLDecoder;
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
@@ -15,8 +13,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
-
-import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 
 
 /**
@@ -89,7 +85,9 @@ public abstract class ClientMessage extends MessageBase {
 				+ "." + messageClass;
 		Class<ClientMessage> actualMessageClass;
 		try {
-			actualMessageClass = (Class<ClientMessage>)Class.forName(messageClass);
+		    @SuppressWarnings("unchecked")
+		    Class<ClientMessage> amClass = (Class<ClientMessage>)Class.forName(messageClass);
+		    actualMessageClass = amClass;
 			ClientMessage message = gson.fromJson(jreader, actualMessageClass);
 			return message;
 		} catch (ClassNotFoundException e) {

@@ -85,10 +85,16 @@ public class TestJavaStandAloneServer {
 		writeToServer.println(new ServerMessage(ServerMessageTypes.Start, "starting"));
 		JsonReader reader = new JsonReader(readFromServer);
 		Gson gson = new Gson();
+		String kind = gson.fromJson(reader, String.class);
+		assertEquals ("MenuMessage", kind);
 		MenuMessage menuMsg = gson.fromJson(reader, MenuMessage.class);
 		assertNotNull(menuMsg);
+		writeToServer.println(new ServerMessage(ServerMessageTypes.Ack, "ack start"));
+        kind = gson.fromJson(reader, String.class);
+        assertEquals ("SnapshotMessage", kind);
 		SnapshotMessage snapMsg = gson.fromJson(reader, SnapshotMessage.class);
 		assertNotNull(snapMsg);
+        writeToServer.println(new ServerMessage(ServerMessageTypes.Ack, "ack snap"));
 		writeToServer.println(new ServerMessage(ServerMessageTypes.ShutDown, "stopping"));		
 	}
 

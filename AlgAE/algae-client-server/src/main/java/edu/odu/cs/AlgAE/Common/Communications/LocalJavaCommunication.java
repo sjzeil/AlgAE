@@ -7,6 +7,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
 
+import edu.odu.cs.AlgAE.Common.Communications.ServerMessage.ServerMessageTypes;
+
 /**
  * This is an implementation of Client-Server communications for animations
  * where the animated code is Java, running in the same JVM instance as the
@@ -62,6 +64,7 @@ public class LocalJavaCommunication implements ClientCommunications, ServerCommu
 		logger.finer("getFromServer: starting");
 		ClientMessage msg = clientMessages.take();
 		logger.fine("getFromServer: " + msg);
+	    serverMessages.put(new ServerMessage(ServerMessageTypes.Ack, msg.getClass().getName()));
 		return msg;
 	}
 
@@ -75,7 +78,6 @@ public class LocalJavaCommunication implements ClientCommunications, ServerCommu
 	 */
 	@Override
 	public void sendToClient(ClientMessage message) throws InterruptedException {
-		logger.info("sendToClient: info");
 		logger.fine("sendToClient: " + message);
 		clientMessages.put(message);
 		logger.finer("sendToClient: sent");

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package edu.odu.cs.AlgAE.Common.Communications;
 
 /**
@@ -11,22 +8,20 @@ package edu.odu.cs.AlgAE.Common.Communications;
  */
 public class AckMessage extends ClientMessage {
 
-	/**
-	 */
-	public AckMessage() {
-		super("Ack");
-	}
+    /**
+     */
+    public AckMessage() {
+        super("Ack");
+    }
 
-	@Override
-	public boolean equals(Object clientMessage) {
-		if (clientMessage == null)
-			return false;
-		try {
-			AckMessage msg = (AckMessage)clientMessage;
-			return msg != null;
-		} catch (Exception e) {
-			return false;
-		}
-	}
+    @Override
+    public final boolean equals(final Object clientMessage) {
+        return (clientMessage != null) && (clientMessage instanceof AckMessage);
+    }
+
+    @Override
+    public final int hashCode() {
+        return getClass().getName().hashCode();
+    }
 
 }

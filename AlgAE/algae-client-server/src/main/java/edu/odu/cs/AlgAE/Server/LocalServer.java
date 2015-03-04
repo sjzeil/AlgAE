@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.logging.Logger;
 
 import edu.odu.cs.AlgAE.Animations.AnimationContext;
 import edu.odu.cs.AlgAE.Animations.ContextAware;
@@ -44,6 +45,10 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
  */
 public class LocalServer extends Server implements AnimationContext, ContextAware, AppletLifetimeSupport
 {
+    private static Logger logger = Logger.getLogger(LocalServer.class.getName()); 
+
+    
+    
 	private MemoryModel memoryModel;
 		
 
@@ -291,7 +296,7 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
 				try {
 					in.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+				    logger.warning("Problem closing source file " + fileName + ": " + e);
 				}
 			}
 		} 
@@ -405,7 +410,7 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
 		try {
 			getClientCommunications().sendToClient(msg);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+		    logger.warning ("Thread closed while waiting for message from client: " + e);
 		}
 	}
 
@@ -486,7 +491,15 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
 
 		private HashMap<String, MessageAction> msgActions;
 
-		private MessageAction GetSourceCodeAction = new MessageAction() {
+        private MessageAction AckAction = new MessageAction() {
+
+            @Override
+            public void doIt(String msgDetail) throws InterruptedException {
+                // Ignore.  Ack messages are not needed in a local Java animation.
+            }
+        };
+
+        private MessageAction GetSourceCodeAction = new MessageAction() {
 			
 			@Override
 			public void doIt(String fileName) throws InterruptedException {
@@ -555,7 +568,8 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
 		public ServerThread() {
 			super("Server Message Handler");
 			msgActions = new HashMap<String, LocalServer.ServerThread.MessageAction>();
-			msgActions.put(ServerMessageTypes.GetSourceCode .toString(), GetSourceCodeAction);
+			msgActions.put(ServerMessageTypes.Ack.toString(), AckAction);
+            msgActions.put(ServerMessageTypes.GetSourceCode .toString(), GetSourceCodeAction);
 			msgActions.put(ServerMessageTypes.InputSupplied.toString(), InputSuppliedAction);
 			msgActions.put(ServerMessageTypes.MenuItemSelected.toString(), MenuAction);
 			msgActions.put(ServerMessageTypes.Pull.toString(), PullAction);

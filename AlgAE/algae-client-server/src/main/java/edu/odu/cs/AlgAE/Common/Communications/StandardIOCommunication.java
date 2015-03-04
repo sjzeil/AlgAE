@@ -3,10 +3,7 @@
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,7 +37,7 @@ public class StandardIOCommunication implements ClientCommunications {
 	private BufferedReader messagesIn;
 	private PrintStream messagesOut;
 	
-	private boolean awaitingAck = true;
+	private boolean awaitingAck = false;
 	private boolean stopping = false;
 	private boolean started = false;
 	
@@ -93,11 +90,11 @@ public class StandardIOCommunication implements ClientCommunications {
 					}
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.severe("Error in communications: " + e);
 			}
 			catch (InterruptedException e) {
 				if (!stopping)
-					e.printStackTrace();
+					logger.warning("Irregular shutwodn of communications: " + e);
 			}
 		}
 	}
@@ -120,10 +117,10 @@ public class StandardIOCommunication implements ClientCommunications {
 			start();
 		}
 		synchronized (manager) {
-			while (!awaitingAck) {
+			while (awaitingAck) {
 				manager.wait();
 			}
-			awaitingAck = false;
+			awaitingAck = true;
 		}
 		messagesOut.println(message.serialize());
 	}
