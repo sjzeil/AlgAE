@@ -34,8 +34,8 @@ public class Arrow extends Path2D.Float implements DataShape {
 		double xyRatio = DataCanvas.getXFontScale() / DataCanvas.getYFontScale();
 		if (dotted) {
 			sourceMarker = new Ellipse2D.Double(
-					p1.getX()-DecorationSize/2.0,
-					p1.getY()-xyRatio*DecorationSize/2.0,
+					p1.getX() - DecorationSize/2.0,
+					p1.getY() - xyRatio*DecorationSize/2.0,
 					DecorationSize, DecorationSize);
 		} else {
 			sourceMarker = null;
@@ -45,8 +45,8 @@ public class Arrow extends Path2D.Float implements DataShape {
 			float dist = (float)p1.distance(p2);
 			if (dist > 1.0f) {
 				Point2D p3 = new Point2D.Double (
-						p2.getX() - (p2.getX()-p1.getX())*DecorationSize/dist,
-						p2.getY() - (p2.getY()-p1.getY())*DecorationSize/dist);
+						p2.getX() - (p2.getX() - p1.getX())*DecorationSize/dist,
+						p2.getY() - (p2.getY() - p1.getY())*DecorationSize/dist);
 				double dx = (p3.getY() - p2.getY())/2.0;
 				double dy = (p3.getX() - p2.getX())/2.0;
 				arrowHead = new Path2D.Float();
@@ -107,7 +107,7 @@ public class Arrow extends Path2D.Float implements DataShape {
 			float[] rgb = color.getRGBColorComponents(null);
 			Color c = new Color (rgb[0], rgb[1], rgb[2]); //, (float)blend);
 			if (p2 != null)
-				return new Arrow (id, dotted, p1, interpolate(p1, p2, 1.0f-(float)blend), c, depth);
+				return new Arrow (id, dotted, p1, interpolate(p1, p2, 1.0f - (float)blend), c, depth);
 			else
 				return new Arrow (id, dotted, p1, null, c, depth);
 		} else if (other instanceof Arrow) {
@@ -122,7 +122,7 @@ public class Arrow extends Path2D.Float implements DataShape {
 			Point2D op2a = (obox.p2 != null) ? obox.p2 : obox.p1;
 			return new Arrow (id, obox.dotted, interpolate(p1, obox.p1, blend), interpolate(p2a, op2a, blend), c, depth);
 		} else {
-			return (blend < 0.5) ? tween(null, blend) : other.tween(null, 1.0f-blend);
+			return (blend < 0.5) ? tween(null, blend) : other.tween(null, 1.0f - blend);
 		}
 	}
 	

@@ -42,29 +42,29 @@ public class ArrowToSelf extends Path2D.Float implements DataShape {
 	public ArrowToSelf(String id, boolean dotted, Point2D p1, int sense, Color c, int depth) {
 		if (dotted) {
 			append (new Ellipse2D.Double(
-					p1.getX()-DecorationSize/2.0,
-					p1.getY()-DecorationSize/2.0,
+					p1.getX() - DecorationSize/2.0,
+					p1.getY() - DecorationSize/2.0,
 					DecorationSize, DecorationSize), false);
 		}
 		Point2D p0;
 		if (sense == 0) {
-			bentShaft = new Ellipse2D.Float((float)p1.getX()-ArcSize/2.0f, (float)p1.getY()-ArcSize, ArcSize, ArcSize);
-			p0 = new Point2D.Double (p1.getX()+0.1, p1.getY()-0.05); 
+			bentShaft = new Ellipse2D.Float((float)p1.getX() - ArcSize/2.0f, (float)p1.getY() - ArcSize, ArcSize, ArcSize);
+			p0 = new Point2D.Double (p1.getX()+0.1, p1.getY() - 0.05); 
 		} else if (sense == 1) {
-			bentShaft = new Ellipse2D.Float((float)p1.getX(), (float)p1.getY()-ArcSize/2.0f, ArcSize, ArcSize);
+			bentShaft = new Ellipse2D.Float((float)p1.getX(), (float)p1.getY() - ArcSize/2.0f, ArcSize, ArcSize);
 			p0 = new Point2D.Double (p1.getX()+0.05, p1.getY()+0.1); 
 		} else if (sense == 2) {
-			bentShaft = new Ellipse2D.Float((float)p1.getX()-ArcSize/2.0f, (float)p1.getY(), ArcSize, ArcSize);
-			p0 = new Point2D.Double (p1.getX()-0.1, p1.getY()+0.05); 			
+			bentShaft = new Ellipse2D.Float((float)p1.getX() - ArcSize/2.0f, (float)p1.getY(), ArcSize, ArcSize);
+			p0 = new Point2D.Double (p1.getX() - 0.1, p1.getY()+0.05); 			
 		} else {
-			bentShaft = new Ellipse2D.Float((float)p1.getX()-ArcSize, (float)p1.getY()-ArcSize/2.0f, ArcSize, ArcSize);
-			p0 = new Point2D.Double (p1.getX()-0.05, p1.getY()-0.1); 			
+			bentShaft = new Ellipse2D.Float((float)p1.getX() - ArcSize, (float)p1.getY() - ArcSize/2.0f, ArcSize, ArcSize);
+			p0 = new Point2D.Double (p1.getX() - 0.05, p1.getY() - 0.1); 			
 		}
 		float dist = (float)p1.distance(p0);
 		append (new Line2D.Float(p0, p1), false);
 		Point2D p3 = new Point2D.Double (
-				p1.getX() - (p1.getX()-p0.getX())*DecorationSize/dist,
-				p1.getY() - (p1.getY()-p0.getY())*DecorationSize/dist);
+				p1.getX() - (p1.getX() - p0.getX())*DecorationSize/dist,
+				p1.getY() - (p1.getY() - p0.getY())*DecorationSize/dist);
 		double dx = (p3.getY() - p1.getY())/2.0;
 		double dy = (p3.getX() - p1.getX())/2.0;
 		Path2D arrowHead = new Path2D.Float();
@@ -116,7 +116,7 @@ public class ArrowToSelf extends Path2D.Float implements DataShape {
 		if (other == null) {
 			// Use blend as the alpha value so that the box becomes increasingly transparent.
 			float[] rgb = color.getRGBColorComponents(null);
-			Color c = new Color (rgb[0], rgb[1], rgb[2], 1.0f-(float)blend);
+			Color c = new Color (rgb[0], rgb[1], rgb[2], 1.0f - (float)blend);
 			return new ArrowToSelf (id, dotted, p1, sense, c, depth);
 		} else if (other instanceof ArrowToSelf) {
 			ArrowToSelf obox = (ArrowToSelf)other;
@@ -129,7 +129,7 @@ public class ArrowToSelf extends Path2D.Float implements DataShape {
 			
 			return new ArrowToSelf (id, obox.dotted, interpolate(p1, obox.p1, blend), sense, c, depth);
 		} else {
-			return (blend < 0.5) ? tween(null, blend) : other.tween(null, 1.0f-blend);
+			return (blend < 0.5) ? tween(null, blend) : other.tween(null, 1.0f - blend);
 		}
 	}
 	

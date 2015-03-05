@@ -104,10 +104,10 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 		 * returned from.
 		 */
 		while (stack.size() > newStack.length) {
-			stack.remove(stack.size()-1);
+			stack.remove(stack.size() - 1);
 		}
-		while (!stack.get(stack.size()-1).getFunctionName().equals(newStack[stack.size()-1])) {
-			stack.remove(stack.size()-1);			
+		while (!stack.get(stack.size() - 1).getFunctionName().equals(newStack[stack.size() - 1])) {
+			stack.remove(stack.size() - 1);			
 		}
 		/**
 		 * Then add in any new calls
@@ -115,7 +115,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 		for (int i = stack.size(); i < newStack.length; ++i) {
 				stack.add(new ActivationRecord(thisObj, newStack[i], this));
 		}
-		return stack.get(stack.size()-1);
+		return stack.get(stack.size() - 1);
 	}
 	
 	
@@ -126,7 +126,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 	 *
 	 */
 	public ActivationRecord topOfStack() {
-		return stack.get(stack.size()-1);
+		return stack.get(stack.size() - 1);
 	}
 
 	
@@ -135,7 +135,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 	 */
 	public void pop() {
 		if (stack.size() > 0) {
-			stack.remove (stack.size()-1);
+			stack.remove (stack.size() - 1);
 		}
 	}
 
@@ -248,7 +248,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 //	 */
 //	public CanBeRendered getLocals() {
 //		if (stack.size() > 0) {
-//			ActivationRecordImpl topRec =  stack.get(stack.size()-1);
+//			ActivationRecordImpl topRec =  stack.get(stack.size() - 1);
 //			boxOfLocals.setComponents(topRec.getLocals());	
 //		} else {
 //			boxOfLocals.setComponents(new LinkedList<Component>());
@@ -278,7 +278,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 	<T> void addObjectRenderers(CompoundRenderer<T> r, Identifier id,
 			T obj) {
 		if (stack.size() > 0) {
-			List<ObjectRenderer<T>> orlist = stack.get(stack.size()-1).getObjectRenderers(obj);
+			List<ObjectRenderer<T>> orlist = stack.get(stack.size() - 1).getObjectRenderers(obj);
 			for (ObjectRenderer<T> or: orlist) {
 				r.add (or);
 			}
@@ -309,8 +309,8 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 
 
 	public void popDownTo(ActivationRecord arec) {
-		while (stack.size() > 0 && stack.get(stack.size()-1) != arec) {
-			stack.remove (stack.size()-1);
+		while (stack.size() > 0 && stack.get(stack.size() - 1) != arec) {
+			stack.remove (stack.size() - 1);
 		}
 	}
 
@@ -333,7 +333,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 		@Override
 		public List<Component> getComponents(CallStackRendering obj) {
 			LinkedList<Component> components = new LinkedList<Component>();
-			for (int i = 0; i < stack.size()-1; ++i) {
+			for (int i = 0; i < stack.size() - 1; ++i) {
 				components.add (new Component(stack.get(i+1)));
 			}
 			if (stack.size() == 1) {

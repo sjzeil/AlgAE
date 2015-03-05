@@ -30,7 +30,7 @@
 
 -->
 
-<module name="Checker">
+<module name="Checker" >
     <!--
         If you set the basedir property below, then all reported file
         names will be relative to the specified directory. See
@@ -38,6 +38,8 @@
 
         <property name="basedir" value="${basedir}"/>
     -->
+
+    <property name="severity" value="warning"/>
 
     <!-- Checks that a package-info.java file exists for each package.     -->
     <!-- See http://checkstyle.sf.net/config_javadoc.html#JavadocPackage -->
@@ -128,7 +130,7 @@
         <!-- See http://checkstyle.sf.net/config_whitespace.html -->
         <module name="EmptyForIteratorPad"/>
         <module name="GenericWhitespace"/>
-        <module name="MethodParamPad"/>
+        <!-- module name="MethodParamPad" /-->
         <module name="NoWhitespaceAfter"/>
         <module name="NoWhitespaceBefore"/>
         <module name="OperatorWrap"/>
@@ -163,7 +165,7 @@
         <module name="InnerAssignment"/>
         <module name="MagicNumber"/>
         <module name="MissingSwitchDefault"/>
-        <module name="RedundantThrows"/>
+        <!-- module name="RedundantThrows"/ -->
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
 

@@ -114,7 +114,7 @@ public class AnimatorPanel extends JPanel
 			@Override
 			public void moved(String id, double x, double y) {
 				if (id.endsWith("__box")) {
-					id = id.substring(0, id.length()-5);
+					id = id.substring(0, id.length() - 5);
 					moveShapeInFuture (id, x, y);
 				}
 			}			
@@ -218,8 +218,8 @@ public class AnimatorPanel extends JPanel
 		JPanel speedPanel = new JPanel();
 		speedPanel.setLayout(new BoxLayout(speedPanel, BoxLayout.Y_AXIS));
 		speedPanel.add (new JLabel("speed", SwingConstants.CENTER));
-		speedControl = new JSlider(JSlider.HORIZONTAL, 0, MaxTweenFramesPerKey-MinTweenFramesPerKey, 
-				MinTweenFramesPerKey+MaxTweenFramesPerKey-InitialTweenFramesPerKey);
+		speedControl = new JSlider(JSlider.HORIZONTAL, 0, MaxTweenFramesPerKey - MinTweenFramesPerKey, 
+				MinTweenFramesPerKey+MaxTweenFramesPerKey - InitialTweenFramesPerKey);
 		speedControl.setMajorTickSpacing(5);
 		speedControl.setPaintTicks(true);
 		speedControl.addChangeListener(new ChangeListener() {
