@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Client.Layout.Coordinates;
 
@@ -13,16 +13,16 @@ import edu.odu.cs.AlgAE.Client.Layout.Optimization.Variable;
 /**
  * A relative quantity, specified as a (dx, dy) offset from the a
  *  "connection point" on the periphery of a rectangular region.
- *  
+ *
  *  The connection points are specified as a combination of
  *  Left/Center/Right and Lower/Center/Upper:
- *  
+ *
  *         LU-----CU-----RU
  *         |              |
  *         LC     CC     RC
  *         |              |
  *         LL-----CL-----RL
- * 
+ *
  * @author zeil
  *
  */

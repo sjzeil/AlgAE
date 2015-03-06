@@ -8,16 +8,16 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 
 /**
  * Determines how a given object or class of objects should be drawn.
- * 
+ *
  * In determining the rendering of any object, a number of different renderers
  * may be consulted. These renderers are arranged by precedence, and higher-precedence
  * are consulted first.
- * 
+ *
  * Each of the functions below may return a value (usually a null pointer) indicating that
  * it wishes to "yield" to lower-precedence renderers.  For example, one could change the
  * color of a drawn object by overriding the getColor function only, and allowing each of
- * the other functions to yield. 
- * 
+ * the other functions to yield.
+ *
  * @author zeil
  *
  */
@@ -44,7 +44,6 @@ public interface Renderer<T> {
 	 * box portraying this one.
 	 * 	
 	 * @param obj: object to be drawn
-	 * 
 	 * @return an array of contained objects or null to yield to other renderers
 	 */
 	public List<Component> getComponents(T obj);
@@ -54,7 +53,7 @@ public interface Renderer<T> {
 	 * pointers from this one.
 	 * 	
 	 * @param obj: object to be drawn
-	 * 
+	 *
 	 * @return an array of referenced objects or null to yield to other renderers
 	 */
 	public List<Connection> getConnections(T obj);
@@ -65,11 +64,11 @@ public interface Renderer<T> {
 	 * representing this object.  A return value of 1 will force all
 	 * components to be laid out in a single vertical column. Larger
 	 * return values will permit a more horizontal layout.
-	 * 
+	 *
 	 * A zero value requests that components be laid out in a (more or less) minimal area.
-	 * 
+	 *
 	 * @param obj
-	 * @return max #components per row or a negative value to yield to other renderers 
+	 * @return max #components per row or a negative value to yield to other renderers
 	 */
 			
 	public int getMaxComponentsPerRow(T obj);

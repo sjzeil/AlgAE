@@ -9,9 +9,9 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 
 /**
- * The default renderer uses toString() as a value, a randomly generated color 
+ * The default renderer uses toString() as a value, a randomly generated color
  * (based upon a hash of the object's type) and no components or connections.
- * 
+ *
  * @author zeil
  *
  */

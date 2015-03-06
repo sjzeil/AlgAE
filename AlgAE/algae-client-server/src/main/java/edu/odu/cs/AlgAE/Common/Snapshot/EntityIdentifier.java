@@ -4,18 +4,18 @@ import java.io.Serializable;
 
 /**
  * Unique identifiers for each entity in the model.
- * 
+ *
  * One object may map onto several distinct entities to support the
  * illusion that a given object is simultaneously a component of
  * multiple compound objects (or comprises multiple distinct components
  * of a single parent: e.g., arrays of Strings or Integers may contain
  * many duplicate references to one object, but we still prefer to render
  * these as if they were distinc.)
- * 
+ *
  *  Consequently, the Entity identifier contains the object identifier
  *  but also encodes the parent container and a label or other component
  *  indicator.
- *  
+ *
  * @author zeil
  *
  */
@@ -34,7 +34,7 @@ public class EntityIdentifier implements Serializable {
 
 	/**
 	 * For objects that are not components of larger objects
-	 * 
+	 *
 	 * @param id  object identifier
 	 */
 	public EntityIdentifier (Identifier id) {
@@ -45,10 +45,10 @@ public class EntityIdentifier implements Serializable {
 	
 	/**
 	 * For objects that are not components of larger objects.
-	 * 
+	 *
 	 * The label will be used for display purposes but is ignored
 	 * when doing comparisons and hashing.
-	 * 
+	 *
 	 * @param id object identifier
 	 * @param label decorative label/name
 	 */
@@ -63,7 +63,7 @@ public class EntityIdentifier implements Serializable {
 	
 	/**
 	 * Used for XML decoding only
-	 * 
+	 *
 	 */
 	public EntityIdentifier () {
 		this.id = null;
@@ -74,11 +74,11 @@ public class EntityIdentifier implements Serializable {
 	
 	/**
 	 * For objects that are components of larger objects
-	 * 
+	 *
 	 * @param id  object identifier
 	 * @param container object that contains this one as a component
 	 * @param label name that distinguishes this component from others of the same parent
-	 *                      
+	 *
 	 */
 	public EntityIdentifier (Identifier id, EntityIdentifier container, String label) {
 		this.id = id;
@@ -90,7 +90,7 @@ public class EntityIdentifier implements Serializable {
 	
 	/**
 	 * The special ID value used for null pointers
-	 * 
+	 *
 	 */
 	public static EntityIdentifier nullID() {
 		return new EntityIdentifier();
@@ -98,7 +98,7 @@ public class EntityIdentifier implements Serializable {
 	
 	
 	/**
-	 * 	Return a string that differentiates this component from other components of 
+	 * 	Return a string that differentiates this component from other components of
 	 *    the same container. May be null for objects that are not components of others.
 	 *
 	 */
@@ -126,7 +126,7 @@ public class EntityIdentifier implements Serializable {
 
 	/**
 	 * The identifier of the entity of which this one is a component
-	 * 
+	 *
 	 * @return
 	 */
 	public EntityIdentifier getContainer() {

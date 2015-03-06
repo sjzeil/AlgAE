@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Animations;
 
@@ -12,22 +12,22 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 /**
- * Default logging level (mainly for logging messages exchanged 
+ * Default logging level (mainly for logging messages exchanged
  * between the client and server.)
- * 
+ *
  * @author zeil
  *
  */
 public class DefaultLogSetting {
 
-	public static Level defaultLevel = Level.FINE; // INFO; 
+	public static Level defaultLevel = Level.FINE; // INFO;
 
 	private static Logger globalLogger;
 	
     /**
      * Set up a java logger: log to a file if this is being run as an application, to the console
      *    if run as an applet.
-     *    
+     *
      * @param isAnApplet
      */
 	public static void setupLogging(boolean isAnApplet, String logFileName) {

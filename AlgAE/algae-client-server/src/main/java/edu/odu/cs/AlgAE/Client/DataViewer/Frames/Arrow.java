@@ -12,8 +12,8 @@ import edu.odu.cs.AlgAE.Client.DataViewer.DataCanvas;
 
 
 /**
- * An arrow 
- * 
+ * An arrow
+ *
  * @author zeil
  *
  */
@@ -55,7 +55,7 @@ public class Arrow extends Path2D.Float implements DataShape {
 				arrowHead.lineTo(p3.getX() - dx, p3.getY() + dy);
 				arrowHead.closePath();
 			}
-		} 
+		}
 		this.id = id;
 		this.color = c;
 		this.depth = depth;
@@ -138,7 +138,7 @@ public class Arrow extends Path2D.Float implements DataShape {
 	
 	private Point2D interpolate (Point2D p1, Point2D p2, float blend)
 	{
-		return new Point2D.Double (interpolate(p1.getX(), p2.getX(), blend), 
+		return new Point2D.Double (interpolate(p1.getX(), p2.getX(), blend),
 					interpolate(p1.getY(), p2.getY(), blend));
 	}
 

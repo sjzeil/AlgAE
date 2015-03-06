@@ -10,7 +10,7 @@ import edu.odu.cs.AlgAE.Client.DataViewer.DataCanvas;
 
 /**
  * Colored text
- * 
+ *
  * @author zeil
  *
  */
@@ -96,7 +96,7 @@ public class Text extends Rectangle2D.Float implements DataShape {
 						interpolate(rgba1[2], rgba2[2], blend),
 						interpolate(rgba1[3], rgba2[3], blend)
 						);
-				return new Text(id, text, interpolate((float)getX(), (float)otext.getX(), blend), 
+				return new Text(id, text, interpolate((float)getX(), (float)otext.getX(), blend),
 						interpolate((float)getY(), (float)otext.getY(), blend), c, depth);
 			} else {
 				float[] rgb1 = color.getRGBColorComponents(null);

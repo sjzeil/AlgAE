@@ -37,12 +37,12 @@ import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
 
 /**
  * A layout is a snapshot in which all entities and connections have been assigned a location.
- * 
+ *
  * A layout is created from a snapshot and a (possibly null) prior layout, so that entities that
  * have already been assigned a location in the prior layout can retain those positions in the
  * subsequent layout.
- * 
- * 
+ *
+ *
  * @author zeil
  *
  */
@@ -57,9 +57,9 @@ public class Layout  {
 	
 	
 	/**
-	 *  A subset of the total objects of the snapshot, consisting of those objects that 
-	 *  are not components of other objects (i.e., container == null) 
-	 *  
+	 *  A subset of the total objects of the snapshot, consisting of those objects that
+	 *  are not components of other objects (i.e., container == null)
+	 *
 	 */
 	private HashSet<EntityIdentifier> baseObjectIDs;
 
@@ -74,7 +74,7 @@ public class Layout  {
 		{
 			size = null;
 			loc = null;
-			describes = e; 
+			describes = e;
 			height = 0;
 		}
 
@@ -111,7 +111,7 @@ public class Layout  {
 		
 		/**
 		 * True if this entity has been assigned a position
-		 * 
+		 *
 		 */
 		public boolean hasBeenPositioned()
 		{
@@ -151,7 +151,7 @@ public class Layout  {
 		/**
 		 * The height of an entity is the number of containers
 		 * it lies inside of.
-		 *  
+		 *
 		 * @param h the height to set
 		 */
 		public void setHeight(int h) {
@@ -215,7 +215,7 @@ public class Layout  {
 	/**
 	 * Create a new layout, similar to basedOn but reflecting any
 	 * anchorAt calls since the former layout was created.
-	 * 
+	 *
 	 * @param basedOn an existing layout
 	 */
 	public Layout(Layout basedOn, Anchors anchors) {
@@ -238,7 +238,7 @@ public class Layout  {
 	/**
 	 * Force an entity to always be drawn at a fixed position
 	 * in any future scenes where it appears.
-	 * 
+	 *
 	 * @param eids  String equivalent of an entity identifier
 	 * @param position
 	 */
@@ -271,7 +271,7 @@ public class Layout  {
 	/**
 	 * Load entities from the snapshot into this scene, with
 	 * placeholders for the location info.
-	 * 
+	 *
 	 * @param current
 	 */
 	private void loadEntities(Snapshot snapshot) {
@@ -287,7 +287,7 @@ public class Layout  {
 	/**
 	 * Load entities from the snapshot into this scene, with
 	 * placeholders for the location info.
-	 * 
+	 *
 	 * @param current
 	 */
 	private void loadEntities(Layout snapshot) {
@@ -308,18 +308,18 @@ public class Layout  {
 		}
 	}
 	
-	private static final double VerticalMargin = 0.25; 
-	private static final double VerticalSpacing = 0.25; 
-	private static final double HorizontalMargin = 0.5; 
-	private static final double HorizontalSpacing = 0.25; 
+	private static final double VerticalMargin = 0.25;
+	private static final double VerticalSpacing = 0.25;
+	private static final double HorizontalMargin = 0.5;
+	private static final double HorizontalSpacing = 0.25;
 	
 
 	/**
 	 * Position all internal components of entity eid
-	 * 
+	 *
 	 * @param eid  identifier of a container of zero or more components
-	 * 
-	 * @return the max height of all components, -1 if it has none 
+	 *
+	 * @return the max height of all components, -1 if it has none
 	 */
 	private int positionComponentsOf(EntityIdentifier eid)
 	{
@@ -343,8 +343,8 @@ public class Layout  {
 		}
 		LocationInfo loc = locations.get(eid);
 		loc.setHeight(1+maxHeight);
-		Dimension2DDouble sz = 
-			layoutComponents (e.getComponents(), e.getMaxComponentsPerRow(), 
+		Dimension2DDouble sz =
+			layoutComponents (e.getComponents(), e.getMaxComponentsPerRow(),
 				loc, xOffset, yOffset-VerticalMargin);
 		sz.setSize(Math.max(minWidth, sz.getWidth())+HorizontalMargin, sz.getHeight()+yAddition);
 		loc.setSize(sz);
@@ -384,7 +384,7 @@ public class Layout  {
 		
 		// Put an invisible box over part of this area.
 /*		GlassBox g = new GlassBox();
-		Identifier boid = Identifier.getIdentifierFor(g); 
+		Identifier boid = Identifier.getIdentifierFor(g);
 		EntityIdentifier beid = new EntityIdentifier(boid);
 		Entity be = new Entity(boid);
 		entities.put(beid, be);
@@ -399,7 +399,7 @@ public class Layout  {
 
 	/**
 	 * Assign initial positions to any unfixed globals
-	 * at top of screen alongside the activation stack 
+	 * at top of screen alongside the activation stack
 	 * @param set
 	 * @param xOffset
 	 */
@@ -435,10 +435,10 @@ public class Layout  {
 	 * Check to see if any of the base entities in this scene were
 	 * present in a prior layout. If so, copy their former locations into
 	 * this layout.
-	 * 
+	 *
 	 * As a side effect, builds the list movable of all base objects that
 	 * have not already been assigned a location.
-	 * 
+	 *
 	 * @param previous a prior scene
 	 * @return true if any base entities in this scene were not in the prior scene
 	 *                 and therefore still have no location
@@ -586,14 +586,14 @@ public class Layout  {
 		
 	/**
 	 * Arranges a list of components to pack a rectangular space whose upper left corner is
-	 *    specified.  
+	 *    specified.
 	 * @param variables  list of components to be inserted into the snapshot
 	 * @param upperLeft  upper left corner of the region where the variables should be placed
 	 * @return dimension of the bounding rectangle of the placed variables
 	 */
 	private Dimension2DDouble layoutComponents
 	       (List<EntityIdentifier> variables,
-			int maxComponentsPerRow, 
+			int maxComponentsPerRow,
 			BoundedRegion relativeTo, double xOffset, double yOffset) {
 		
 		ArrayList<LinkedList<EntityIdentifier>> rows = new ArrayList<LinkedList<EntityIdentifier>>();
@@ -726,7 +726,7 @@ public class Layout  {
 		/*
 		 * This is a piecewise linear function that peaks at M1*M2
 		 * when the center of two objects overlap and that falls to 0
-		 * when their centers are far enough apart that the objects are 
+		 * when their centers are far enough apart that the objects are
 		 * separated by OverlapGutter.
 		 */
 		LocationInfo loc = locations.get(eid);
@@ -737,7 +737,7 @@ public class Layout  {
 				LocationInfo otherLoc = locations.get(other);
 				Rectangle2D obox = otherLoc.getBBox();
 
-				double dx0 = bbox.getWidth()/2.0 + obox.getWidth()/2.0 + OverlapGutter; 
+				double dx0 = bbox.getWidth()/2.0 + obox.getWidth()/2.0 + OverlapGutter;
 				double dy0 = bbox.getHeight()/2.0 + obox.getHeight()/2.0 + OverlapGutter;
 				
 				double dx = Math.abs(bbox.getCenterX() - obox.getCenterX());
@@ -815,7 +815,7 @@ public class Layout  {
 		if (d2 == 0.0)
 			d2 = 1.0;
 		
-		double torsion = 1.0 - (dx1*dx2 + dy1*dy2) / (d1*d2);  
+		double torsion = 1.0 - (dx1*dx2 + dy1*dy2) / (d1*d2);
 		return TorsionTensionRatio * torsion + tension / conn.getElasticity();
 	}
 	
@@ -827,7 +827,7 @@ public class Layout  {
 
 	/**
 	 * Convert this state model to a DataPicture suitable for tweening and drawing.
-	 * 
+	 *
 	 * @return a DataPicture of this snapshot
 	 */
 	public Frame toPicture() {
@@ -857,7 +857,7 @@ public class Layout  {
 		
 		// background box
 		frame.add(
-				new Box(eid + "__box", 
+				new Box(eid + "__box",
 					xx, yy, (float)size.getWidth(), (float)size.getHeight(),
 					color, 2*depth+2));
 
@@ -869,8 +869,8 @@ public class Layout  {
 		// Text value
 		if (description.length() > 0) {
 			frame.add(
-					new Text(eid + "__value", description, 
-							xx + (float)size.getWidth()/2.0f - ((float)description.length())/2.0f, 
+					new Text(eid + "__value", description,
+							xx + (float)size.getWidth()/2.0f - ((float)description.length())/2.0f,
 							yy + (float)VerticalMargin,
 							textColor, 2*depth+1));
 		}
@@ -923,13 +923,13 @@ public class Layout  {
 			Location sourceExitLoc = new PerimeterPoint(angle, sourceInfo);
 			Point2D exitPoint = sourceExitLoc.getCoordinates();
 			if ((maxA - minA <= 45.0))
-				frame.add (new Arrow(id, true, 
+				frame.add (new Arrow(id, true,
 						exitPoint, null, color, 0));
 			if (label.length() > 0 || value.length() > 0) {
 				String description = label + ": " + value;
 				Point2D pLabel = getLabelLoc(exitPoint, null, sourceCenter);
-				frame.add(new Text(id + "*label", description, 
-						(float)pLabel.getX(), (float)pLabel.getY(), 
+				frame.add(new Text(id + "*label", description,
+						(float)pLabel.getX(), (float)pLabel.getY(),
 						Color.black, 0));
 			}
 		} else if (destination != source) {
@@ -937,7 +937,7 @@ public class Layout  {
 			
 			Location destCenterLoc = new RelativePoint(0.0, 0.0, Connections.CC, destInfo);
 
-			Location sourceExitLoc = new ClosestPointOnPerimeter(sourceInfo, destCenterLoc, 
+			Location sourceExitLoc = new ClosestPointOnPerimeter(sourceInfo, destCenterLoc,
 						connector.getMinAngle(), connector.getMaxAngle());
 			Location destEntryLoc = new ClosestPointOnPerimeter(destInfo, sourceCenterLoc,
 						0.0, 360.0);
@@ -945,18 +945,18 @@ public class Layout  {
 			Point2D exitPoint = sourceExitLoc.getCoordinates();
 			Point2D entryPoint = destEntryLoc.getCoordinates();
 
-			frame.add (new Arrow(id, (maxA - minA <= 45.0), 
+			frame.add (new Arrow(id, (maxA - minA <= 45.0),
 					exitPoint, entryPoint, color, 0));
 			if (label.length() > 0) {
 				Point2D pLabel = getLabelLoc(exitPoint, entryPoint, sourceCenter);
-				frame.add(new Text(id + "*label", label + ":", 
-						(float)pLabel.getX(), (float)pLabel.getY(), 
+				frame.add(new Text(id + "*label", label + ":",
+						(float)pLabel.getX(), (float)pLabel.getY(),
 						Color.black, 0));
 			}
 			if (value.length() > 0) {
 				Point2D pValue = getValueLoc(exitPoint, entryPoint, sourceCenter);
-				frame.add(new Text(id + "*value", value, 
-						(float)pValue.getX(), (float)pValue.getY(), 
+				frame.add(new Text(id + "*value", value,
+						(float)pValue.getX(), (float)pValue.getY(),
 						Color.black, 0));
 			}
 		} else {
@@ -971,13 +971,13 @@ public class Layout  {
 				sense = 3;
 			else if (exitPoint.getY() >= sourceBox.getMaxY())
 				sense = 2;
-			frame.add (new ArrowToSelf(id, (maxA - minA <= 45.0), 
+			frame.add (new ArrowToSelf(id, (maxA - minA <= 45.0),
 						exitPoint, sense, color, 0));
 			if (label.length() > 0 || value.length() > 0) {
 				String description = label + ": " + value;
 				Point2D pLabel = getLabelLoc(exitPoint, exitPoint, sourceCenter);
-				frame.add(new Text(id + "*label", description, 
-						(float)pLabel.getX(), (float)pLabel.getY(), 
+				frame.add(new Text(id + "*label", description,
+						(float)pLabel.getX(), (float)pLabel.getY(),
 						Color.black, 0));
 			}
 		}

@@ -24,42 +24,91 @@ import edu.odu.cs.AlgAE.Server.Utilities.SimpleReference;
 
 /**
  * An ActivationRecord describes a function call/scope being animated.
- * 
+ *
  * Operations available include selecting which variables will be drawn
  * at frame points within that scope.
- * 
+ *
  * Many of the functions return a reference to the same activation record.
  * This is designed to permit chaining of calls.  For example, if activationRec
- * is modeling a call to 
+ * is modeling a call to
  *     void foo (String a, int b, ArrayList<String> c);
  * we might say
  *     activationRec.showParam("a", a).showParam("b", b).showParamAsRef("c", c);
- *     
+ *
  * @author zeil
  *
  */
-public class ActivationRecord 
+public class ActivationRecord
 implements ContextAware, CanBeRendered<ActivationRecord> {
 
+    /**
+     * What stack is the record a part of?
+     */
+    private final ActivationStack stack;
 
-    private ActivationStack stack;
-    private Object thisObject;
-    private String functionName;
+    /**
+     * For member function calls, the object denoting the "this"
+     * parameter of the simulated call.
+     */
+    private final Object thisObject;
+
+    /**
+     * The name of the function being called.
+     */
+    private final String functionName;
+
+    /**
+     * A reference to the "this" parameter object, if one exists and is
+     * being rendered.
+     */
     private Object thisParam;
-    private Stack<ScopeImpl> scopes;
-    private List<ObjectRenderer<?>> objectRenderers;
 
-    private ActivationRenderer renderer;
+    /**
+     * Any nested scopes within this activation (i.e., { ... } statement lists
+     * with one or more local variables.
+     */
+    private final Stack<ScopeImpl> scopes;
 
-    public ActivationRecord (Object thisObj, String function, ActivationStack stack) {
-        this.stack = stack;
+    /**
+     * Renderers registered in this function for specific objects.
+     */
+    private final List<ObjectRenderer<?>> objectRenderers;
+
+    /**
+     * A renderer for this activation record.
+     */
+    private final ActivationRenderer renderer;
+
+    /**
+     * Number of degrees in a right angle.
+     */
+    private static final double RIGHTANGLE = 90.0;
+
+    /**
+     * Number of degrees in a straight line.
+     */
+    private static final double STRAIGHTANGLE = 180.0;
+
+    /**
+     * Construct an activation record. This simulates a function call:
+     *   thisObj.function(...)
+     *
+     *
+     * @param thisObj the "this" parameter to the call (null for non-member
+     *                functions)
+     * @param function the name of the function being called
+     * @param stack0 the activation stack to hold this new record.
+     */
+    public ActivationRecord (final Object thisObj, final String function,
+            final ActivationStack stack0) {
+        this.stack = stack0;
         thisObject = thisObj;
-        if (thisObj instanceof Class<?>)
+        if (thisObj instanceof Class<?>) {
             thisParam = null;
-        else {
-            SimpleReference ref = new SimpleReference(thisObj);
-            ref.setMinAngle(90.0);
-            ref.setMaxAngle(180.0);
+        } else {
+            final SimpleReference ref = new SimpleReference(thisObj);
+            ref.setMinAngle(RIGHTANGLE);
+            ref.setMaxAngle(STRAIGHTANGLE);
             thisParam = ref;
         }
         functionName = function;
@@ -74,51 +123,64 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
      * Highlight the rendering of dataValue by altering its color.
      * This change remains in effect until we leave the current activation,
      * until an alternate rendering overrides it, or until clearRenderings()
-     * is called.  
+     * is called.
+     *
+     * @param <T> data type being highlighted
+     * @param dataValue a data value to be highlighted
+     * @return the activatio0n record to which this was applied
      */
-    public <T> ActivationRecord highlight (T param) {
-        return render (new HighlightRenderer<T>(param, context()));
+    public final <T> ActivationRecord highlight (final T dataValue) {
+        return render (new HighlightRenderer<T>(dataValue, context()));
     }
 
     /**
      * Highlight the rendering of dataValue by altering its color.
-     * This change remains in effect until we leave the current activation.  
+     * This change remains in effect until we leave the current activation.
+     *
+     * @param <T> data type being highlighted
+     * @param dataValue a data value to be highlighted
+     * @param c color to use in highlighting
+     * @return the activatio0n record to which this was applied
      */
-    public <T> ActivationRecord highlight (T param, Color c)
-    {
-        return render (new HighlightRenderer<T>(param, c, context()));
+    public final <T> ActivationRecord highlight (final T dataValue,
+            final Color c) {
+        return render (new HighlightRenderer<T>(dataValue, c, context()));
     }
 
     /**
      * Alter the rendering of dataValue.
-     * 
-     * This change remains in effect until we leave the current activation,
-     * until an alternate rendering overrides it, or until clearRenderings()
-     * is called.  
+     *
+     * @param newRendering new rendering for this value
+     * @param <T> the type of the data being rendered
+     * @return the activation record to which this was applied
      */
-    public <T> ActivationRecord render (ObjectRenderer<T> newRendering)
-    {
+    public final <T> ActivationRecord render (
+            final ObjectRenderer<T> newRendering) {
         objectRenderers.add(newRendering);
         return this;
     }
 
 
-    public String toString()
-    {
+    /**
+     * Display the function name.
+     */
+    @Override
+    public final String toString() {
         return functionName;
     }
 
     @Override
-    public Renderer<ActivationRecord> getRenderer() {
+    public final Renderer<ActivationRecord> getRenderer() {
         return renderer;
     }
 
 
     /**
      * What is the name of the function whose call is described?
-     * 
+     *
+     * @return the name of the function
      */
-    public String getFunctionName() {
+    public final String getFunctionName() {
         return functionName;
     }
 
@@ -127,17 +189,24 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
     /**
      * Clears the effect of all prior highlight/render calls in this activation.
      */
-    public void clearRenderings() {
+    public final void clearRenderings() {
         objectRenderers.clear();
     }
 
+    /**
+     * Get the list of renderers suitable for use on an object.
+     *
+     * @param <T> data type of object being rendered
+     * @param obj object to be rendered
+     * @return the list of renders
+     */
     @SuppressWarnings("unchecked")
-    public
-    <T> List<ObjectRenderer<T>> getObjectRenderers (T obj) {
-        LinkedList<ObjectRenderer<T>> rlist = new LinkedList<ObjectRenderer<T>>();
-        for (ObjectRenderer<?> r: objectRenderers) {
+    public final
+    <T> List<ObjectRenderer<T>> getObjectRenderers (final T obj) {
+        final LinkedList<ObjectRenderer<T>> rlist = new LinkedList<>();
+        for (final ObjectRenderer<?> r: objectRenderers) {
             if (r.appliesTo() == obj) {
-                rlist.addLast((ObjectRenderer<T>)r);
+                rlist.addLast((ObjectRenderer<T>) r);
             }
         }
         return rlist;
@@ -147,42 +216,40 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
     /**
      * Establishes a breakpoint at which a new picture of the
      * current data state will be drawn and, depending on the interactive
-     * controls, execution may be paused. 
-     * @param thisObj - A reference to an object of the class of
-     *    which the current function is a member. Normally, "this"
-     *    will do just fine.  thisObj is used to help locate
-     *    the source code being animated, so, in a pinch (e.g., if
-     *    animating a static function) another object whose source
-     *    code lies in the same directory/folder will do.
+     * controls, execution may be paused.
+     *
      * @param message    A message to appear in the status line of the newly
-     *    drawn picture of the data state. 
+     *    drawn picture of the data state.
      */
-    public void breakHere(String message) {
+    public final void breakHere(final String message) {
         while (!stack.isEmpty() && stack.topOfStack() != this) {
             stack.pop();
         }
         SourceLocation location = null;
-        StackTraceElement[] trace = Thread.currentThread().getStackTrace();
-        StackTraceElement activeCall = trace[2];
-        Object obj = getMethodOwner();
-        String className = activeCall.getClassName();
-        String fileName = className.replaceFirst("\\$.*$", "").replaceAll("\\.", "/") + ".java";
+        final StackTraceElement[] trace =
+                Thread.currentThread().getStackTrace();
+        final StackTraceElement activeCall = trace[2];
+        final Object obj = getMethodOwner();
+        final String className = activeCall.getClassName();
+        final String fileName = className.replaceFirst(
+                "\\$.*$", "").replaceAll("\\.", "/") + ".java";
         context().sendSourceToClient(fileName);
         if (obj != null) {
-            if (obj instanceof Class<?>)
-                location = new SourceLocation(fileName, activeCall.getLineNumber());
-            else
-                location = new SourceLocation(fileName, activeCall.getLineNumber());
+            location = new SourceLocation(fileName, activeCall.getLineNumber());
         }
 
-        Snapshot snapshot = stack.getMemoryModel().renderInto(message, location);
+        final Snapshot snapshot = stack.getMemoryModel().renderInto(message,
+                location);
 
         context().sendToClient (snapshot, false);
 
     }
 
 
-
+    /**
+     * Get the object on which this function is invoked.
+     * @return the "this" object.
+     */
     private Object getMethodOwner() {
         return thisObject;
     }
@@ -192,14 +259,14 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
 
     /**
      * Get the ordered list of all parameters for this activation.
-     *  
+     *
      * @return the params
      */
     private List<Component> getParams() {
-        ArrayList<Component> params = new ArrayList<Component>();
+        final ArrayList<Component> params = new ArrayList<Component>();
         for (int i = 0; i < scopes.size(); ++i) {
-            List<Component> scopeParams = scopes.get(i).getParams();
-            for (Component param: scopeParams) {
+            final List<Component> scopeParams = scopes.get(i).getParams();
+            for (final Component param: scopeParams) {
                 boolean found = false;
                 for (int j = 0; (!found) && j < params.size(); ++j) {
                     if (params.get(j).getLabel().equals(param.getLabel())) {
@@ -218,14 +285,14 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
 
     /**
      * Get the ordered list of all local variables for this activation.
-     * 
+     *
      * @return the local variables for this activation
      */
-    public List<Component> getLocals() {
-        ArrayList<Component> locals = new ArrayList<Component>();
+    public final List<Component> getLocals() {
+        final ArrayList<Component> locals = new ArrayList<Component>();
         for (int i = 0; i < scopes.size(); ++i) {
-            List<Component> scopeLocals = scopes.get(i).getLocals();
-            for (Component local: scopeLocals) {
+            final List<Component> scopeLocals = scopes.get(i).getLocals();
+            for (final Component local: scopeLocals) {
                 boolean found = false;
                 for (int j = 0; (!found) && j < locals.size(); ++j) {
                     if (locals.get(j).getLabel().equals(local.getLabel())) {
@@ -243,61 +310,94 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
 
 
     /**
-     * Return the stack on which this record resides
-     * 
+     * Return the stack on which this record resides.
+     *
      * @return the activation stack
      */
-    ActivationStack getStack() {
+    public final ActivationStack getStack() {
         return stack;
     }
 
+    /**
+     * Default maximum number of components to show in a single row
+     * during horizontal rendering.
+     */
+    private static final int DEFAULT_MAX_COMPONENTS_PER_ROW = 12;
 
 
+    /**
+     * A rendering class for activation records.
+     *
+     * @author zeil
+     */
     private class ActivationRenderer implements Renderer<ActivationRecord> {
 
-        private FunctionHeader functionHeader;
-        private FunctionLocals locals;
+        /**
+         * An activation record is rendered in two parts: a function header,
+         * and a set of local variables. This object holds the function header
+         * state.
+         */
+        private final FunctionHeader functionHeader;
 
+        /**
+         * An activation record is rendered in two parts: a function header
+         * and a set of local variables. This object holds the local
+         * variables.
+         */
+        private final FunctionLocals locals;
 
+        /**
+         * Create the renderer.
+         */
         public ActivationRenderer() {
             functionHeader = new FunctionHeader();
             locals = new FunctionLocals();
         }
 
         @Override
-        public Color getColor(ActivationRecord obj) {
+        public Color getColor(final ActivationRecord obj) {
             return Color.LIGHT_GRAY;
         }
 
         @Override
-        public List<Component> getComponents(ActivationRecord obj) {
+        public List<Component> getComponents(final ActivationRecord obj) {
             List<Component> components = new LinkedList<Component>();
             if (obj != getStack().topOfStack()) {
                 components = getComponents(false);
             } else {
-                Component header = new Component(functionHeader);
+                final Component header = new Component(functionHeader);
                 components.add (header);
                 if (getLocals().size() > 0) {
                     locals.setLocals(getLocals());
-                    Component localsComp = new Component(locals);
+                    final Component localsComp = new Component(locals);
                     components.add (localsComp);
                 }
             }
             return components;
         }
 
-        public List<Component> getComponents(boolean atTop) {
-            LinkedList<Component> components = new LinkedList<Component>();
+
+        /**
+         * Get the components that appear inside the activation record box.
+         * @param atTop true if this is the top (currently active) call. Less
+         *     detail may be shown for activation record below the top.
+         * @return the list of component objects.
+         */
+        public List<Component> getComponents(final boolean atTop) {
+            final LinkedList<Component> components
+                = new LinkedList<Component>();
             if (thisParam != null) {
-                components.add (new Component(((atTop) ? thisParam : ""), "this"));
+                components.add (new Component(((atTop) ? thisParam : ""),
+                        "this"));
                 components.add (new Component('.'));
             }
             components.add(new Component(functionName));
             components.add(new Component('('));
             int i = 1;
-            for (Component param: getParams()) {
-                if (i > 1)
+            for (final Component param: getParams()) {
+                if (i > 1) {
                     components.add(new Component(','));
+                }
                 components.add(param);
                 ++i;
             }
@@ -307,54 +407,67 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
 
 
         @Override
-        public List<Connection> getConnections(ActivationRecord obj) {
+        public List<Connection> getConnections(final ActivationRecord obj) {
             return new LinkedList<Connection>();
         }
 
         @Override
-        public int getMaxComponentsPerRow(ActivationRecord obj) {
-            if (obj != getStack().topOfStack())
-                return 12;
-            else
+        public int getMaxComponentsPerRow(final ActivationRecord obj) {
+            if (obj != getStack().topOfStack()) {
+                return DEFAULT_MAX_COMPONENTS_PER_ROW;
+            } else {
                 return 1;
+            }
         }
 
         @Override
-        public String getValue(ActivationRecord obj) {
+        public String getValue(final ActivationRecord obj) {
             return "";
         }
 
 
 
+        /**
+         * Object denoting a function header. Has a function name and
+         * actual parameters to the call.
+         *
+         * @author zeil
+         *
+         */
+        public class FunctionHeader
+            implements CanBeRendered<FunctionHeader>,
+                Renderer<FunctionHeader> {
 
-        public class FunctionHeader implements CanBeRendered<FunctionHeader>, Renderer<FunctionHeader> {
-
+            /**
+             * Create a function header.
+             */
             public FunctionHeader() {
             }
 
             @Override
-            public String getValue(FunctionHeader obj) {
+            public String getValue(final FunctionHeader obj) {
                 return "";
             }
 
             @Override
-            public Color getColor(FunctionHeader obj) {
+            public Color getColor(final FunctionHeader obj) {
                 return Color.LIGHT_GRAY;
             }
 
             @Override
-            public List<Component> getComponents(FunctionHeader obj) {
+            public List<Component> getComponents(final FunctionHeader obj) {
                 return ActivationRenderer.this.getComponents(true);
             }
 
             @Override
-            public List<Connection> getConnections(FunctionHeader obj) {
+            public List<Connection> getConnections(final FunctionHeader obj) {
                 return new LinkedList<Connection>();
             }
 
+
             @Override
-            public int getMaxComponentsPerRow(FunctionHeader obj) {
-                return 12;
+            public int getMaxComponentsPerRow(final FunctionHeader obj) {
+                return DEFAULT_MAX_COMPONENTS_PER_ROW;
             }
 
             @Override
@@ -367,58 +480,73 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
     }
 
 
-    public class FunctionLocals implements CanBeRendered<FunctionLocals>, Renderer<FunctionLocals> {
+    /**
+     * A box of local variables.
+     *
+     * @author zeil
+     */
+    public class FunctionLocals implements
+        CanBeRendered<FunctionLocals>, Renderer<FunctionLocals> {
 
+        /**
+         * The local variables.
+         */
         private List<Component> locals;
 
-
-        public void setLocals(List<Component> locals) {
-            this.locals = locals;
+        /**
+         * Assign the list of local variables.
+         * @param locals0 list of local variables
+         */
+        public final void setLocals(final List<Component> locals0) {
+            this.locals = locals0;
         }
 
         @Override
-        public String getValue(FunctionLocals obj) {
+        public final String getValue(final FunctionLocals obj) {
             return "";
         }
 
         @Override
-        public Color getColor(FunctionLocals obj) {
+        public final Color getColor(final FunctionLocals obj) {
             return Color.LIGHT_GRAY;
         }
 
         @Override
-        public List<Component> getComponents(FunctionLocals obj) {
+        public final List<Component> getComponents(final FunctionLocals obj) {
             return locals;
         }
 
         @Override
-        public List<Connection> getConnections(FunctionLocals obj) {
+        public final
+        List<Connection> getConnections(final FunctionLocals obj) {
             return new LinkedList<Connection>();
         }
 
         @Override
-        public int getMaxComponentsPerRow(FunctionLocals obj) {
+        public final int getMaxComponentsPerRow(final FunctionLocals obj) {
             return 0;
         }
 
         @Override
-        public Renderer<FunctionLocals> getRenderer() {
+        public final Renderer<FunctionLocals> getRenderer() {
             return this;
         }
 
     }
 
     @Override
-    public AnimationContext context() {
+    public final AnimationContext context() {
         return stack.context();
     }
 
 
     /**
-     * Replacement for System.out
-     * 
+     * Replacement for System.out. Instead
+     *    of appearing on the system console, this output will be
+     *    displayed by the Client GUI.
+     * @return a PrintStream to which output can be sent.
      */
-    public SimulatedPrintStream out() {
+    public final SimulatedPrintStream out() {
         return stack.context().sysout();
     }
 
@@ -426,18 +554,21 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
      * Pops up a dialog box prompting for an input, pausing the
      * animation until a satisfactory input value is obtained from the
      * human operator.
-     * 
+     *
      * @param prompt  Text of the prompt message to be displayed
-     * @param requiredPattern regular expression describing an acceptable input value
+     * @param requiredPattern regular expression describing an
+     *           acceptable input value
      * @return a human-entered string matching the requiredPattern
      */
-    public String promptForInput(String prompt, String requiredPattern) {
-        LocalServer anim = LocalServer.algae();
-        JPanel screenContext = anim.getClient(); 
-        String response = JOptionPane.showInputDialog(screenContext, prompt, 
+    public final String promptForInput(
+            final String prompt,
+            final String requiredPattern) {
+        final LocalServer anim = LocalServer.algae();
+        final JPanel screenContext = anim.getClient();
+        String response = JOptionPane.showInputDialog(screenContext, prompt,
                 "Input Requested", JOptionPane.QUESTION_MESSAGE);
         while (!response.matches(requiredPattern)) {
-            response = JOptionPane.showInputDialog(screenContext, prompt, 
+            response = JOptionPane.showInputDialog(screenContext, prompt,
                     "Try again", JOptionPane.WARNING_MESSAGE);
         }
         return response;
@@ -447,11 +578,11 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
      * Pops up a dialog box prompting for an input, pausing the
      * animation until a satisfactory input value is obtained from the
      * human operator.
-     * 
+     *
      * @param prompt  Text of the prompt message to be displayed
      * @return a human-entered string
      */
-    public String promptForInput(String prompt) {
+    public final String promptForInput(final String prompt) {
         return promptForInput(prompt, ".*");
     }
 
@@ -459,22 +590,25 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
     /**
      * Show a variable as a parameter to the modeled function call.
      * Variables portrayed by this call are shown "in-line".
-     * 
+     *
      * @param label  the formal parameter name (optional, but recommended)
-     * @param param  the actual parameter
+     * @param value  the actual parameter
      * @return a reference to this breakpoint
      */
-    public ActivationRecord param(String label, Object value) {
+    public final ActivationRecord param(
+            final String label,
+            final Object value) {
         boolean found = false;
-        Component newparam = new Component(value, label);
+        final Component newparam = new Component(value, label);
         for (int i = 0; i < scopes.size(); ++i) {
-            List<Component> scopeParams = scopes.get(i).getParams();
-            for (ListIterator<Component> p = scopeParams.listIterator(); (!found) && p.hasNext();) {
-                Component param = p.next();
+            final List<Component> scopeParams = scopes.get(i).getParams();
+            for (final ListIterator<Component> p = scopeParams.listIterator();
+                    (!found) && p.hasNext();) {
+                final Component param = p.next();
                 if (label.equals(param.getLabel())) {
                     found = true;
                     p.set(newparam);
-                }	
+                }
             }
         }
         if (!found) {
@@ -490,15 +624,17 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
      * Show a variable as a parameter to the modeled function call.
      * Variables portrayed by this call are shown as an in-line
      * pointer/reference to the actual value, drawn elsewhere on the screen.
-     * 
+     *
      * @param label  the formal parameter name (optional, but recommended)
-     * @param param  the actual parameter
+     * @param value  the actual parameter
      * @return a reference to this breakpoint
      */
-    public ActivationRecord refParam(String label, Object value) {
-        SimpleReference ref = new SimpleReference(value);
-        ref.setMinAngle(90.0);
-        ref.setMaxAngle(180.0);
+    public final ActivationRecord refParam(
+            final String label,
+            final Object value) {
+        final SimpleReference ref = new SimpleReference(value);
+        ref.setMinAngle(RIGHTANGLE);
+        ref.setMaxAngle(STRAIGHTANGLE);
         param (label, ref);
         return this;
     }
@@ -507,22 +643,23 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
     /**
      * Show a variable as a local value in the function call.
      * Variables portrayed by this call are shown "in-line".
-     * 
+     *
      * @param label  the variable name (optional, can be "" or null)
-     * @param param  the variable/value
+     * @param value  the variable/value
      * @return a reference to this breakpoint
      */
-    public ActivationRecord var(String label, Object value) {
+    public final ActivationRecord var(final String label, final Object value) {
         boolean found = false;
-        Component newVar = new Component(value, label);
+        final Component newVar = new Component(value, label);
         for (int i = 0; i < scopes.size(); ++i) {
-            List<Component> scopeLocals = scopes.get(i).getLocals();
-            for (ListIterator<Component> p = scopeLocals.listIterator(); (!found) && p.hasNext();) {
-                Component local = p.next();
+            final List<Component> scopeLocals = scopes.get(i).getLocals();
+            for (final ListIterator<Component> p = scopeLocals.listIterator();
+                    (!found) && p.hasNext();) {
+                final Component local = p.next();
                 if (label.equals(local.getLabel())) {
                     found = true;
                     p.set(newVar);
-                }	
+                }
             }
         }
         if (!found) {
@@ -536,15 +673,17 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
      * Show a variable as a local value in the function call.
      * Variables portrayed by this call are shown as labeled
      * pointers to the actual value.
-     * 
+     *
      * @param label  the variable name (optional, can be "" or null)
-     * @param param  the variable/value
+     * @param value  the variable/value
      * @return a reference to this breakpoint
      */
-    public ActivationRecord refVar(String label, Object value) {
-        SimpleReference ref = new SimpleReference(value);
-        ref.setMinAngle(90.0);
-        ref.setMaxAngle(180.0);
+    public final ActivationRecord refVar(
+            final String label,
+            final Object value) {
+        final SimpleReference ref = new SimpleReference(value);
+        ref.setMinAngle(RIGHTANGLE);
+        ref.setMaxAngle(STRAIGHTANGLE);
         var (label, ref);
         return this;
     }
@@ -554,22 +693,23 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
     /**
      * Creates a new, inner scope within the current one. (A newly
      * created activation record begins with a single scope.)
-     * 
+     *
      *  A scope is a container of information about parameters and variables
      *   to be displayed. A Scope describes a portion of Java code inside {...}
      * where locals can be declared.
-     * 
+     *
      * Scopes are created from and associated with activation records. The set
-     * of parameter and variable labels are "shared" across all scopes for a given
-     * activation record. If a variable/parameter labeled "X" is added to a scope,
-     * and if a prior variable/parameter with the same label already exists in the
-     * same or an outer scope, then the new variable/parameter is considered a
-     * replacement of the old one.  This behavior is intended to simplify the
-     * updated display of primitives and of variables whose identity has changed.  
-     * 
+     * of parameter and variable labels are "shared" across all scopes for a
+     * given activation record. If a variable/parameter labeled "X" is added to
+     * a scope, and if a prior variable/parameter with the same label already
+     * exists in the same or an outer scope, then the new variable/parameter
+     * is considered a replacement of the old one.  This behavior is intended
+     * to simplify the updated display of primitives and of variables whose
+     * identity has changed.
+     *
      * @return newly created scope
      */
-    public ActivationRecord pushScope() {
+    public final ActivationRecord pushScope() {
         scopes.push(new ScopeImpl());
         return this;
     }
@@ -577,10 +717,10 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
 
     /**
      * Discards the most recently created scope, together with any
-     * instructions given in that scope regarding parameters 
+     * instructions given in that scope regarding parameters
      * and variables to be displayed.
      */
-    public void popScope() {
+    public final void popScope() {
         scopes.pop();
     }
 

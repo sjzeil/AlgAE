@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Server.Rendering;
 
@@ -22,7 +22,7 @@ public class HighlightRenderer<T> implements ObjectRenderer<T> {
 	private AnimationContext context;
 	
 	/**
-	 * 
+	 *
 	 */
 	public HighlightRenderer(T objToHighlight, AnimationContext contxt) {
 		toRender = objToHighlight;
@@ -32,7 +32,7 @@ public class HighlightRenderer<T> implements ObjectRenderer<T> {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public HighlightRenderer(T objToHighlight, Color newColor, AnimationContext contxt) {
 		toRender = objToHighlight;

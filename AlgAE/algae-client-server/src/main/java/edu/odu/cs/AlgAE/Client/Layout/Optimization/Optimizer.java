@@ -176,7 +176,7 @@ public class Optimizer {
 		x[3] = 1.0;
 		y[3] = perturbed.score;
 		states[3] = perturbed;
-		 
+		
 		x[2] = 0.5;
 		OptimizationState mid = new OptimizationState(dimension);
 		for (int i = 0; i < dimension; ++i) {

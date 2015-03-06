@@ -6,20 +6,20 @@ import edu.odu.cs.AlgAE.Common.Communications.ServerCommunications;
 
 /**
  * This is the base class for all AlgAE Java animation clients.
- *  
+ *
  * At its most basic, an algorithm animation consists of a client, a server, and a communication
  * framework linking them.
- * 
+ *
  * A Client is tasked with portraying the sequence of state snapshots that represent
  * an algorithm animation.  Each Client is presumed to launch a thread that pulls
  * and processes messages from the Server. The pacing at which this occurs is unpredictable,
  * as a GUI Client may include facilities for pausing the animation portrayal for arbitrarily
  * long periods.
- * 
+ *
  * The Client features init-start-stop-destroy functions inspired by (and sometimes triggered by)
  * the Java Applet life-cycle functions.  These are assumed to follow the usual Applet ordering constraints
  *      program-launch client-constructor init (start stop)* destroy program-shutdown
- *   
+ *
  * @author Zeil
  *
  */
@@ -44,7 +44,7 @@ public abstract class Client extends AppletMenuSupport implements AppletLifetime
 	 * Called once per execution, prior to start/stop/destroy.
 	 * For GUI-based clients, this provides a convenient time to build the GUI elements.
 	 * If a server proxy has already been supplied, the client thread may be started.
-	 * 
+	 *
 	 * @param isAnApplet  true if this client is running as a Java Applet
 	 */
 	public abstract void init(boolean isAnApplet);
@@ -68,8 +68,8 @@ public abstract class Client extends AppletMenuSupport implements AppletLifetime
 	/**
 	 * Provides access to the communications paths going to and coming from
 	 * the server.
-	 *  
-	 * @return the server or null if no server has been supplied 
+	 *
+	 * @return the server or null if no server has been supplied
 	 */
 	public ServerCommunications getServerAccess()
 	{
@@ -80,7 +80,7 @@ public abstract class Client extends AppletMenuSupport implements AppletLifetime
 	 * Establishes access to the communications paths going to and coming from
 	 * the server.  If a server already existed and messages from it had been processed,
 	 * may result in a loss of some or all state acquired from that server.
-	 *  
+	 *
 	 * @param server the server to set
 	 */
 	public void setServerAccess(ServerCommunications server)

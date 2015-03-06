@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
@@ -19,7 +19,7 @@ import edu.odu.cs.AlgAE.Common.Communications.ServerMessage.ServerMessageTypes;
  * machine. The client and server message streams are multiplexed in a way that
  * allows both sets of messages to be exchanged via the other process's standard
  * input and output streams.
- * 
+ *
  * @author zeil
  *
  */
@@ -51,9 +51,9 @@ public class LocalProcessCommunication implements ServerCommunications {
 	/**
 	 * Sends a message to the server - implementations are expected to be synchronized
 	 * and might block until the server acknowledges receipt.
-	 * 
+	 *
 	 * @param message
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 * @see edu.odu.cs.AlgAE.Common.Communications.ServerCommunications#sendToServer(edu.odu.cs.AlgAE.Common.Communications.ServerMessage)
 	 */
 	@Override
@@ -68,9 +68,9 @@ public class LocalProcessCommunication implements ServerCommunications {
 	/**
 	 * Receives a message from the server - implementations are expected to be synchronized
 	 * and will block if no message is available.
-	 * 
+	 *
 	 * @param message
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 * @see edu.odu.cs.AlgAE.Common.Communications.ServerCommunications#getFromServer()
 	 */
 	@Override
@@ -88,7 +88,7 @@ public class LocalProcessCommunication implements ServerCommunications {
 
 	/**
 	 * Turns message send debugging on and off
-	 * 
+	 *
 	 * @param debugSend
 	 */
 	public void setDebugSend(boolean debugSend) {

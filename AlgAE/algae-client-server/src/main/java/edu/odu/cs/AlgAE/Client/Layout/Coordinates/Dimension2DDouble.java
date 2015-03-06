@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Client.Layout.Coordinates;
 
@@ -15,14 +15,14 @@ public class Dimension2DDouble extends Dimension2D {
 	private double height;
 	
 	/**
-	 * 
+	 *
 	 */
 	public Dimension2DDouble() {
 		width = height = 0.0;
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public Dimension2DDouble(double w, double h) {
 		width = w;

@@ -32,14 +32,14 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
 
 /**
  *  A specialization of Server for Java standalone programs that will exchange messages
- *  with an AlgAE client via standard I/O. 
+ *  with an AlgAE client via standard I/O.
  *
  *  @author Steven J Zeil
  **/
 public abstract class JavaStandAloneServer extends Server implements MenuBuilder, AnimationContext, ContextAware
 {
 
-	private static Logger logger = Logger.getLogger(JavaStandAloneServer.class.getName()); 
+	private static Logger logger = Logger.getLogger(JavaStandAloneServer.class.getName());
 	
 	
 	private StandardIOCommunication communications;
@@ -53,7 +53,7 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
      * Used to force stop of thread
      */
     private boolean stopped;
-    
+
     private HashSet<String> sourceCodeAlreadySent;
 
 	/**
@@ -113,7 +113,7 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
 	/**
 	 * Show a variable as a global value in all displays.
 	 * Variables portrayed by this call are shown "in-line".
-	 * 
+	 *
 	 * @param label  the variable name (optional, can be "" or null)
 	 * @param param  the variable/value
 	 */
@@ -125,7 +125,7 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
 	/**
 	 * Show a variable as a global value in all displays.
 	 * Variables portrayed by this call are shown "in-line".
-	 * 
+	 *
 	 * @param label  the variable name (optional, can be "" or null)
 	 * @param param  the variable/value
 	 */
@@ -140,7 +140,7 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
 	 * Show a variable as a global value in all displays.
 	 * Variables portrayed by this call are shown as labeled
 	 * pointers to the actual value.
-	 * 
+	 *
 	 * @param label  the variable name (optional, can be "" or null)
 	 * @param param  the variable/value
 	 * @return a reference to this breakpoint
@@ -184,7 +184,7 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
 	 * Pops up a dialog box prompting for an input, pausing the
 	 * animation until a satisfactory input value is obtained from the
 	 * human operator.
-	 * 
+	 *
 	 * @param prompt  Text of the prompt message to be displayed
 	 * @param requiredPattern regular expression describing an acceptable input value
 	 * @return a human-entered string matching the requiredPattern
@@ -202,7 +202,7 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
 				} else if (response.getKind().equals("InputSupplied")) {
 					promptedInput = response.getDetail();
 				} else if (!response.getKind().equals("Ack")) {
-					logger.warning("Message protocol error: encountered " + response 
+					logger.warning("Message protocol error: encountered " + response
 							+ " while awaiting prompted input.\n");
 				}
 			}
@@ -217,7 +217,7 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
 	 * Pops up a dialog box prompting for an input, pausing the
 	 * animation until a satisfactory input value is obtained from the
 	 * human operator.
-	 * 
+	 *
 	 * @param prompt  Text of the prompt message to be displayed
 	 * @return a human-entered string
 	 */
@@ -273,14 +273,14 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
 
 
         private MenuFunction selectedAction;
-        
+
 
         public LauncherThread() {
             super("Animation Code Launcher");
             selectedAction = null;
         }
-        
-        
+
+
         public synchronized void runFunction (MenuFunction action)
         {
             while (selectedAction != null) {
@@ -317,7 +317,7 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
                                 e.printStackTrace();
                         }
                     }
-                }               
+                }
                 selectedAction.selected();
                 synchronized (this) {
                     selectedAction = null;
@@ -331,7 +331,7 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
 
         }
     }
-    
+
 
 
 
@@ -369,20 +369,20 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
         try {
             container = Class.forName(className);
         } catch (ClassNotFoundException e) {
-            container = this.getClass(); // Why not?  It might work, and couldn't hurt. 
+            container = this.getClass(); // Why not?  It might work, and couldn't hurt.
         }
-        return load (container, fileName); 
+        return load (container, fileName);
     }
-    
+
     private String load(Class<?> container, String fileName)
     {
         String contents = "Could not load " + fileName + "\n";
-        
+
         String resourceName = "/" + fileName.replace('\\', '/');
-        
+
         InputStream resourceIn = container.getResourceAsStream(resourceName);
         //System.err.println ("resourceIn: " + resourceIn);
-        
+
         if (resourceIn == null) {
             // Should not happen in actual operation (running from a Jar), but
             // is common when running/debugging from Eclipse or other IDEs
@@ -404,7 +404,7 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
                 }
             }
         }
-        
+
         if (resourceIn != null) {
             StringBuffer contentBuf = new StringBuffer();
             BufferedReader in = new BufferedReader (new InputStreamReader(resourceIn));
@@ -425,16 +425,16 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
                     logger.warning("Problem closing source file " + fileName + ": " + e);
                 }
             }
-        } 
+        }
         return contents;
     }
-    
-    
+
+
     /**
      * Provide an input from a dialog box popped up in a separate thread.ops up a dialog box prompting for an input, pausing the
      * animation until a satisfactory input value is obtained from the
      * human operator.
-     * 
+     *
      * @param value  input text
      */
     public void inputSupplied(String value) {
@@ -447,13 +447,13 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
 
 
         private abstract class MessageAction {
-            public abstract void doIt(String msgDetail) throws InterruptedException; 
+            public abstract void doIt(String msgDetail) throws InterruptedException;
         }
 
         private HashMap<String, MessageAction> msgActions;
 
         private MessageAction GetSourceCodeAction = new MessageAction() {
-            
+
             @Override
             public void doIt(String fileName) throws InterruptedException {
                 String sourceCode = load(fileName);
@@ -463,7 +463,7 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
         };
 
         private MessageAction InputSuppliedAction = new MessageAction() {
-            
+
             @Override
             public void doIt(String inputText) throws InterruptedException {
                 inputSupplied(inputText);
@@ -471,7 +471,7 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
         };
 
         private MessageAction MenuAction = new MessageAction() {
-            
+
             @Override
             public void doIt(String msgDetail) throws InterruptedException {
                 MenuFunction selected = algorithmsMenu.get(msgDetail);
@@ -522,7 +522,7 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
             msgActions.put(ServerMessageTypes.Pull.toString(), PullAction);
             msgActions.put(ServerMessageTypes.ShutDown.toString(), ShutDownAction);
             msgActions.put(ServerMessageTypes.Start.toString(), StartAction);
-            
+
         }
 
 
@@ -551,7 +551,7 @@ public abstract class JavaStandAloneServer extends Server implements MenuBuilder
             }
         }
 
-        
+
     }
 
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
@@ -10,7 +10,7 @@ import java.util.Arrays;
  * what text should appear in the Help->About menu and what menu items
  * should be placed in the Algorithm menu listing functions that users
  * can select to see animations of.
- * 
+ *
  * @author zeil
  *
  */
@@ -37,14 +37,14 @@ public class MenuMessage extends ClientMessage {
 
 	
 	/**
-	 * @return the help about string 
+	 * @return the help about string
 	 */
 	public String getAbout() {
 		return about;
 	}
 
 	/**
-	 * Set the help about string 
+	 * Set the help about string
 	 */
 	public void setAbout(String about) {
 		this.about = about;
@@ -71,7 +71,7 @@ public class MenuMessage extends ClientMessage {
 			return false;
 		try {
 			MenuMessage msg = (MenuMessage)clientMessage;
-			return msg.about.equals(about) 
+			return msg.about.equals(about)
 					&& Arrays.equals(msg.menuItems, menuItems);
 		} catch (Exception e) {
 			return false;

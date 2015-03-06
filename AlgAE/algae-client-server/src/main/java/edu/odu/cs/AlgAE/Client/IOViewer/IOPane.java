@@ -13,7 +13,7 @@ import edu.odu.cs.AlgAE.Common.Communications.ServerCommunications;
 public class IOPane extends JPanel
 {
   private JTextArea stdOutputArea;
-  
+
   public IOPane(ServerCommunications anim)
   {
     super();
@@ -27,8 +27,8 @@ public class IOPane extends JPanel
   }
 
 
- 
-  
+
+
   public void setFontSize (int size)
   {
     Font textFont = new Font("Courier", Font.PLAIN, size);
@@ -41,7 +41,7 @@ public class IOPane extends JPanel
     return new Dimension (250,50);
   }
 
-  
+
   public void print (String str)
   {
 	  stdOutputArea.append(str);
@@ -56,8 +56,8 @@ public class IOPane extends JPanel
 		  stdOutputArea.replaceRange("", 0, maxSize/2);
 	  }
   }
-  
-  
-  
-  
+
+
+
+
 }

@@ -1,12 +1,12 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
 /**
  * A generic message, used by a remote/process server to indicate
  * that it is prepared to receive a server message
- * 
+ *
  * @author zeil
  *
  */

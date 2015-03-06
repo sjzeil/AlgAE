@@ -10,9 +10,9 @@ public interface ClientCommunications {
 	/**
 	 * Sends a message to the client - implementations are expected to be synchronized
 	 * and might block until the client acknowledges receipt.
-	 * 
+	 *
 	 * @param message
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	public void sendToClient (ClientMessage message) throws InterruptedException;
 	
@@ -20,9 +20,9 @@ public interface ClientCommunications {
 	/**
 	 * Receives a message from the client - implementations are expected to be synchronized
 	 * and will block if no message is available.
-	 * 
+	 *
 	 * @param message
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	public ServerMessage getFromClient () throws InterruptedException;
 

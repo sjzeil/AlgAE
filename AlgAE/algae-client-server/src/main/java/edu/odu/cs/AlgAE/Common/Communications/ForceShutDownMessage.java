@@ -1,12 +1,12 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
 /**
  * Sent from the server to indicate that something has gone wrong and that the
  * animation is unable to continue.
- * 
+ *
  * @author zeil
  *
  */

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Client.Layout.Coordinates;
 
@@ -8,9 +8,9 @@ import java.awt.geom.Rectangle2D;
 import java.util.IdentityHashMap;
 
 /**
- * A zero-area region used mainly as an intermediate connection point 
+ * A zero-area region used mainly as an intermediate connection point
  * between objects.
- * 
+ *
  * @author zeil
  *
  */

@@ -1,12 +1,12 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
 
 /**
  * Indicates that animated code has written some text to standard output
- * 
+ *
  * @author zeil
  *
  */
@@ -29,14 +29,14 @@ public class CapturedOutputMessage extends ClientMessage {
 
 	
 	/**
-	 * @return the output string 
+	 * @return the output string
 	 */
 	public String getOutput() {
 		return output;
 	}
 
 	/**
-	 * Set the output string 
+	 * Set the output string
 	 */
 	public void setOutput(String output) {
 		this.output= output;

@@ -60,7 +60,7 @@ public class Entity implements Serializable {
 	/**
 	 * Create an entity representing an object that is a component
 	 * of a larger entity.
-	 * 
+	 *
 	 * @param id   object to be represented by this new entity
 	 * @param container  entity that is considered to contain this one as a component
 	 * @param componentLabel  a string differentiating this component from all others of the same container
@@ -79,7 +79,7 @@ public class Entity implements Serializable {
 	/**
 	 * Create an entity representing an object that is a component
 	 * of a larger entity.
-	 * 
+	 *
 	 * @param id   object to be represented by this new entity
 	 * @param container  entity that is considered to contain this one as a component
 	 * @param componentLabel  a string differentiating this component from all others of the same container

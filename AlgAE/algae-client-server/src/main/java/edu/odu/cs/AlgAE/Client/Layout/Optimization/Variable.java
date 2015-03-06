@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Client.Layout.Optimization;
 
@@ -103,7 +103,7 @@ public class Variable implements Cloneable {
 		if (obj instanceof Variable) {
 			Variable var = (Variable)obj;
 			return value == var.value;
-		} else 
+		} else
 			return false;
 	}
 	

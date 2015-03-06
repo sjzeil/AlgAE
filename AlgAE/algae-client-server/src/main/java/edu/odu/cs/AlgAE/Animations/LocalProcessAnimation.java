@@ -14,7 +14,7 @@ import edu.odu.cs.AlgAE.Common.Communications.LocalProcessCommunication;
  *
  *  @author Steven J Zeil
  **/
-public class LocalProcessAnimation extends AnimationApplet 
+public class LocalProcessAnimation extends AnimationApplet
 {
 
 	private GUIClient client;
@@ -62,7 +62,7 @@ public class LocalProcessAnimation extends AnimationApplet
 	 * Run the animation as a stand-alone program.  		
 	 * @param args One command-line parameter - the path to the executable that runs the server
 	 *              If this is not provided, a file dialog is raised to select that executable
-	 *              file.  
+	 *              file.
 	 */
 	public static void main (String[] args) {
 		File executable = null;
@@ -83,7 +83,7 @@ public class LocalProcessAnimation extends AnimationApplet
 				executable = null;
 			}
 	    }
-	    
+	
 	    if (executable != null) {
 	    	new LocalProcessAnimation(executable.getName(), executable).runAsMain();
 	    }

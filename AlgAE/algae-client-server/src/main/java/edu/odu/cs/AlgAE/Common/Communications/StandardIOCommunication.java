@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
@@ -20,13 +20,13 @@ import edu.odu.cs.AlgAE.Common.Communications.ServerMessage.ServerMessageTypes;
  * machine. The client and server message streams are multiplexed in a way that
  * allows both sets of messages to be exchanged via the other process's standard
  * input and output streams.
- * 
+ *
  * @author zeil
  *
  */
 public class StandardIOCommunication implements ClientCommunications {
 	
-	private final static Logger logger = Logger.getLogger(StandardIOCommunication.class.getName()); 
+	private final static Logger logger = Logger.getLogger(StandardIOCommunication.class.getName());
 	
 	
 	

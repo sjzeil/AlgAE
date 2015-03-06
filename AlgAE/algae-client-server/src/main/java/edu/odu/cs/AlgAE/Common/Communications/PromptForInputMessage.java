@@ -1,12 +1,12 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
 
 /**
  * Indicates that animated code is requesting input from the user.
- * 
+ *
  * @author zeil
  *
  */
@@ -79,7 +79,7 @@ public class PromptForInputMessage extends ClientMessage {
 			return false;
 		try {
 			PromptForInputMessage msg = (PromptForInputMessage)clientMessage;
-			return msg.prompt.equals(prompt) 
+			return msg.prompt.equals(prompt)
 					&& msg.requiredPattern.equals(requiredPattern);
 		} catch (Exception e) {
 			return false;

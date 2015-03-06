@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Client.Layout.Optimization;
 
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 /**
  * An optimization (minimization) problem.
- * 
+ *
  * @author zeil
  *
  */
@@ -22,7 +22,7 @@ public interface OptimizationProblem {
 	/**
 	 * Evaluate the objective function. An optimizer will seek a set of assignments
 	 * to the variables that minimizes this value.
-	 * 
+	 *
 	 * @return value of the objective for the optimization
 	 */
 	public double objectiveFunction();

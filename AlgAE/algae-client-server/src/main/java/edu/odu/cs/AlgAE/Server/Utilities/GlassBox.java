@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Server.Utilities;
 
@@ -14,7 +14,7 @@ import edu.odu.cs.AlgAE.Server.Rendering.Renderer;
 
 /**
  * A transparent box with an optional string "label" and a list of components.
- *  
+ *
  * @author zeil
  *
  */

@@ -56,7 +56,7 @@ public class Frame implements Iterable<DataShape> {
 
 
 	/**
-	 * Returns the Layout (if any) from which this Frame was generated 
+	 * Returns the Layout (if any) from which this Frame was generated
 	 * @return original layout or null if this Frame was generated in some other fashion (e.g., by tweening)
 	 */
 	public Layout getKeyFor() {
@@ -73,7 +73,7 @@ public class Frame implements Iterable<DataShape> {
 	
 	/**
 	 * Provided for testing purposes only
-	 * 
+	 *
 	 * @return
 	 */
 	public Iterator<String> shapeKeys() {

@@ -22,21 +22,21 @@ public class ViewerPanel extends JPanel
   private AnimatorPanel dataPane;
   private SourcePane sourcePane;
   private IOPane ioPane;
-    
+
 
   private JLabel statusLine;
-  
 
-    
 
-  public ViewerPanel(String theTitle, 
+
+
+  public ViewerPanel(String theTitle,
 		     AnimatorPanel datapane, SourcePane sourcepane,
 		     IOPane iopane)
   {
 	  this.dataPane = datapane;
 	  this.sourcePane = sourcepane;
 	  this.ioPane = iopane;
-	  
+	
 	  ioPane.setMinimumSize(new Dimension(0,0));
 	  sourcePane.setMinimumSize(new Dimension(0,0));
 	  dataPane.setMinimumSize(new Dimension(0,0));
@@ -45,7 +45,7 @@ public class ViewerPanel extends JPanel
 	  ioPane.setPreferredSize(new Dimension(200,300));
 	  sourcePane.setPreferredSize(new Dimension(600,300));
 
-	  
+	
 	  JSplitPane splitPanel = new JSplitPane (JSplitPane.HORIZONTAL_SPLIT,
 			  sourcePane, ioPane);
 	  splitPanel.setResizeWeight(0.33);
@@ -71,10 +71,10 @@ public class ViewerPanel extends JPanel
 
   }
 
-  
 
-  
-  
+
+
+
 
 
 }

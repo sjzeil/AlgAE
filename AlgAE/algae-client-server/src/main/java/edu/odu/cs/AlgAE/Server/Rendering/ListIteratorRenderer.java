@@ -13,7 +13,7 @@ import edu.odu.cs.AlgAE.Server.Utilities.SimpleReference;
 /**
  * This renderer can be registered for java.util.LinkedList to
  * display the list as a chain of nodes with "next" links.
- * 
+ *
  * @author zeil
  *
  */

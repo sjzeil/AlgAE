@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Server.Rendering;
 
@@ -15,7 +15,7 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 
 /**
  * Used in the default rendering of the LinkedList class
- * 
+ *
  * @author zeil
  *
  */
@@ -106,12 +106,12 @@ public class SimulatedNode implements CanBeRendered<SimulatedNode>, Renderer<Sim
 	public List<Connection> getConnections(SimulatedNode obj) {
 		LinkedList<Connection> conn = new LinkedList<Connection>();
 		if (doublyLinked) {
-			SimulatedNode prev = (componentNum > 0) 
+			SimulatedNode prev = (componentNum > 0)
 				? getNode(list, componentNum-1, doublyLinked, context)
 				: null;
 			conn.add (new Connection(prev, 280.0, 300.0));	
 		}
-		SimulatedNode next = (componentNum+1 < list.size()) 
+		SimulatedNode next = (componentNum+1 < list.size())
 		? getNode(list, componentNum+1, doublyLinked, context)
 		: null;
 		conn.add (new Connection(next, 75.0, 90.0));	

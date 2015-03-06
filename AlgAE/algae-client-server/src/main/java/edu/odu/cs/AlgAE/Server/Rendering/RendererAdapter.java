@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Server.Rendering;
 
@@ -12,7 +12,7 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 /**
  * A Renderer class that provides a "no decision" default
  * for every Renderer function.
- * 
+ *
  * @author zeil
  *
  */

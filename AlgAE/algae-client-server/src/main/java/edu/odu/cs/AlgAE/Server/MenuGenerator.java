@@ -32,15 +32,15 @@ public interface MenuGenerator
    *  Typically, this indicates the origin of the source code
    *  being animated and the name of the person who prepared the
    *  animation.
-   *  
+   *
    *  This can also be a useful way to supply hints about what you
    *  would like people running the animation to try.
-   *  
+   *
    **/
   public String about();
-  
+
 
 
 }
 
-  
+

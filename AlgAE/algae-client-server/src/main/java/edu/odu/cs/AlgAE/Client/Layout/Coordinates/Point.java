@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Client.Layout.Coordinates;
 
@@ -11,7 +11,7 @@ import edu.odu.cs.AlgAE.Client.Layout.Optimization.Variable;
 
 /**
  * An X,Y coordinate pair
- * 
+ *
  * @author zeil
  *
  */

@@ -9,8 +9,8 @@ public interface ServerCommunications0 extends ServerCommunications,
 	/**
 	 * Provides access to the communications paths going to and coming from
 	 * the client.
-	 *  
-	 * @return the server or null if no server has been supplied 
+	 *
+	 * @return the server or null if no server has been supplied
 	 */
 	public abstract ClientCommunications getClientAccess();
 
@@ -18,7 +18,7 @@ public interface ServerCommunications0 extends ServerCommunications,
 	 * Establishes access to the communications paths going to and coming from
 	 * the client.  If a client already existed and messages from it had been processed,
 	 * may result in a loss of some or all state acquired from that server.
-	 *  
+	 *
 	 * @param server the server to set
 	 */
 	public abstract void setClientAccess(ClientCommunications server);

@@ -12,8 +12,8 @@ import edu.odu.cs.AlgAE.Client.DataViewer.DataCanvas;
 
 
 /**
- * An arrow 
- * 
+ * An arrow
+ *
  * @author zeil
  *
  */
@@ -32,7 +32,7 @@ public class ArrowToSelf extends Path2D.Float implements DataShape {
 	private String id;
 	private boolean dotted;
 	private Point2D p1;
-	private int sense;  
+	private int sense;
 	
 	private final float DecorationSize = 0.33f;
 	private final float ArcSize = 1.5f;
@@ -49,10 +49,10 @@ public class ArrowToSelf extends Path2D.Float implements DataShape {
 		Point2D p0;
 		if (sense == 0) {
 			bentShaft = new Ellipse2D.Float((float)p1.getX() - ArcSize/2.0f, (float)p1.getY() - ArcSize, ArcSize, ArcSize);
-			p0 = new Point2D.Double (p1.getX()+0.1, p1.getY() - 0.05); 
+			p0 = new Point2D.Double (p1.getX()+0.1, p1.getY() - 0.05);
 		} else if (sense == 1) {
 			bentShaft = new Ellipse2D.Float((float)p1.getX(), (float)p1.getY() - ArcSize/2.0f, ArcSize, ArcSize);
-			p0 = new Point2D.Double (p1.getX()+0.05, p1.getY()+0.1); 
+			p0 = new Point2D.Double (p1.getX()+0.05, p1.getY()+0.1);
 		} else if (sense == 2) {
 			bentShaft = new Ellipse2D.Float((float)p1.getX() - ArcSize/2.0f, (float)p1.getY(), ArcSize, ArcSize);
 			p0 = new Point2D.Double (p1.getX() - 0.1, p1.getY()+0.05); 			
@@ -145,7 +145,7 @@ public class ArrowToSelf extends Path2D.Float implements DataShape {
 	
 	private Point2D interpolate (Point2D p1, Point2D p2, float blend)
 	{
-		return new Point2D.Double (interpolate(p1.getX(), p2.getX(), blend), 
+		return new Point2D.Double (interpolate(p1.getX(), p2.getX(), blend),
 					interpolate(p1.getY(), p2.getY(), blend));
 	}
 }

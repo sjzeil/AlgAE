@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
@@ -8,7 +8,7 @@ import edu.odu.cs.AlgAE.Common.Snapshot.SnapshotDiff;
 /**
  * Indicates that the animation has reached a breakpoint and has prepared a snapshot
  * of the current memory state for display by the client.
- * 
+ *
  * @author zeil
  *
  */
@@ -51,9 +51,9 @@ public class SnapshotMessage extends ClientMessage {
 	}
 
 	/**
-	 * Indicates whether this snapshot is the final one sent upon completion 
+	 * Indicates whether this snapshot is the final one sent upon completion
 	 * of a function selected from the client's Algorithm menu
-	 * 
+	 *
 	 * @return the menuItemCompleted
 	 */
 	public boolean isMenuItemCompleted() {
@@ -61,9 +61,9 @@ public class SnapshotMessage extends ClientMessage {
 	}
 
 	/**
-	 * Indicates whether this snapshot is the final one sent upon completion 
+	 * Indicates whether this snapshot is the final one sent upon completion
 	 * of a function selected from the client's Algorithm menu
-	 * 
+	 *
 	 * @param menuItemCompleted the menuItemCompleted to set
 	 */
 	public void setMenuItemCompleted(boolean menuItemCompleted) {
@@ -77,7 +77,7 @@ public class SnapshotMessage extends ClientMessage {
 			return false;
 		try {
 			SnapshotMessage msg = (SnapshotMessage)clientMessage;
-			return msg.menuItemCompleted == menuItemCompleted 
+			return msg.menuItemCompleted == menuItemCompleted
 					&& msg.snapshot.equals(snapshot);
 		} catch (Exception e) {
 			return false;

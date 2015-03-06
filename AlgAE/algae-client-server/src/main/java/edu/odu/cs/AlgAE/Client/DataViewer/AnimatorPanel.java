@@ -35,14 +35,14 @@ import edu.odu.cs.AlgAE.Client.SourceViewer.SourceViewer;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 
 /**
- * A panel containing the animator: a canvas that portrays a series of changing 
+ * A panel containing the animator: a canvas that portrays a series of changing
  *   data states over time and a set of controls for pausing, playing, and reversing
  *   the sequence of states portrayed.
- *   
+ *
  * The animator can be presented a sequence of DataPictures, one at a time. It
  * "tweens" successive pictures to present a smooth animation of the transition from
  * one state to another.
- *  
+ *
  * @author zeil
  *
  */
@@ -68,7 +68,7 @@ public class AnimatorPanel extends JPanel
 	
 
 	/**
-	 * Picture last added by addPicture but that has not yet 
+	 * Picture last added by addPicture but that has not yet
 	 * been placed into the futurePictures queue.
 	 */
 	private Snapshot nextPicture;
@@ -86,7 +86,7 @@ public class AnimatorPanel extends JPanel
 
 	/**
 	 * The main playback state. Think of the current state as a sequence of
-	 * pictures starting with pastFrames, then the currentFrame, 
+	 * pictures starting with pastFrames, then the currentFrame,
 	 * then the futureFrames.
 	 */
 	private LinkedList<Frame> pastFrames;
@@ -121,7 +121,7 @@ public class AnimatorPanel extends JPanel
 		});
 
 
-		JScrollPane scrolledCanvas = new JScrollPane(canvas); 
+		JScrollPane scrolledCanvas = new JScrollPane(canvas);
 
 		add (scrolledCanvas, BorderLayout.CENTER);
 
@@ -218,7 +218,7 @@ public class AnimatorPanel extends JPanel
 		JPanel speedPanel = new JPanel();
 		speedPanel.setLayout(new BoxLayout(speedPanel, BoxLayout.Y_AXIS));
 		speedPanel.add (new JLabel("speed", SwingConstants.CENTER));
-		speedControl = new JSlider(JSlider.HORIZONTAL, 0, MaxTweenFramesPerKey - MinTweenFramesPerKey, 
+		speedControl = new JSlider(JSlider.HORIZONTAL, 0, MaxTweenFramesPerKey - MinTweenFramesPerKey,
 				MinTweenFramesPerKey+MaxTweenFramesPerKey - InitialTweenFramesPerKey);
 		speedControl.setMajorTickSpacing(5);
 		speedControl.setPaintTicks(true);
@@ -352,7 +352,7 @@ public class AnimatorPanel extends JPanel
 				outputStream.close();
 			} catch (IOException e) {
 			}
-		}	 
+		}	
 		return imageBytes;
 	}
 
@@ -419,7 +419,7 @@ public class AnimatorPanel extends JPanel
 	 * This may block the caller's thread if the picture from the most
 	 * recent call to this same function has not yet been processed.
 	 * usually this is because the animation has been paused or reversed.
-	 * 
+	 *
 	 * @param newPicture
 	 * @throws InterruptedException
 	 */
@@ -433,7 +433,7 @@ public class AnimatorPanel extends JPanel
 
 	/**
 	 * Signals that the last picture added will be the final one in
-	 * an animation sequence. 
+	 * an animation sequence.
 	 */
 	public synchronized void endofSequence ()
 	{
@@ -445,7 +445,7 @@ public class AnimatorPanel extends JPanel
 	/**
 	 * If the animation is not currently paused and if more frames are
 	 * available in the desired direction, request display of the next frame.
-	 * 
+	 *
 	 * @param newPicture
 	 * @throws InterruptedException
 	 */
@@ -474,7 +474,7 @@ public class AnimatorPanel extends JPanel
 					Frame currentPicture = (pastFrames.size() > 0)? pastFrames.getLast() : null;
 					Layout currentLayout = (currentPicture != null) ? currentPicture.getKeyFor() : null;
 					Layout newLayout = new Layout (nextPicture, currentLayout, anchors);
-					Frame newKey = newLayout.toPicture(); 
+					Frame newKey = newLayout.toPicture();
 					Frame tweenedPics[] = tween(currentPicture, newKey);
 					for (int i = 0; i < tweenedPics.length; ++i) {
 						futureFrames.add(tweenedPics[i]);
@@ -529,8 +529,8 @@ public class AnimatorPanel extends JPanel
 	 * Update the layout of the current frame and regenerate the frame.
 	 * Then discard all future frames, updating the layouts of all future key frames
 	 * and regenerating the frames derived from them.
-	 *    
-	 * @param id   string equivalent ofthe entirty identifier of the box 
+	 *
+	 * @param id   string equivalent ofthe entirty identifier of the box
 	 * 	              that was dragged
 	 * @param x    x coordinate of new position of dragged box
 	 * @param y    y coordinate of new position of dragged box
@@ -588,7 +588,7 @@ public class AnimatorPanel extends JPanel
 				DataShape other = shapes2.get(ds.getID());
 				DataShape tweened = ds.tween(other, blend);
 				if (tweened != null)
-					result.add (tweened);  
+					result.add (tweened);
 			}
 		}
 		for (DataShape ds: newPicture) {
@@ -596,7 +596,7 @@ public class AnimatorPanel extends JPanel
 			if (other == null) {
 				DataShape tweened = ds.tween(other, 1.0f - blend);
 				if (tweened != null)
-					result.add (tweened);  
+					result.add (tweened);
 			}
 		}
 		return result;
