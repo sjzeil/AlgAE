@@ -93,7 +93,7 @@ public class AnimationApplet extends JApplet
 	public void start ()
 	{
 		client.start();
-		if (!serverStarted) {
+		if (server != null && !serverStarted) {
 			server.start();
 			serverStarted = true;
 		}

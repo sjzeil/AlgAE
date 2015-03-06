@@ -121,7 +121,18 @@
 
         <!-- Checks for Size Violations.                    -->
         <!-- See http://checkstyle.sf.net/config_sizes.html -->
-        <module name="LineLength"/>
+        <module name="LineLength">
+        	<!--  Ignore comment continuations followed by a single long word.
+        	      This covers things like JavaDoc @see clauses that refer to a
+        	      longer-than-80-character fully qualified name, e.g.,
+        	      /**
+        	        * ...
+        	        * @see
+        	        *   something.very.long#something.else.very.long(typename)
+        	        */
+        	 -->
+        	<property name="ignorePattern" value="^ *\* *[^ ]+$"/>
+        </module>
         <module name="MethodLength"/>
         <module name="ParameterNumber"/>
 
