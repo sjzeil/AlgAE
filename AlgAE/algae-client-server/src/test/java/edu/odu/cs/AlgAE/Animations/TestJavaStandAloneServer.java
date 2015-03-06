@@ -25,6 +25,7 @@ import edu.odu.cs.AlgAE.Common.Communications.MenuMessage;
 import edu.odu.cs.AlgAE.Common.Communications.ServerMessage;
 import edu.odu.cs.AlgAE.Common.Communications.ServerMessage.ServerMessageTypes;
 import edu.odu.cs.AlgAE.Common.Communications.SnapshotMessage;
+import edu.odu.cs.AlgAE.Server.JavaStandAloneServer;
 
 /**
  * @author zeil

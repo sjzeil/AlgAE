@@ -6,7 +6,7 @@ import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.odu.cs.AlgAE.Animations.JavaStandAloneServer;
+import edu.odu.cs.AlgAE.Server.JavaStandAloneServer;
 import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
