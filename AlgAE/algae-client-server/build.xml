@@ -72,18 +72,16 @@
     <path id="ivy.lib.path">
       <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
     </path>
-  	<taskdef resource="org/apache/ivy/ant/antlib.xml" 
-  	         uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
   </target>
   
   <target name="resolve-ivy" depends="install-ivy">
     <!-- ivy:settings file="${user.home}/ivysettings.xml"/ -->
+  	<taskdef resource="org/apache/ivy/ant/antlib.xml" 
+  	         uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
   	<ivy:settings file="ivysettings.xml"/>
     <ivy:resolve/>
-    <taskdef resource="org/apache/ivy/ant/antlib.xml" 
-	     uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
-    
-    <!-- === Class Paths for Compilation and Execution === -->
+
+  	<!-- === Class Paths for Compilation and Execution === -->
     
     
     <ivy:cachepath conf="build" pathid="ivy.build.classpath"/>
