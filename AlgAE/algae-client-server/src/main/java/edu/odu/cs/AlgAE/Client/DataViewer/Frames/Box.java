@@ -7,7 +7,7 @@ import java.awt.geom.Rectangle2D;
 
 /**
  * A colored box
- * 
+ *
  * @author zeil
  *
  */

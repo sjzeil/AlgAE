@@ -26,16 +26,16 @@ import edu.odu.cs.AlgAE.Common.Communications.ServerMessage.ServerMessageTypes;
 import edu.odu.cs.AlgAE.Common.Communications.SnapshotMessage;
 
 /**
- * Provided primarily for testing purposes, this animator maintains a log of all server messages received. This 
- * log can be examined for testing purposes. 
- * 
+ * Provided primarily for testing purposes, this animator maintains a log of all server messages received. This
+ * log can be examined for testing purposes.
+ *
  * It provides a stylized interaction with a server:
  *   1. It remembers all menu items provided by the client and invokes them, one at a time, in the order received.
  *      After the last one has been invoked and the server indicates that its animation is completed, this client
  *      signals a shutdown to the server.
  *   2. If the server sends an input request, the client responds with one a sequence of response strings
- *      supplied by the user. The sequence is repeated, as necessary.  By default, the sequence is {"1", "2", "3"}.  
- *   
+ *      supplied by the user. The sequence is repeated, as necessary.  By default, the sequence is {"1", "2", "3"}.
+ *
  * @author zeil
  *
  */
@@ -54,7 +54,7 @@ public class LoggingClient extends Client {
 	private int nextInputResponse;
 	
 	
-	  
+	
 	public LoggingClient(ServerCommunications server)
 	{
 		super(server);
@@ -154,7 +154,7 @@ public class LoggingClient extends Client {
 	
 	/**
 	 * Provides access to the log of all messages received from the server.
-	 * 
+	 *
 	 * @return the serverMessages
 	 */
 	public List<ClientMessage> getMessageLog() {
@@ -245,7 +245,7 @@ public class LoggingClient extends Client {
 				SnapshotMessage m = (SnapshotMessage)msg;
 				if (m.isMenuItemCompleted()) {
 					if (nextAlgorithmItem < algorithmItems.size()) {
-						ServerMessage response = new ServerMessage(ServerMessageTypes.MenuItemSelected, 
+						ServerMessage response = new ServerMessage(ServerMessageTypes.MenuItemSelected,
 																	algorithmItems.get(nextAlgorithmItem));
 						++nextAlgorithmItem;
 						attemptToSend(response);

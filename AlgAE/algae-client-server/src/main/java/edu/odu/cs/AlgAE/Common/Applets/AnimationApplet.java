@@ -12,7 +12,7 @@ import edu.odu.cs.AlgAE.Server.Server;
 
 /**
  *  This is the base class for all AlgAE Java animations.
- *  
+ *
  *  Animations can be run as applets (the usual method of deployment)
  *  or as main programs (more convenient for testing).  If run as applets, they
  *  can appear with all content inline within an HTML page or can pop up a separate
@@ -93,7 +93,7 @@ public class AnimationApplet extends JApplet
 	public void start ()
 	{
 		client.start();
-		if (!serverStarted) {
+		if (server != null && !serverStarted) {
 			server.start();
 			serverStarted = true;
 		}

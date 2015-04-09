@@ -21,19 +21,19 @@ import edu.odu.cs.AlgAE.Server.Utilities.SimpleReference;
 
 /**
  * The fundamental memory model supported by an animation server.
- * 
- * Memory is represented as a 
+ *
+ * Memory is represented as a
  *   - activation stack
  *   - a set of global objects
  *   - the collection of all objects that can be reached starting from the
  *       activation stack and the global variables.
  *   - a collection of rendering mechanisms for different data types or for specific objects
- * 
+ *
  * The memory model can be rendered at a lower level as a collection of components and connections.
  * Components can contain other components. Connections link one component to another.
- * 
- * Together, the containment and connection relations present a directed graph. 
- * 
+ *
+ * Together, the containment and connection relations present a directed graph.
+ *
  * A snapshot can be taken of that graph at any time.  That snapshot is a linearized representation of
  * all components and connections that can be reached starting from the rendering of the activation stack
  * object and from the globals.
@@ -66,14 +66,14 @@ public class MemoryModel implements ContextAware
 	 * Get the collection of rules for rendering an object. Although this returns
 	 * a single rendering object, this object may represent the combination of
 	 * several distinct renderers applicable to the indicated object. The combination
-	 * is obtained by consultation with available renderers as follows (from highest to 
+	 * is obtained by consultation with available renderers as follows (from highest to
 	 * lowest precedence):
 	 *   1) renderings established for specific objects
 	 *   2) getRendering(), for classes that implement CanBeRendered
 	 *   3) class renderings (see render(), below))
 	 *   4) class renderings established for superclasses of this one
 	 *   5) default rendering (displays toString() with no components or connections)
-	 * 
+	 *
 	 * @param obj
 	 * @return a list of renderers, in the order they should be consulted.
 	 */
@@ -86,11 +86,11 @@ public class MemoryModel implements ContextAware
 	 * Establish a rendering for all objects of the indicated class.
 	 * Note that there are several ways to establish renderings, and that
 	 * these are resolved as describedi getRenderer(), above.
-	 *   
+	 *
 	 * If a prior rendering has been established for this class, it is replaced by this call.
 	 * Unlike object renderings, class renderings are "global" and do not lose effect when
 	 * we return from an activation.
-	 * 
+	 *
 	 */
 	public <T> MemoryModel render(Class<?> aclass, Renderer<T> newRendering) {
 		activationStack.render(aclass, newRendering);
@@ -102,7 +102,7 @@ public class MemoryModel implements ContextAware
 	/**
 	 * Show a variable as a global value in all displays.
 	 * Variables portrayed by this call are shown "in-line".
-	 * 
+	 *
 	 * @param label  the variable name (optional, can be "" or null)
 	 * @param param  the variable/value
 	 */
@@ -113,7 +113,7 @@ public class MemoryModel implements ContextAware
 	/**
 	 * Show a variable as a global value in all displays.
 	 * Variables portrayed by this call are shown "in-line".
-	 * 
+	 *
 	 * @param label  the variable name (optional, can be "" or null)
 	 * @param param  the variable/value
 	 */
@@ -126,7 +126,7 @@ public class MemoryModel implements ContextAware
 	 * Show a variable as a global value in all displays.
 	 * Variables portrayed by this call are shown as labeled
 	 * pointers to the actual value.
-	 * 
+	 *
 	 * @param label  the variable name (optional, can be "" or null)
 	 * @param param  the variable/value
 	 * @return a reference to this breakpoint
@@ -201,7 +201,7 @@ public class MemoryModel implements ContextAware
 	 * steps along the component and connection from the activation stack. This
 	 * will include all global variables, parameters and locals of the current call,
 	 * and non-ref parameters of the older calls.
-	 *  
+	 *
 	 * @param ob
 	 * @param tobeProcessed
 	 */
@@ -284,7 +284,7 @@ public class MemoryModel implements ContextAware
 				Object destObj = conn.getDestination();
 				Identifier destID = null;
 				destID = new Identifier(destObj);
-				Connector connector = new Connector(conn.getID(), eid, new EntityIdentifier(destID), 
+				Connector connector = new Connector(conn.getID(), eid, new EntityIdentifier(destID),
 						conn.getMinAngle(), conn.getMaxAngle(), conn.getComponentIndex());
 				if (conn.getColor() != null)
 					connector.setColor(conn.getColor());
@@ -307,7 +307,7 @@ public class MemoryModel implements ContextAware
 	
 	/**
 	 * Attempts to resolve duplications caused by objects that map onto several discrete entities.
-	 * 
+	 *
 	 * 1) If two entities exist for the same object and one is not a component of a larger entity
 	 *    and is also unlabeled, then that one is removed.
 	 * 2) For each remaining object with multiple renderings, the most deeply nested one is considered as
@@ -328,7 +328,7 @@ public class MemoryModel implements ContextAware
 				Entity entity = it.next();
 				unique.put (entity.getEntityIdentifier(), entity);
 				if (aliases.size() > 1) {
-					if (entity.getContainer() == null && 
+					if (entity.getContainer() == null &&
 							(entity.getLabel() == null ||  entity.getLabel().length() == 0)) {
 						it.remove();
 					}		
@@ -347,7 +347,7 @@ public class MemoryModel implements ContextAware
 		for (Identifier oid: snap.getEntities().keySet()) {
 			LinkedList<Entity> aliases = snap.getEntities().get(oid);
 			for (Entity e: aliases) {
-				EntityIdentifier ceid = e.getContainer(); 
+				EntityIdentifier ceid = e.getContainer();
 				if (ceid == null || ceid.equals(EntityIdentifier.nullID())) {
 					queue.add(e);
 				}

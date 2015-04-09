@@ -24,8 +24,8 @@ public class SourcePane extends JPanel implements SourceViewer
 
   //private static Logger logger = Logger.getLogger(SourcePane.class.getName());
 
-  
-  
+
+
   private JTextArea mainPanel;
   private ArrayList<SourceFile> files;
   private JComboBox<String> fileSelector;
@@ -33,27 +33,27 @@ public class SourcePane extends JPanel implements SourceViewer
   private SourceLocation displaying;
   private JComboBox<Integer> fontSizeSelector;
   private ServerCommunications server;
-  
 
-    
-   
+
+
+
   public SourcePane(ServerCommunications server)
   {
 	  this.server = server;
-	  
+	
 	  setLayout(new BorderLayout());
 
 	  mainPanel = new JTextArea();
 	  mainPanel.setEditable(false);
 	  mainPanel.setSelectedTextColor(Color.red);
-	  
+	
 	  JScrollPane scrolled = new JScrollPane(mainPanel);
-    
+
 	  add (scrolled, BorderLayout.CENTER);
 
 	  JPanel controls = new JPanel();
 	  add (controls, BorderLayout.SOUTH);
-	  
+	
 	  fileSelector = new JComboBox<>();
 	  controls.add (fileSelector);
 
@@ -73,17 +73,17 @@ public class SourcePane extends JPanel implements SourceViewer
 				}
 			}
 			  );
-	  
+	
 	  controls.add(new JLabel("  Size:"));
 	  controls.add(fontSizeSelector);
-	  
+	
 	  selected = -1;
 	  displaying = null;
 	  setFocusable(false);
   }
 
   /**
-   * Display a specified block of source code at a specific line number 
+   * Display a specified block of source code at a specific line number
    */
   public void display (SourceLocation sloc)
   {
@@ -109,7 +109,7 @@ public class SourcePane extends JPanel implements SourceViewer
 			  found = files.size()-1;
 			  msg = new ServerMessage (ServerMessageTypes.GetSourceCode, sloc.getFileName());
 		  }
-		  
+		
 		  SourceFile selectedEntry = files.get(found);
 		  if (found != selected) {
 			  selected = found;
@@ -120,7 +120,7 @@ public class SourcePane extends JPanel implements SourceViewer
 			  displaying = sloc;
 			  int start = selectedEntry.getLineOffsets().get(sloc.getLineNumber()-1);
 			  int lineNum = sloc.getLineNumber();
-			  int stop = start; 
+			  int stop = start;
 			  while (lineNum < selectedEntry.getLineOffsets().size() && stop == start) {
 				  stop = selectedEntry.getLineOffsets().get(lineNum);
 				  ++lineNum;
@@ -144,7 +144,7 @@ public class SourcePane extends JPanel implements SourceViewer
 
   /**
    * Register a block of text as the source code corresponding to a file name (path).
-   * 
+   *
    * @param fileName   unique identifier for this source code, usually a file name or path
    * @param sourceCodeText  source code text
    */
@@ -167,21 +167,21 @@ public class SourcePane extends JPanel implements SourceViewer
 	  selectedEntry.setContents(sourceCodeText);
   }
 
-  
-  
-  
+
+
+
   public void setFontSize (int size)
   {
     Font textFont = new Font("Courier", Font.PLAIN, size);
     mainPanel.setFont (textFont);
   }
 
-  
+
   public Dimension getPreferredSize() {
     return new Dimension (400,50);
   }
 
 
 
-  
+
 }

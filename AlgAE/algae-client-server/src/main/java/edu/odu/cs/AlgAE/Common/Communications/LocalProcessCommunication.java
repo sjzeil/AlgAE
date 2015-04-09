@@ -1,17 +1,15 @@
-/**
- * 
- */
 package edu.odu.cs.AlgAE.Common.Communications;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.logging.Logger;
 
 import edu.odu.cs.AlgAE.Common.Communications.ServerMessage.ServerMessageTypes;
+
 
 /**
  * This is an implementation of Client-Server communications for animations
@@ -19,191 +17,188 @@ import edu.odu.cs.AlgAE.Common.Communications.ServerMessage.ServerMessageTypes;
  * machine. The client and server message streams are multiplexed in a way that
  * allows both sets of messages to be exchanged via the other process's standard
  * input and output streams.
- * 
+ *
  * @author zeil
  *
  */
 public class LocalProcessCommunication implements ServerCommunications {
-	
-	private BlockingQueue<ClientMessage> clientMessages;
-	private BlockingQueue<ServerMessage> serverMessages;
-	private boolean debugSend = true;
-	private boolean debugReceive = true;
-	private File pathToExecutable;
-	private CommunicationsManager manager;
-	private final int QueueCapacity = 4;
-	
-	
-	/**
-	 * Create a new communications path between a server and client.
-	 */
-	public LocalProcessCommunication(File pathToExecutable)
-	{
-		clientMessages = new ArrayBlockingQueue<ClientMessage>(QueueCapacity);
-		serverMessages = new ArrayBlockingQueue<ServerMessage>(QueueCapacity);
-		this.pathToExecutable = pathToExecutable;
-		manager = new CommunicationsManager();
-	}
+
+    /**
+     * Message logging.
+     */
+    private static final Logger LOG
+    = Logger.getLogger(LocalProcessCommunication.class.getName());
+
+
+    /**
+     * Queue of unprocessed (undelivered) messages to the client.
+     */
+    private BlockingQueue<ClientMessage> clientMessages;
+
+    /**
+     * How large should the queue for unprocessed messages be? 
+     */
+    private static final int QUEUE_CAPACITY = 4;
+
+    /**
+     * Stream on which incoming messages from the server
+     * will be received.
+     */
+    private final BufferedInputStream messagesIn;
+
+    /**
+     * Stream to which messages for the server can be written.
+     */
+    private final PrintStream messagesOut;
+
+
+    /**
+     * Thread to process incoming messages from the client.
+     */
+    private final CommunicationsManager manager;
+
+
+    /**
+     * Create a new communications path between a server and client.
+     * 
+     * @param msgsIn Stream on which incoming messages from the client
+     *                will be received.
+     * @param msgsOut Stream to which messages for the client can be written.
+     */
+    public LocalProcessCommunication (
+            final InputStream msgsIn,
+            final PrintStream msgsOut) {
+        messagesIn = new BufferedInputStream(msgsIn);
+        messagesOut = msgsOut;
+        clientMessages 
+        = new ArrayBlockingQueue<ClientMessage>(QUEUE_CAPACITY);
+        manager = new CommunicationsManager();
+    }
 
 
 
 
-	/**
-	 * Sends a message to the server - implementations are expected to be synchronized
-	 * and might block until the server acknowledges receipt.
-	 * 
-	 * @param message
-	 * @throws InterruptedException 
-	 * @see edu.odu.cs.AlgAE.Common.Communications.ServerCommunications#sendToServer(edu.odu.cs.AlgAE.Common.Communications.ServerMessage)
-	 */
-	@Override
-	public void sendToServer(ServerMessage message) throws InterruptedException {
-		if (debugSend)
-			System.out.println ("sendToServer: " + message);
-		serverMessages.put (message);
-		if (debugSend)
-			System.out.println ("sendToServer: sent");
-	}
+    /**
+     * Sends a message to the server.
+     *
+     * @param message message to send
+     * @throws InterruptedException on unexpected shutdown
+     * @see
+     *   edu.odu.cs.AlgAE.Common.Communications.ServerCommunications#sendToServer(edu.odu.cs.AlgAE.Common.Communications.ServerMessage)
+     */
+    @Override
+    public final void sendToServer(final ServerMessage message) {
+        LOG.fine(message.toString());
+        messagesOut.println(message.toString());
+        LOG.finer("sent");
+    }
 
-	/**
-	 * Receives a message from the server - implementations are expected to be synchronized
-	 * and will block if no message is available.
-	 * 
-	 * @param message
-	 * @throws InterruptedException 
-	 * @see edu.odu.cs.AlgAE.Common.Communications.ServerCommunications#getFromServer()
-	 */
-	@Override
-	public ClientMessage getFromServer() throws InterruptedException {
-		if (debugReceive)
-			System.out.println ("getFromServer: starting");
-		ClientMessage msg = clientMessages.take();
-		if (debugReceive)
-			System.out.println ("getFromServer: " + msg);
-		return msg;
-	}
+    /**
+     * Receives a message from the server - implementations are expected 
+     * to be synchronized and will block if no message is available.
+     *
+     * @throws InterruptedException on unexpected shutdown
+     * @see
+     *   edu.odu.cs.AlgAE.Common.Communications.ServerCommunications#getFromServer()
+     */
+    @Override
+    public final ClientMessage getFromServer() throws InterruptedException {
+        LOG.finer("starting");
+        ClientMessage msg = clientMessages.take();
+        LOG.fine("received: " + msg);
+        return msg;
+    }
 
 
 
 
-	/**
-	 * Turns message send debugging on and off
-	 * 
-	 * @param debugSend
-	 */
-	public void setDebugSend(boolean debugSend) {
-		this.debugSend = debugSend;
-	}
+
+    /**
+     * Thread to manage incoming messages from the server.
+     * 
+     * @author zeil
+     *
+     */
+    private class CommunicationsManager extends Thread {
+
+        /**
+         * True if a shutdown has been issued.
+         */
+        private boolean stopping = false;
 
 
-	/**
-	 * Turns message receive debugging on and off
-	 * @param debugReceive the debugReceive to set
-	 */
-	public void setDebugReceive(boolean debugReceive) {
-		this.debugReceive = debugReceive;
-	}
+        /**
+         * Read (and deserialize) a message from the input stream.
+         * 
+         * @return a message from the server for the client
+         * @throws IOException if the read or deserialization fails.
+         */
+        private ClientMessage readMsgFromServer() throws IOException {
+            ClientMessage cmsg = ClientMessage.load(messagesIn);
+            return cmsg;
+        }
+
+        /**
+         * Try to let the thread shut down naturally, but if it is
+         * unable to do so (because it is blocked), then interrupt
+         * it.
+         */
+        public void shutdown() {
+            final int shortTimeDelay = 100;
+            stopping = true;
+            try {
+                sleep (shortTimeDelay);
+            } catch (InterruptedException e) {
+                return;
+            }
+            manager.interrupt();
+        }
+
+
+        @Override
+        public void run() {
+            try {
+                /*
+                 * The server drives most communication. It may volunteer
+                 * new messages to the client at any time, and we should
+                 * try to keep up, but it's OK if the client blocks because
+                 * we are falling behind.
+                 */
+                while (!stopping) {
+                    ClientMessage cmsg = readMsgFromServer();
+                    clientMessages.put(cmsg); // can block
+                    ServerMessage smsg 
+                        = new ServerMessage(ServerMessageTypes.Ack);
+                    sendToServer (smsg);
+                }
+            } catch (IOException e) {
+                LOG.severe("Problem when reading messages from server: " + e);
+            } catch (InterruptedException e) {
+                if (!stopping) {
+                    LOG.warning("Unexpected shutdown " + e);
+                }
+            }
+        }
 
 
 
-	/**
-	 * @return the pathToExecutable
-	 */
-	public File getPathToExecutable() {
-		return pathToExecutable;
-	}
+
+    }
 
 
-	/**
-	 * @param pathToExecutable the pathToExecutable to set
-	 */
-	public void setPathToExecutable(File pathToExecutable) {
-		this.pathToExecutable = pathToExecutable;
-	}
+    /**
+     * Start the threads monitoring communications between the client
+     * and server.
+     */
+    public final void start() {
+        manager.start();
+    }
 
-	
-	private class CommunicationsManager extends Thread {
-		
-		private Process process = null;
-		private boolean stopping = false;
-		private BufferedInputStream fromServer;
-		private PrintStream toServer;
-		
-		
-		private ClientMessage readMsgFromServer() throws IOException
-		{
-			ClientMessage cmsg = ClientMessage.load(fromServer);
-			return cmsg;
-		}
-		
-		public void shutdown() {
-			stopping = true;
-			try {
-				sleep (100);
-			} catch (InterruptedException e) {
-				return;
-			}
-			manager.interrupt();
-		}
+    /**
+     * Stop the threads monitoring communications between the client and server.
+     */
+    public final void shutdown() {
+        manager.shutdown();
+    }
 
-		private void writeMsgToServer(ServerMessage smsg) {
-			toServer.println (smsg);
-		}
-		
-		
-		public void run()
-		{
-			ProcessBuilder pb = new ProcessBuilder (pathToExecutable.getAbsolutePath());
-			try {
-				process = pb.start();
-				fromServer = new BufferedInputStream(process.getInputStream());
-				toServer = new PrintStream(new BufferedOutputStream(process.getOutputStream()));
-				
-				// Wait for first server message (Start) to appear from client
-				while (serverMessages.size() == 0) {
-					synchronized (serverMessages) {
-						serverMessages.wait();
-					}
-				}
-				
-				// From here on, the server drives the communications. It may volunteer new messages to the
-			    // client at any time, and we should try to keep up, but it's OK if the server blocks because
-				// we are falling behind.
-			    // After each message, it will wait for an acknowledgment from us before proceeding.
-				// When it's ready for a new Client message, it will send a special Pull request, at which
-			    // point we respond with a client message if one is in the queue or block until that time.
-				while (!stopping) {
-					ClientMessage cmsg = readMsgFromServer();
-					ServerMessage smsg;
-					if (cmsg instanceof PullMessage) {
-						smsg = serverMessages.take(); // can block
-					} else {
-						clientMessages.put(cmsg); // can block (particularly if a long sequence of snapshots is being sent)
-						smsg = new ServerMessage(ServerMessageTypes.Ack);
-					}
-					writeMsgToServer (smsg);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			catch (InterruptedException e) {
-				if (!stopping)
-					e.printStackTrace();
-			}
-		}
-
-
-		
-		
-	}
-
-
-	/**
-	 * Start the threads monitoring communications between the client and server
-	 */
-	public void start() {
-		manager.start();
-	}
-	
-	
 }

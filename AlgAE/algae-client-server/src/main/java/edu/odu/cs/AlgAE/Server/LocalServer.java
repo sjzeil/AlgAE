@@ -39,16 +39,16 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
  * An animation that is intended to run within the same Java Virtual Machine
  * as the Client.  Communications between the client and server can be managed
  * with in-memory queues.
- * 
+ *
  * @author zeil
  *
  */
 public class LocalServer extends Server implements AnimationContext, ContextAware, AppletLifetimeSupport
 {
-    private static Logger logger = Logger.getLogger(LocalServer.class.getName()); 
+    private static Logger logger = Logger.getLogger(LocalServer.class.getName());
 
-    
-    
+
+
 	private MemoryModel memoryModel;
 		
 
@@ -154,7 +154,7 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
 	public void start()
 	{
 		//    msgHandler.algorithmName (animationTitle, menuGenerator.about());
-		//    
+		//
 		//
 		//    // Main loop: process client's menu selections
 		//    String menuSelection = "";
@@ -191,7 +191,7 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
 	 * Pops up a dialog box prompting for an input, pausing the
 	 * animation until a satisfactory input value is obtained from the
 	 * human operator.
-	 * 
+	 *
 	 * @param prompt  Text of the prompt message to be displayed
 	 * @param requiredPattern regular expression describing an acceptable input value
 	 * @return a human-entered string matching the requiredPattern
@@ -215,7 +215,7 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
 	 * Provide an input from a dialog box popped up in a separate thread.ops up a dialog box prompting for an input, pausing the
 	 * animation until a satisfactory input value is obtained from the
 	 * human operator.
-	 * 
+	 *
 	 * @param value  input text
 	 */
 	public void inputSupplied(String value) {
@@ -243,9 +243,9 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
 		try {
 			container = Class.forName(className);
 		} catch (ClassNotFoundException e) {
-			container = this.getClass(); // Why not?  It might work, and couldn't hurt. 
+			container = this.getClass(); // Why not?  It might work, and couldn't hurt.
 		}
-		return load (container, fileName); 
+		return load (container, fileName);
 	}
 	
 	private String load(Class<?> container, String fileName)
@@ -299,7 +299,7 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
 				    logger.warning("Problem closing source file " + fileName + ": " + e);
 				}
 			}
-		} 
+		}
 		return contents;
 	}
 
@@ -331,14 +331,14 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
 	/**
 	 * This must be called at the beginning of each new function to signal
 	 * that a new empty record should be pushed onto the top of the stack.
-	 * 
+	 *
 	 * @param thisObj - A reference to an object of the class of
 	 *    which the current function is a member. Normally, "this"
 	 *    will do just fine.  thisObj is used to help locate
 	 *    the source code being animated, so, in a pinch (e.g., if
 	 *    animating a static function) another object whose source
 	 *    code lies in the same directory/folder will do.
-	 *    
+	 *
 	 * @return ActivationRecord for the new function call
 	 */
 
@@ -350,7 +350,7 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
 	/**
 	 * Show a variable as a global value in all displays.
 	 * Variables portrayed by this call are shown "in-line".
-	 * 
+	 *
 	 * @param label  the variable name (optional, can be "" or null)
 	 * @param param  the variable/value
 	 */
@@ -362,7 +362,7 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
 	/**
 	 * Show a variable as a global value in all displays.
 	 * Variables portrayed by this call are shown "in-line".
-	 * 
+	 *
 	 * @param label  the variable name (optional, can be "" or null)
 	 * @param param  the variable/value
 	 */
@@ -377,7 +377,7 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
 	 * Show a variable as a global value in all displays.
 	 * Variables portrayed by this call are shown as labeled
 	 * pointers to the actual value.
-	 * 
+	 *
 	 * @param label  the variable name (optional, can be "" or null)
 	 * @param param  the variable/value
 	 * @return a reference to this breakpoint
@@ -393,7 +393,7 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
 	 * Pops up a dialog box prompting for an input, pausing the
 	 * animation until a satisfactory input value is obtained from the
 	 * human operator.
-	 * 
+	 *
 	 * @param prompt  Text of the prompt message to be displayed
 	 * @return a human-entered string
 	 */
@@ -470,7 +470,7 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
 	 * This function returns that animation instance, under the assumption that the
 	 * server (which launches the animated code) will have registered its thread
 	 * for that purpose.
-	 *  
+	 *
 	 * @return the animation associated with a thread
 	 */
 	public static LocalServer algae()
@@ -486,7 +486,7 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
 
 
 		private abstract class MessageAction {
-			public abstract void doIt(String msgDetail) throws InterruptedException; 
+			public abstract void doIt(String msgDetail) throws InterruptedException;
 		}
 
 		private HashMap<String, MessageAction> msgActions;

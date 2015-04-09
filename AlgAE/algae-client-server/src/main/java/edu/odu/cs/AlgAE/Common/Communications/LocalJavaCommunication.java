@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
@@ -13,13 +13,13 @@ import edu.odu.cs.AlgAE.Common.Communications.ServerMessage.ServerMessageTypes;
  * This is an implementation of Client-Server communications for animations
  * where the animated code is Java, running in the same JVM instance as the
  * client.
- * 
+ *
  * @author zeil
  *
  */
 public class LocalJavaCommunication implements ClientCommunications, ServerCommunications {
 	
-	private final static Logger logger = Logger.getLogger(LocalJavaCommunication.class.getName()); 
+	private final static Logger logger = Logger.getLogger(LocalJavaCommunication.class.getName());
 	
 	private BlockingQueue<ClientMessage> clientMessages;
 	private BlockingQueue<ServerMessage> serverMessages;
@@ -39,9 +39,9 @@ public class LocalJavaCommunication implements ClientCommunications, ServerCommu
 	/**
 	 * Sends a message to the server - implementations are expected to be synchronized
 	 * and might block until the server acknowledges receipt.
-	 * 
+	 *
 	 * @param message
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 * @see edu.odu.cs.AlgAE.Common.Communications.ServerCommunications#sendToServer(edu.odu.cs.AlgAE.Common.Communications.ServerMessage)
 	 */
 	@Override
@@ -54,9 +54,9 @@ public class LocalJavaCommunication implements ClientCommunications, ServerCommu
 	/**
 	 * Receives a message from the server - implementations are expected to be synchronized
 	 * and will block if no message is available.
-	 * 
+	 *
 	 * @param message
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 * @see edu.odu.cs.AlgAE.Common.Communications.ServerCommunications#getFromServer()
 	 */
 	@Override
@@ -71,9 +71,9 @@ public class LocalJavaCommunication implements ClientCommunications, ServerCommu
 	/**
 	 * Sends a message to the client - implementations are expected to be synchronized
 	 * and might block until the client acknowledges receipt.
-	 * 
+	 *
 	 * @param message
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 * @see edu.odu.cs.AlgAE.Common.Communications.ClientCommunications#sendToClient(edu.odu.cs.AlgAE.Common.Communications.ClientMessage)
 	 */
 	@Override
@@ -86,9 +86,9 @@ public class LocalJavaCommunication implements ClientCommunications, ServerCommu
 	/**
 	 * Receives a message from the client - implementations are expected to be synchronized
 	 * and will block if no message is available.
-	 * 
+	 *
 	 * @param message
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 * @see edu.odu.cs.AlgAE.Common.Communications.ClientCommunications#getFromClient()
 	 */
 	@Override

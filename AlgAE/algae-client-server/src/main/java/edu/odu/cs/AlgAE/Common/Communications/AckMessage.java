@@ -2,7 +2,7 @@ package edu.odu.cs.AlgAE.Common.Communications;
 
 /**
  * A generic acknowledgment message, used as a keep-alive in remote servers.
- * 
+ *
  * @author zeil
  *
  */

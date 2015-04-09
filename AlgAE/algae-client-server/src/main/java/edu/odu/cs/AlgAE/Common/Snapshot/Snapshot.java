@@ -15,10 +15,10 @@ import java.util.Set;
 /**
  * A snapshot is a model of the current data state in terms of a graph of connected
  * Entities.  The graph is "rooted" at an activation stack and at a set of global entities.
- * 
+ *
  * The complete graph is formed from the transitive closure over the component and connection
  * relations starting from those roots.
- * 
+ *
  * @author zeil
  *
  */
@@ -26,13 +26,13 @@ public class Snapshot  implements Iterable<Entity> {
 	
 	/**
 	 *  Provides access to all objects in this snapshot, indexed by their identifiers.
-	 *  
+	 *
 	 */
 	private HashMap<Identifier, LinkedList<Entity> > entities;
 
 	
 	/**
-	 * An informational string to appear in a status line when this snapshot is being displayed 
+	 * An informational string to appear in a status line when this snapshot is being displayed
 	 */
 	private String descriptor;
 	
@@ -49,7 +49,7 @@ public class Snapshot  implements Iterable<Entity> {
 	/**
 	 * Entities denoting global variables
 	 */
-	private Set<EntityIdentifier> globals; 
+	private Set<EntityIdentifier> globals;
 
 	
 	
@@ -67,7 +67,7 @@ public class Snapshot  implements Iterable<Entity> {
 	
 	/**
 	 * Create a snapshot with a given description and breakpoint location
-	 * 
+	 *
 	 * @param description
 	 * @param breakpoint
 	 */
@@ -151,7 +151,7 @@ public class Snapshot  implements Iterable<Entity> {
 
 		@Override
 		public boolean hasNext() {
-			return mapIterator.hasNext() 
+			return mapIterator.hasNext()
 			  || (listIterator != null && listIterator.hasNext());
 		}
 

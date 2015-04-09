@@ -9,7 +9,7 @@ import java.util.Set;
 /**
  * Describes the differences between two snapshot and allows reconstruction
  * of a snapshot given a second snapshot and the difference between them.
- * 
+ *
  * @author zeil
  *
  */
@@ -22,7 +22,7 @@ public class SnapshotDiff {
 	
 	/**
 	 * All entities that are added to the base or changed from their base values in the
-	 * derived snapshot. 
+	 * derived snapshot.
 	 */
 	private List<Entity> changedEntities;
 
@@ -38,7 +38,7 @@ public class SnapshotDiff {
 
 	
 	/**
-	 * An informational string to appear in a status line when the new snapshot is being displayed 
+	 * An informational string to appear in a status line when the new snapshot is being displayed
 	 */
 	private String descriptor;
 	
@@ -55,8 +55,8 @@ public class SnapshotDiff {
 	
 	/**
 	 * The usual way to construct a diff - as the differences required to go from base to derived.
-	 * If either parameter is null, it is treated as equivalent to Snapshot() 
-	 * 
+	 * If either parameter is null, it is treated as equivalent to Snapshot()
+	 *
 	 * @param base  the starting snapshot
 	 * @param derived a snapshot derived from that base by one or more changes
 	 */
@@ -71,9 +71,9 @@ public class SnapshotDiff {
 	
 	
 	/**
-	 * Equivalent to SnapshotDiff(null, null) 
+	 * Equivalent to SnapshotDiff(null, null)
 	 * - used mainly for XML conversion
-	 * 
+	 *
 	 */
 	public SnapshotDiff ()
 	{
@@ -129,7 +129,7 @@ public class SnapshotDiff {
 
 	/**
 	 * Reconstruct a derived snapshot from a base value and this diff
-	 * 
+	 *
 	 * @param fromBase the starting value
 	 * @return reconstructed derived snapshot
 	 */
@@ -137,7 +137,7 @@ public class SnapshotDiff {
 	{
 		Snapshot derived = new Snapshot();
 		HashSet<EntityIdentifier> removedEntitiesSet = new HashSet<EntityIdentifier>(removedEntities);
-		Set<EntityIdentifier> dglobals = derived.getGlobals(); 
+		Set<EntityIdentifier> dglobals = derived.getGlobals();
 		dglobals.addAll(fromBase.getGlobals());
 		dglobals.removeAll(newNonGlobals);
 		dglobals.addAll(newGlobals);

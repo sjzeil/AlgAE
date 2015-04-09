@@ -28,23 +28,23 @@ public class DataCanvas extends JPanel
 {
 
 	
-    
+
   //private static Logger logger = Logger.getLogger(DataCanvas.class.getName());
 
-  private static Font BasicFont = null; 
+  private static Font BasicFont = null;
   private static float fontScale = 12.0f;
-  
-  
+
+
   private float zoom;
   private static float xyScalingfactor;
   private Frame currentPicture;
   private Dimension size;
   private boolean painted;
-  
+
   private SourceViewer sourceCode;
-  
-  
-  // Data members for portrayal of dragged boxes 
+
+
+  // Data members for portrayal of dragged boxes
   private Box movingBox;
   private Rectangle2D lastBoxMove;
   private Point2D movingBoxOffset;
@@ -52,7 +52,7 @@ public class DataCanvas extends JPanel
   private ShapeMover shapeMover;
   private boolean movingEnabled;
 
-  
+
   public DataCanvas(SourceViewer source, ShapeMover mover)
   {
 	  sourceCode = source;
@@ -62,12 +62,12 @@ public class DataCanvas extends JPanel
  	  size = new Dimension(50,50);
       setBackground (Color.white);
       setPainted(false);
-      
+
       movingBox = null;
       lastBoxMove = null;
       movingBoxOffset = null;
       shapeMover = mover;
-      
+
       addMouseListener(new MouseAdapter() {
       	@Override
       	public void mousePressed(MouseEvent e) {
@@ -93,7 +93,7 @@ public class DataCanvas extends JPanel
 	});
   }
 
-  
+
   /**
  * @param movingEnabled the movingEnabled to set
  */
@@ -120,15 +120,15 @@ public synchronized void setPicture (Frame newPicture)
   }
 
 
-  
 
-  public void paint (Graphics g) 
+
+  public void paint (Graphics g)
   {
     super.paint(g);
     paintCurrent (g);
   }
-    
-  private synchronized void paintCurrent (Graphics g) 
+
+  private synchronized void paintCurrent (Graphics g)
   {
 
 	  Graphics2D g2d = (Graphics2D)g;
@@ -138,12 +138,12 @@ public synchronized void setPicture (Frame newPicture)
 	  }
 	  g2d.setFont(BasicFont);
 	  g2d.setPaintMode();
-	  
+	
 	  FontMetrics metrics = g2d.getFontMetrics(BasicFont);
 	  int hgt = metrics.getHeight();
 	  fontScale = (float)hgt;
 	  int wd = metrics.stringWidth("MWX");
-	  xyScalingfactor = (((float)wd) / 3.0f) /hgt; 
+	  xyScalingfactor = (((float)wd) / 3.0f) /hgt;
 	  g2d.setStroke(new BasicStroke(0.0f));
 
 
@@ -164,21 +164,21 @@ public synchronized void setPicture (Frame newPicture)
 			  }
 		  }
 	  }
-	  
+	
 	  // Draw box being dragged
 	  if (lastBoxMove != null) {
 		  g2d.setColor (new Color(0.5f, 0.5f, 0.5f, 0.5f));
 		  g2d.fill(lastBoxMove);
 	  }
-	  
+	
 	  setPainted(true);
   }
-  
-  
+
+
   private synchronized void sizeCheck()
   {
 	  Rectangle2D bbox = null;
-	  if (currentPicture != null) { 
+	  if (currentPicture != null) {
 		  for (DataShape shape: currentPicture) {
 			  if (bbox == null) {
 				  bbox = shape.getBounds2D();
@@ -197,11 +197,11 @@ public synchronized void setPicture (Frame newPicture)
 		  revalidate();
 	  }
   }
-  
-  
-  
 
-  
+
+
+
+
 
   private void setPainted(boolean painted) {
 	  this.painted = painted;
@@ -240,7 +240,7 @@ private void selectBox(MouseEvent e) {
 			if (b.getBounds().contains(p)) {
 				//System.out.println (b.getID() + " at " + b.getBounds());
 				if (selected == null ||
-						b.getBounds().getWidth() * b.getBounds().getHeight() 
+						b.getBounds().getWidth() * b.getBounds().getHeight()
 						> selected.getBounds().getWidth() * selected.getBounds().getHeight()) {
 					selected = b;
 				}
@@ -273,7 +273,7 @@ public void releaseBox(MouseEvent e) {
 		x += movingBoxOffset.getX();
 		y += movingBoxOffset.getY();
 		shapeMover.moved (movingBox.getID(), x, y);
-		currentPicture.add (new Box(movingBox.getID(), (float)x, (float)y, 
+		currentPicture.add (new Box(movingBox.getID(), (float)x, (float)y,
 				(float)movingBox.getBounds().getWidth(), (float)movingBox.getBounds().getHeight(),
 				movingBox.getColor(), movingBox.getDepth()));
 		movingBox = null;

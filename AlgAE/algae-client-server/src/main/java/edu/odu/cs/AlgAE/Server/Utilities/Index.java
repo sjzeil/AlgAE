@@ -12,7 +12,7 @@ import edu.odu.cs.AlgAE.Server.Rendering.Renderer;
 /**
  * An integer value that may index into an array or
  * array-like structure.
- * 
+ *
  * @author zeil
  *
  */
@@ -150,9 +150,9 @@ public class Index implements CanBeRendered<Index>, Renderer<Index> {
 	 * representing this object.  A return value of 1 will force all
 	 * components to be laid out in a single vertical column. Larger
 	 * return values will permit a more horizontal layout.
-	 * 
+	 *
 	 * @param obj
-	 * @return max #components per row or a non-positive value to yield to other renderers 
+	 * @return max #components per row or a non-positive value to yield to other renderers
 	 */
 			
 	public int getMaxComponentsPerRow(Index obj)

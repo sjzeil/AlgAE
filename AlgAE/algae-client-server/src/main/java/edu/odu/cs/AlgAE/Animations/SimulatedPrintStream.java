@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Animations;
 
@@ -20,7 +20,7 @@ public class SimulatedPrintStream {
 	{
 	}
 	
-	public static void setMsgQueue (ClientCommunications msgQueue) 
+	public static void setMsgQueue (ClientCommunications msgQueue)
 	{
 		messages = msgQueue;
 	}

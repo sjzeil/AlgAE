@@ -14,7 +14,7 @@ import edu.odu.cs.AlgAE.Server.Rendering.SimulatedNode;
 
 /**
  * A wrapper for ListIterators used in conjunction with LinkedListRenderer
- * 
+ *
  * @author zeil
  *
  */
@@ -179,9 +179,9 @@ public class LinkedIterator<T> implements ListIterator<T>, CanBeRendered<ListIte
 	 * representing this object.  A return value of 1 will force all
 	 * components to be laid out in a single vertical column. Larger
 	 * return values will permit a more horizontal layout.
-	 * 
+	 *
 	 * @param obj
-	 * @return max #components per row or a non-positive value to yield to other renderers 
+	 * @return max #components per row or a non-positive value to yield to other renderers
 	 */
 			
 	public int getMaxComponentsPerRow(ListIterator<T> obj)

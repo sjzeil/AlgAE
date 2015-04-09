@@ -3,9 +3,9 @@ package edu.odu.cs.AlgAE.Server.MemoryModel;
 
 /**
  * A component of a compound object, such as a data field or and array element.
- * 
+ *
  * Components may optionally be labeled.
- * 
+ *
  * @author zeil
  *
  */

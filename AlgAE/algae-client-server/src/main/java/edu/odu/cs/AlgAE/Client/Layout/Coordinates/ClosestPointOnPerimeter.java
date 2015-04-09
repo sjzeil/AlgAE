@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Client.Layout.Coordinates;
 
@@ -12,12 +12,12 @@ import edu.odu.cs.AlgAE.Client.Layout.Optimization.Variable;
 
 /**
  * A point P on the perimeter of a bounded region R1
- * such that a line from the center of R1, P, and a 
+ * such that a line from the center of R1, P, and a
  * location L2 are co-linear, subject to the constraint that
- * P lies within a specified arc of the perimeter. If the 
+ * P lies within a specified arc of the perimeter. If the
  * co-linear point P would lie outside that arc, then the closer
  * endpoint of that arc is selected.
- * 
+ *
  * @author zeil
  *
  */
@@ -27,16 +27,16 @@ public class ClosestPointOnPerimeter extends PerimeterPoint {
 	
 	/**
 	 * A point P on the perimeter of a bounded region R1
-	 * such that a line from the center of R1, P, and a 
+	 * such that a line from the center of R1, P, and a
 	 * location L2 are co-linear, subject to the constraint that
-	 * P lies within a specified arc of the perimeter. If the 
+	 * P lies within a specified arc of the perimeter. If the
 	 * co-linear point P would lie outside that arc, then the closer
 	 * endpoint of that arc is selected.
-	 * 
+	 *
 	 * The "angles" are scaled so that angle==0 is straight up on a
 	 * drawing surface, the upper right corner is at 45.0, and each successive
 	 * corner (moving clockwise) occurs at 90.0 after that.
-	 * 
+	 *
 	 */
 	public ClosestPointOnPerimeter (BoundedRegion onPerimeterOf, Location referencePoint, double angleMin, double angleMax)
 	{

@@ -52,7 +52,7 @@ import edu.odu.cs.AlgAE.Common.Snapshot.SnapshotDiff;
 /**
  * The "normal" Animator for AlgAE animations, this portrays a series of state snapshots
  * via a GUI with controls for selecting algorithms, starting, pausing, and rewinding playback.
- *   
+ *
  * @author zeil
  *
  */
@@ -89,7 +89,7 @@ public class GUIClient extends Client {
 	 */
 	private boolean isAnApplet;
 
-	  
+	
 	public GUIClient()
 	{
 		super(null);
@@ -143,7 +143,7 @@ public class GUIClient extends Client {
 	public JMenuBar buildMenu() {
 
 		JMenuBar menuBar = new JMenuBar();
-		if (!isAnApplet) { 
+		if (!isAnApplet) {
 			JMenu fileMenu = new JMenu ("File", false);
 			menuBar.add(fileMenu);
 
@@ -203,7 +203,7 @@ public class GUIClient extends Client {
 				helpItem.addActionListener(new CSH.DisplayHelpFromSource (hb));
 			}
 		}
-		else 
+		else
 			System.err.println ("**error: Could not locate help set files");
 		
 		JMenuItem aboutItem = new JMenuItem ("About AlgAE");
@@ -318,7 +318,7 @@ public class GUIClient extends Client {
 	
 	
 	private abstract class MessageAction {
-		public abstract void doIt(ClientMessage msg); 
+		public abstract void doIt(ClientMessage msg);
 	}
 
 	

@@ -1,22 +1,22 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
 
 /**
  * Messages sent to the server.
- * 
+ *
  * Server messages tend to be have simple structures. For remote servers, these could
  * easily be encoded into an http get.
- * 
+ *
  * @author zeil
  *
  */
 public class ServerMessage extends MessageBase {
 	
 	public enum ServerMessageTypes {
-		Start,				// start an animation, request menu info  
+		Start,				// start an animation, request menu info
 		MenuItemSelected,	// user has selected a function from the menu
 							//    detail: selected menu item
 		InputSupplied, 		// user has entered a response to an input prompt
@@ -31,7 +31,7 @@ public class ServerMessage extends MessageBase {
 	
 	/**
 	 * Construct a new server message
-	 * 
+	 *
 	 * @param messageKind type of message
 	 * @param detail variant content of server messages
 	 */
@@ -42,7 +42,7 @@ public class ServerMessage extends MessageBase {
 
 	/**
 	 * Construct a new server message
-	 * 
+	 *
 	 * @param messageKind type of message
 	 * @param detail variant content of server messages
 	 */
@@ -53,7 +53,7 @@ public class ServerMessage extends MessageBase {
 
 	/**
 	 * Construct a new server message
-	 * 
+	 *
 	 */
 	public ServerMessage() {
 		super("*uninitialized*");
@@ -64,7 +64,7 @@ public class ServerMessage extends MessageBase {
 	/**
 	 * Construct a new server message
 	 * Equivalent to ServerMessage(messageKind, "")
-	 * 
+	 *
 	 * @param messageKind type of message
 	 */
 	public ServerMessage(ServerMessageTypes messageKind) {

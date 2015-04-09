@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Client.Layout.Coordinates;
 
@@ -16,12 +16,12 @@ import edu.odu.cs.AlgAE.Client.Layout.Optimization.Variable;
  * A point P on the perimeter of a bounded region
  * denoting the intersection of a ray from the center
  * of that region with its perimeter.
- * such that a line from the center of R1, P, and a 
+ * such that a line from the center of R1, P, and a
  * location L2 are co-linear, subject to the constraint that
- * P lies within a specified arc of the perimeter. If the 
+ * P lies within a specified arc of the perimeter. If the
  * co-linear point P would lie outside that arc, then the closer
  * endpoint of that arc is selected.
- * 
+ *
  * @author zeil
  *
  */
@@ -33,11 +33,11 @@ public class PerimeterPoint implements Location {
 	/**
 	 * Specifies a point on the edge of a rectangle where a ray
 	 * from the center of the rectangle at a given angle would strike.
-	 * 
+	 *
 	 * The "angles" are scaled so that angle==0 is straight up on a
 	 * drawing surface, the upper right corner is at 45.0, and each successive
 	 * corner (moving clockwise) occurs at 90.0 after that.
-	 * 
+	 *
 	 * @param angle an angle in degrees
 	 * @param onPerimeterOf a rectangular region
 	 */
@@ -87,7 +87,7 @@ public class PerimeterPoint implements Location {
 
 	private boolean approxEqual (double w, double z)
 	{
-		return Math.abs(w - z) < 0.001; 
+		return Math.abs(w - z) < 0.001;
 	}
 	
 	protected double getAngleOf(Point2D perimeterPt) {

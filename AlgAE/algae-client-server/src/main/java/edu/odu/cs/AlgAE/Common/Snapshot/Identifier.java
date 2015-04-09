@@ -7,7 +7,7 @@ import java.util.ListIterator;
 /**
  * Unique identifiers for objects in memory, with support for the local Java server
  * which needs to map objects to identifiers and vice versa.
- * 
+ *
  * @author zeil
  *
  */
@@ -29,7 +29,7 @@ public class Identifier {
 	
 	private static class Bucket extends LinkedList<HashTableEntry> {}
 	
-	private static Bucket[] identifiers 
+	private static Bucket[] identifiers
 	  = new Bucket[hashTableSize];
 	
 	private static int nextIdentifier = 1;
@@ -51,10 +51,10 @@ public class Identifier {
 			HashTableEntry entry = iter.next();
 			Object keyObj = entry.key.get();
 			if (keyObj == null) {
-				// This object is no longer in memory. Remove from the identifier table. 
+				// This object is no longer in memory. Remove from the identifier table.
 				iter.remove();
 			} else if (keyObj == obj) {
-				// Yes, that's ==, not equals. We are deliberately testing for 
+				// Yes, that's ==, not equals. We are deliberately testing for
 				// object identity.
 				return entry.id;
 			}

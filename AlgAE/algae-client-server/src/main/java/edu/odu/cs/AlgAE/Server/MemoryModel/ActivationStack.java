@@ -22,10 +22,10 @@ import edu.odu.cs.AlgAE.Server.Utilities.SimpleReference;
 /**
  * The activation stack represents the chain of active function calls
  * in the current algorithm state. The stack provides access to two sets
- * ov variables/values to be drawn: the top record corresponding to the 
+ * ov variables/values to be drawn: the top record corresponding to the
  * currently active function and the globals area containing data not particular
  * to any call.
- * 
+ *
  *  * Many of the functions return a reference to the same activation record.
  * This is designed to permit chaining of calls.  For example, if we have just
  * entered a call to the function
@@ -59,14 +59,14 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 	/**
 	 * This must be called at the beginning of each new function to signal
 	 * that a new empty record should be pushed onto the top of the stack.
-	 * 
+	 *
 	 * @param thisObj - A reference to an object of the class of
 	 *    which the current function is a member. Normally, "this"
 	 *    will do just fine.  thisObj is used to help locate
 	 *    the source code being animated, so, in a pinch (e.g., if
 	 *    animating a static function) another object whose source
 	 *    code lies in the same directory/folder will do.
-	 *    
+	 *
 	 * @return ActivationRecord for the new function call
 	 */
 	public ActivationRecord activate (Object thisObj)
@@ -79,7 +79,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 		if (stack.size() == 0) {
 			stack.add(new ActivationRecord(thisObj, "*main*", this));
 		}
-		// The most recent function to be included in the model will 
+		// The most recent function to be included in the model will
 		// be the one that called this function we are in now
 		int lastUserCall = 0;
 		while (true) {
@@ -157,14 +157,14 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 	 * Get the collection of rules for rendering an object. Although this returns
 	 * a single rendering object, this object may represent the combination of
 	 * several distinct renderers applicable to the indicated object. The combination
-	 * is obtained by consultation with available renderers as follows (from highest to 
+	 * is obtained by consultation with available renderers as follows (from highest to
 	 * lowest precedence):
 	 *   1) renderings established for specific objects
 	 *   2) getRendering(), for classes that implement CanBeRendered
 	 *   3) class renderings (see render(), below))
 	 *   4) class renderings established for superclasses of this one
 	 *   5) default rendering (displays toString() with no components or connections)
-	 * 
+	 *
 	 * @param obj
 	 * @return a list of renderers, in the order they should be consulted.
 	 */
@@ -187,11 +187,11 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 	 * Establish a rendering for all objects of the indicated class.
 	 * Note that there are several ways to establish renderings, and that
 	 * these are resolved as describedi getRenderer(), above.
-	 *   
+	 *
 	 * If a prior rendering has been established for this class, it is replaced by this call.
 	 * Unlike object renderings, class renderings are "global" and do not lose effect when
 	 * we return from an activation.
-	 * 
+	 *
 	 */
 	public <T> ActivationStack render(Class<?> aclass, Renderer<T> newRendering) {
 		typeRenderers.put (aclass.getName(), newRendering);
@@ -203,7 +203,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 	/**
 	 * Show a variable as a global value in all displays.
 	 * Variables portrayed by this call are shown "in-line".
-	 * 
+	 *
 	 * @param label  the variable name (optional, can be "" or null)
 	 * @param param  the variable/value
 	 */
@@ -214,7 +214,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 	/**
 	 * Show a variable as a global value in all displays.
 	 * Variables portrayed by this call are shown "in-line".
-	 * 
+	 *
 	 * @param label  the variable name (optional, can be "" or null)
 	 * @param param  the variable/value
 	 */
@@ -227,7 +227,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 	 * Show a variable as a global value in all displays.
 	 * Variables portrayed by this call are shown as labeled
 	 * pointers to the actual value.
-	 * 
+	 *
 	 * @param label  the variable name (optional, can be "" or null)
 	 * @param param  the variable/value
 	 * @return a reference to this breakpoint

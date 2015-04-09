@@ -1,15 +1,15 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
 /**
- * Server is sending a file of source code to the client for possible display. 
- * 
+ * Server is sending a file of source code to the client for possible display.
+ *
  * This message may be sent in response to an earlier getSourceCode message from the
  * client or it may be sent "spontaneously" by the server if it predicts that such a
- * display will likely be required.  
- * 
+ * display will likely be required.
+ *
  * @author zeil
  *
  */
@@ -78,7 +78,7 @@ public class SourceCodeMessage extends ClientMessage {
 			return false;
 		try {
 			SourceCodeMessage msg = (SourceCodeMessage)clientMessage;
-			return msg.filePath.equals(filePath) 
+			return msg.filePath.equals(filePath)
 					&& msg.sourceText.equals(sourceText);
 		} catch (Exception e) {
 			return false;

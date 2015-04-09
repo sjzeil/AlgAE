@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Server.Rendering;
 
@@ -18,14 +18,14 @@ public class HorizontalRenderer<T> implements ObjectRenderer<T> {
 	private T toRender;
 	
 	/**
-	 * 
+	 *
 	 */
 	public HorizontalRenderer(T objToHighlight) {
 		toRender = objToHighlight;
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	public HorizontalRenderer() {
 		toRender = null;

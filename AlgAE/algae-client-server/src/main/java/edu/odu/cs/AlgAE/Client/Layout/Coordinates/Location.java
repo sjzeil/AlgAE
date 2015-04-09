@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package edu.odu.cs.AlgAE.Client.Layout.Coordinates;
 
@@ -14,11 +14,11 @@ import edu.odu.cs.AlgAE.Client.Layout.Optimization.Variable;
  * more convenient to specify points relative to the locations of
  * other objects or, for points on the perimeter of an object, as
  * an angle.
- * 
+ *
  * Locations also are compatible with the concept of Variables in the
  * AlgAE.Optimization package, allowing the layout engine to derive
- * locations by putting up an optimization problem. 
- *  
+ * locations by putting up an optimization problem.
+ *
  * @author zeil
  *
  */

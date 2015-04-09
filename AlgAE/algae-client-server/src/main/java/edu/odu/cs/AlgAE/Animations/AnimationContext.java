@@ -8,10 +8,10 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
 /**
  *  Each animation is characterized by a small set of
  *  "singleton" objects.
- *  
+ *
  *  Note that if the animation is being run as an applet,
  *  then there may be several animations in progress simultaneously.
- *  So these are singletons in the sense that there is exactly one of 
+ *  So these are singletons in the sense that there is exactly one of
  *  these per animation.  The information they contain must be kept distinct
  *  from one animation to another.
  *

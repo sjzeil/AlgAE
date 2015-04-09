@@ -12,7 +12,7 @@ import edu.odu.cs.AlgAE.Server.Rendering.Renderer;
 /**
  * A wrapper for ints.  Unlike Integer, this is mutable. More important,
  * there is no hidden sharing.
- * 
+ *
  * @author zeil
  *
  */
@@ -120,9 +120,9 @@ public class DiscreteInteger implements CanBeRendered<DiscreteInteger>, Renderer
 	 * representing this object.  A return value of 1 will force all
 	 * components to be layes out in a single vertical column. Larger
 	 * return values will permit a more horizontal layout.
-	 * 
+	 *
 	 * @param obj
-	 * @return max #components per row or a non-positive value to yield to other renderers 
+	 * @return max #components per row or a non-positive value to yield to other renderers
 	 */
 			
 	public int getMaxComponentsPerRow(DiscreteInteger obj)
