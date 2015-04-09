@@ -14,8 +14,7 @@
     </publications>
     <dependencies>
        <dependency org="edu.odu.cs.algae" name="algae" rev="4.1-SNAPSHOT"
-		  conf="build,test->default"/>
-       />
+		  conf="build,test"/>
        <!-- dependency org="junit" name="junit" 
 		  rev="4.11" 
 		  conf="test->default"/ -->
