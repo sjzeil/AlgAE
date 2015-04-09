@@ -9,6 +9,7 @@
     AlgAE (Algorithm Animation Engine): Java Client and Server
   </description>
   
+  <property file="${user.home}/ivy.properties"/>
   <property name="projectName" value="algae" />
   <property name="sharedPropertiesFile" location="../../shared.properties"/>
   <property file="${sharedPropertiesFile}"/>
