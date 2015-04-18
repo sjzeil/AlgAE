@@ -11,8 +11,8 @@ package edu.odu.cs.AlgAE.Common.Applets;
  */
 public interface AppletLifetimeSupport {
 
-	public void init(boolean isAnApplet);
-	public void start();
-	public void stop();
-	public void destroy();
+    public void init(boolean isAnApplet);
+    public void start();
+    public void stop();
+    public void destroy();
 }

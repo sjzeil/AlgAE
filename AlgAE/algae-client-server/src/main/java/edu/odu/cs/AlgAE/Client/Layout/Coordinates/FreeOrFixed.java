@@ -11,8 +11,8 @@ import java.util.IdentityHashMap;
  *
  */
 public interface FreeOrFixed {
-	
-	public boolean isFixed(IdentityHashMap<FreeOrFixed, Boolean> alreadyChecked);
+    
+    public boolean isFixed(IdentityHashMap<FreeOrFixed, Boolean> alreadyChecked);
 
 
 }

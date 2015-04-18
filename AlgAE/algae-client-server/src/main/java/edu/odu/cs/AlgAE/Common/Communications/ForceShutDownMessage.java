@@ -11,48 +11,48 @@ package edu.odu.cs.AlgAE.Common.Communications;
  *
  */
 public class ForceShutDownMessage extends ClientMessage {
-	
-	private String explanation;
+    
+    private String explanation;
 
-	/**
-	 * @param explanation  explanatory string
-	 */
-	public ForceShutDownMessage(String explanation) {
-		super("ForceShutDown");
-		this.explanation = explanation;
-	}
+    /**
+     * @param explanation  explanatory string
+     */
+    public ForceShutDownMessage(String explanation) {
+        super("ForceShutDown");
+        this.explanation = explanation;
+    }
 
-	/**
-	 */
-	public ForceShutDownMessage() {
-		super("ForceShutDown");
-		this.explanation = "Unexpected error in server.";
-	}
+    /**
+     */
+    public ForceShutDownMessage() {
+        super("ForceShutDown");
+        this.explanation = "Unexpected error in server.";
+    }
 
-	
-	/**
-	 * @return the explanation
-	 */
-	public String getExplanation() {
-		return explanation;
-	}
+    
+    /**
+     * @return the explanation
+     */
+    public String getExplanation() {
+        return explanation;
+    }
 
-	/**
-	 * @param explanation the explanation to set
-	 */
-	public void setExplanation(String explanation) {
-		this.explanation = explanation;
-	}
+    /**
+     * @param explanation the explanation to set
+     */
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
+    }
 
-	@Override
-	public boolean equals(Object clientMessage) {
-		if (clientMessage == null)
-			return false;
-		try {
-			ForceShutDownMessage msg = (ForceShutDownMessage)clientMessage;
-			return msg.explanation.equals(explanation);
-		} catch (Exception e) {
-			return false;
-		}
-	}
+    @Override
+    public boolean equals(Object clientMessage) {
+        if (clientMessage == null)
+            return false;
+        try {
+            ForceShutDownMessage msg = (ForceShutDownMessage)clientMessage;
+            return msg.explanation.equals(explanation);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

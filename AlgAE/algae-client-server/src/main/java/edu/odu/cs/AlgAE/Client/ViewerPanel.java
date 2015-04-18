@@ -30,43 +30,43 @@ public class ViewerPanel extends JPanel
 
 
   public ViewerPanel(String theTitle,
-		     AnimatorPanel datapane, SourcePane sourcepane,
-		     IOPane iopane)
+             AnimatorPanel datapane, SourcePane sourcepane,
+             IOPane iopane)
   {
-	  this.dataPane = datapane;
-	  this.sourcePane = sourcepane;
-	  this.ioPane = iopane;
-	
-	  ioPane.setMinimumSize(new Dimension(0,0));
-	  sourcePane.setMinimumSize(new Dimension(0,0));
-	  dataPane.setMinimumSize(new Dimension(0,0));
+      this.dataPane = datapane;
+      this.sourcePane = sourcepane;
+      this.ioPane = iopane;
 
-	  dataPane.setPreferredSize(new Dimension(800,400));
-	  ioPane.setPreferredSize(new Dimension(200,300));
-	  sourcePane.setPreferredSize(new Dimension(600,300));
+      ioPane.setMinimumSize(new Dimension(0,0));
+      sourcePane.setMinimumSize(new Dimension(0,0));
+      dataPane.setMinimumSize(new Dimension(0,0));
 
-	
-	  JSplitPane splitPanel = new JSplitPane (JSplitPane.HORIZONTAL_SPLIT,
-			  sourcePane, ioPane);
-	  splitPanel.setResizeWeight(0.33);
-	  splitPanel.setOneTouchExpandable(true);
-
-	  JSplitPane mainPanel = new JSplitPane (JSplitPane.VERTICAL_SPLIT,
-			  dataPane, splitPanel);
-	  mainPanel.setResizeWeight(0.33);
-	  mainPanel.setOneTouchExpandable(true);
-	  splitPanel.setMinimumSize(new Dimension(0,0));
-	  splitPanel.setPreferredSize(new Dimension(800,200));
-	  dataPane.setMinimumSize(new Dimension(200,100));
+      dataPane.setPreferredSize(new Dimension(800,400));
+      ioPane.setPreferredSize(new Dimension(200,300));
+      sourcePane.setPreferredSize(new Dimension(600,300));
 
 
-	  setLayout(new BorderLayout());
+      JSplitPane splitPanel = new JSplitPane (JSplitPane.HORIZONTAL_SPLIT,
+              sourcePane, ioPane);
+      splitPanel.setResizeWeight(0.33);
+      splitPanel.setOneTouchExpandable(true);
 
-	  add (mainPanel, BorderLayout.CENTER);
+      JSplitPane mainPanel = new JSplitPane (JSplitPane.VERTICAL_SPLIT,
+              dataPane, splitPanel);
+      mainPanel.setResizeWeight(0.33);
+      mainPanel.setOneTouchExpandable(true);
+      splitPanel.setMinimumSize(new Dimension(0,0));
+      splitPanel.setPreferredSize(new Dimension(800,200));
+      dataPane.setMinimumSize(new Dimension(200,100));
 
-	  statusLine = new JLabel("");
 
-	  add (statusLine, BorderLayout.SOUTH);
+      setLayout(new BorderLayout());
+
+      add (mainPanel, BorderLayout.CENTER);
+
+      statusLine = new JLabel("");
+
+      add (statusLine, BorderLayout.SOUTH);
 
 
   }

@@ -11,48 +11,48 @@ package edu.odu.cs.AlgAE.Common.Communications;
  *
  */
 public class CapturedOutputMessage extends ClientMessage {
-	
-	private String output;
+    
+    private String output;
 
-	/**
-	 * @param outputString  text that was sent to standard output
-	 */
-	public CapturedOutputMessage(String outputString) {
-		super("CapturedOutput");
-		this.output = outputString;
-	}
+    /**
+     * @param outputString  text that was sent to standard output
+     */
+    public CapturedOutputMessage(String outputString) {
+        super("CapturedOutput");
+        this.output = outputString;
+    }
 
-	public CapturedOutputMessage() {
-		super("CapturedOutput");
-		this.output = "";
-	}
+    public CapturedOutputMessage() {
+        super("CapturedOutput");
+        this.output = "";
+    }
 
-	
-	/**
-	 * @return the output string
-	 */
-	public String getOutput() {
-		return output;
-	}
+    
+    /**
+     * @return the output string
+     */
+    public String getOutput() {
+        return output;
+    }
 
-	/**
-	 * Set the output string
-	 */
-	public void setOutput(String output) {
-		this.output= output;
-	}
+    /**
+     * Set the output string
+     */
+    public void setOutput(String output) {
+        this.output= output;
+    }
 
-	
-	@Override
-	public boolean equals(Object clientMessage) {
-		if (clientMessage == null)
-			return false;
-		try {
-			CapturedOutputMessage msg = (CapturedOutputMessage)clientMessage;
-			return msg.output.equals(output);
-		} catch (Exception e) {
-			return false;
-		}
-	}
+    
+    @Override
+    public boolean equals(Object clientMessage) {
+        if (clientMessage == null)
+            return false;
+        try {
+            CapturedOutputMessage msg = (CapturedOutputMessage)clientMessage;
+            return msg.output.equals(output);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
 }

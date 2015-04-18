@@ -15,74 +15,74 @@ package edu.odu.cs.AlgAE.Common.Communications;
  */
 public class SourceCodeMessage extends ClientMessage {
 
-	/**
-	 * identifier of the source code
-	 */
-	private String filePath;
-	
-	/**
-	 * Full text of the source code file.
-	 */
-	private String sourceText;
-	
-	
-	/**
-	 * @param messageKind
-	 */
-	public SourceCodeMessage(String filePath, String sourceText) {
-		super("SourceCode");
-		this.filePath = filePath;
-		this.sourceText = sourceText;
-	}
+    /**
+     * identifier of the source code
+     */
+    private String filePath;
+    
+    /**
+     * Full text of the source code file.
+     */
+    private String sourceText;
+    
+    
+    /**
+     * @param messageKind
+     */
+    public SourceCodeMessage(String filePath, String sourceText) {
+        super("SourceCode");
+        this.filePath = filePath;
+        this.sourceText = sourceText;
+    }
 
-	public SourceCodeMessage() {
-		super("SourceCode");
-		this.filePath = "";
-		this.sourceText = "";
-	}
+    public SourceCodeMessage() {
+        super("SourceCode");
+        this.filePath = "";
+        this.sourceText = "";
+    }
 
-	/**
-	 * @return the filePath
-	 */
-	public String getFilePath() {
-		return filePath;
-	}
-
-
-	/**
-	 * @param filePath the filePath to set
-	 */
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
-	}
+    /**
+     * @return the filePath
+     */
+    public String getFilePath() {
+        return filePath;
+    }
 
 
-	/**
-	 * @return the sourceText
-	 */
-	public String getSourceText() {
-		return sourceText;
-	}
+    /**
+     * @param filePath the filePath to set
+     */
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
 
 
-	/**
-	 * @param sourceText the sourceText to set
-	 */
-	public void setSourceText(String sourceText) {
-		this.sourceText = sourceText;
-	}
+    /**
+     * @return the sourceText
+     */
+    public String getSourceText() {
+        return sourceText;
+    }
 
-	@Override
-	public boolean equals(Object clientMessage) {
-		if (clientMessage == null)
-			return false;
-		try {
-			SourceCodeMessage msg = (SourceCodeMessage)clientMessage;
-			return msg.filePath.equals(filePath)
-					&& msg.sourceText.equals(sourceText);
-		} catch (Exception e) {
-			return false;
-		}
-	}
+
+    /**
+     * @param sourceText the sourceText to set
+     */
+    public void setSourceText(String sourceText) {
+        this.sourceText = sourceText;
+    }
+
+    @Override
+    public boolean equals(Object clientMessage) {
+        if (clientMessage == null)
+            return false;
+        try {
+            SourceCodeMessage msg = (SourceCodeMessage)clientMessage;
+            return msg.filePath.equals(filePath)
+                    && msg.sourceText.equals(sourceText);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
 }

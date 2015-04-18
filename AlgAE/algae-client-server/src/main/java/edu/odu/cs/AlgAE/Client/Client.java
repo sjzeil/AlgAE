@@ -24,69 +24,69 @@ import edu.odu.cs.AlgAE.Common.Communications.ServerCommunications;
  *
  */
 public abstract class Client extends AppletMenuSupport implements AppletLifetimeSupport {
-	
-	
-	private ServerCommunications serverAccess;
-	
-	public Client (ServerCommunications serverComm)
-	{
-		serverAccess = serverComm;
-	}
-	
-	
-	public Client()
-	{
-		serverAccess = null;
-	}
-	
 
-	/**
-	 * Called once per execution, prior to start/stop/destroy.
-	 * For GUI-based clients, this provides a convenient time to build the GUI elements.
-	 * If a server proxy has already been supplied, the client thread may be started.
-	 *
-	 * @param isAnApplet  true if this client is running as a Java Applet
-	 */
-	public abstract void init(boolean isAnApplet);
 
-	/**
-	 * Called to indicate that an animation portrayal is active. May restart a paused Client thread.
-	 */
-	public abstract void start();
+    private ServerCommunications serverAccess;
 
-	/**
-	 * Called to indicate that an animation portrayal is suspended (typically because it is off-screen or minimized).
-	 * May pause the Client thread.
-	 */
-	public abstract void stop();
+    public Client (ServerCommunications serverComm)
+    {
+        serverAccess = serverComm;
+    }
 
-	/**
-	 * Called once per execution, after any init/start/stop calls, to indicate that final shutdown in imminent,
-	 */
-	public abstract void destroy();
 
-	/**
-	 * Provides access to the communications paths going to and coming from
-	 * the server.
-	 *
-	 * @return the server or null if no server has been supplied
-	 */
-	public ServerCommunications getServerAccess()
-	{
-		return serverAccess;
-	}
+    public Client()
+    {
+        serverAccess = null;
+    }
 
-	/**
-	 * Establishes access to the communications paths going to and coming from
-	 * the server.  If a server already existed and messages from it had been processed,
-	 * may result in a loss of some or all state acquired from that server.
-	 *
-	 * @param server the server to set
-	 */
-	public void setServerAccess(ServerCommunications server)
-	{
-		serverAccess = server;
-	}
+
+    /**
+     * Called once per execution, prior to start/stop/destroy.
+     * For GUI-based clients, this provides a convenient time to build the GUI elements.
+     * If a server proxy has already been supplied, the client thread may be started.
+     *
+     * @param isAnApplet  true if this client is running as a Java Applet
+     */
+    public abstract void init(boolean isAnApplet);
+
+    /**
+     * Called to indicate that an animation portrayal is active. May restart a paused Client thread.
+     */
+    public abstract void start();
+
+    /**
+     * Called to indicate that an animation portrayal is suspended (typically because it is off-screen or minimized).
+     * May pause the Client thread.
+     */
+    public abstract void stop();
+
+    /**
+     * Called once per execution, after any init/start/stop calls, to indicate that final shutdown in imminent,
+     */
+    public abstract void destroy();
+
+    /**
+     * Provides access to the communications paths going to and coming from
+     * the server.
+     *
+     * @return the server or null if no server has been supplied
+     */
+    public ServerCommunications getServerAccess()
+    {
+        return serverAccess;
+    }
+
+    /**
+     * Establishes access to the communications paths going to and coming from
+     * the server.  If a server already existed and messages from it had been processed,
+     * may result in a loss of some or all state acquired from that server.
+     *
+     * @param server the server to set
+     */
+    public void setServerAccess(ServerCommunications server)
+    {
+        serverAccess = server;
+    }
 
 
 }

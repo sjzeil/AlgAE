@@ -1,5 +1,7 @@
 package edu.odu.cs.AlgAE.Animations;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,6 +9,8 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+
+import javax.swing.JFrame;
 
 import edu.odu.cs.AlgAE.Client.GUIClient;
 import edu.odu.cs.AlgAE.Common.Applets.AnimationApplet;
@@ -19,7 +23,7 @@ import edu.odu.cs.AlgAE.Common.Communications.LocalProcessCommunication;
  *
  *  @author Steven J Zeil
  **/
-public class StandaloneAnimation extends AnimationApplet {
+public class StandaloneAnimation  {
 
     /**
      * Message logging.
@@ -33,9 +37,15 @@ public class StandaloneAnimation extends AnimationApplet {
     private final GUIClient client;
 
     /**
-     * Communications between the cleint and server.
+     * Communications between the client and server.
      */
     private final LocalProcessCommunication communications;
+    
+    
+    /**
+     * The window containing the client GUI
+     */
+    private final JFrame window;
 
     /**
      * The stream from which messages from the server can be read.
@@ -52,6 +62,36 @@ public class StandaloneAnimation extends AnimationApplet {
      */
     private Process serverProcess;
 
+    /**
+     * Thread to force shutdown of server if the client closes
+     * unexpectedly.
+     * 
+     * @author zeil
+     *
+     */
+    private class ProcessShutdown extends Thread {
+        
+        /**
+         * The process being managed.
+         */
+        private Process process;
+        
+        /**
+         * Create, but do not start, the shutdown thread.
+         * @param processToShutDown process to shut down
+         */
+        public ProcessShutdown (final Process processToShutDown) {
+            process = processToShutDown;
+        }
+        
+        /**
+         * Shut down the process.
+         */
+        public void run() {
+            process.destroy();
+        }
+        
+    }
 
     /**
      * Create a new animation.
@@ -61,11 +101,12 @@ public class StandaloneAnimation extends AnimationApplet {
     public StandaloneAnimation (
             final String title,
             final List<String> executableCommand) {
-        super(title);
 
         final ProcessBuilder pb = new ProcessBuilder (executableCommand);
         try {
             serverProcess = pb.start();
+            Runtime.getRuntime().addShutdownHook(
+                    new ProcessShutdown(serverProcess));
         } catch (final IOException ex) {
             LOG.severe ("Unable to launch server command: " + ex);
             System.exit (1);
@@ -76,14 +117,31 @@ public class StandaloneAnimation extends AnimationApplet {
 
         communications = new LocalProcessCommunication(fromServer, toServer);
         client = new GUIClient(communications);
-        setClient(client);
         client.init(false);
-        client.start();
-        communications.start();
+        
+        window = new JFrame(title);
+        window.setJMenuBar(client.buildMenu());
+        window.getContentPane().add(client);
+        
+        window.addWindowListener(new WindowAdapter() {
+            public void windowClosing(final WindowEvent e) {
+                client.stop();
+                client.destroy();
+                window.setVisible(false);
+            }
+        });
+        window.pack();
     }
 
 
-
+    /**
+     * Start the threads making up this animation and show the GUI.
+     */
+    public final void start() {
+        window.setVisible(true);
+        client.start();
+        communications.start();
+    }
 
     /**
      * Run the animation as a stand-alone program.

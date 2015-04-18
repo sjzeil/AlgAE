@@ -13,10 +13,10 @@ package edu.odu.cs.AlgAE.Animations;
  */
 public interface ContextAware {
 
-	/**
-	 * Return the animation of which this is a part.
-	 *
-	 * @return animation context for this object
-	 */
-	public AnimationContext context();
+    /**
+     * Return the animation of which this is a part.
+     *
+     * @return animation context for this object
+     */
+    public AnimationContext context();
 }

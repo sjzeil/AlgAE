@@ -20,44 +20,44 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
 public interface AnimationContext
 {
 
-	/**
-	 * Each animation has a unique activation stack.
-	 * @return the activation stack for this animation
-	 */
-	public MemoryModel getMemoryModel();
-	
-	/**
-	 * Send a message via the communications established for this animation
-	 */
-	public void sendToClient (ClientMessage msg);
-	
-	/**
-	 * Send a snapshot via the communications established for this animation
-	 */
-	public void sendToClient (Snapshot snap, boolean completed);
-	
+    /**
+     * Each animation has a unique activation stack.
+     * @return the activation stack for this animation
+     */
+    public MemoryModel getMemoryModel();
+    
+    /**
+     * Send a message via the communications established for this animation
+     */
+    public void sendToClient (ClientMessage msg);
+    
+    /**
+     * Send a snapshot via the communications established for this animation
+     */
+    public void sendToClient (Snapshot snap, boolean completed);
+    
 
-	/**
-	 * Send source code to client (if not already sent)
-	 */
-	public void sendSourceToClient(String fileName);
+    /**
+     * Send source code to client (if not already sent)
+     */
+    public void sendSourceToClient(String fileName);
 
-	/**
-	 * Provides a replacement for System.out
-	 */
-	public SimulatedPrintStream sysout();
+    /**
+     * Provides a replacement for System.out
+     */
+    public SimulatedPrintStream sysout();
 
-	/**
-	 *  Register an initial action to be
-	 *  run at the start of the animation, before any selections
-	 *  from the menu.
-	 */
-	public void registerStartingAction (MenuFunction action);
+    /**
+     *  Register an initial action to be
+     *  run at the start of the animation, before any selections
+     *  from the menu.
+     */
+    public void registerStartingAction (MenuFunction action);
 
-	/**
-	 *  Add an item to the Algorithm menu.
-	 */
-	public void register(String menuItem, MenuFunction action);
+    /**
+     *  Add an item to the Algorithm menu.
+     */
+    public void register(String menuItem, MenuFunction action);
 
 }
 

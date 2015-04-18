@@ -19,82 +19,82 @@ import edu.odu.cs.AlgAE.Server.Rendering.Renderer;
  *
  */
 public class GlassBox implements CanBeRendered<GlassBox>, Renderer<GlassBox> {
-	
-	
-	private String label;
-	private LinkedList<Component> components;
-	
-	
-	public GlassBox()
-	{
-		label = "";
-		components = new LinkedList<Component>();
-	}
-	
-	/* (non-Javadoc)
-	 * @see edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered#getRenderer()
-	 */
-	@Override
-	public Renderer<GlassBox> getRenderer() {
-		return this;
-	}
+    
+    
+    private String label;
+    private LinkedList<Component> components;
+    
+    
+    public GlassBox()
+    {
+        label = "";
+        components = new LinkedList<Component>();
+    }
+    
+    /* (non-Javadoc)
+     * @see edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered#getRenderer()
+     */
+    @Override
+    public Renderer<GlassBox> getRenderer() {
+        return this;
+    }
 
-	/* (non-Javadoc)
-	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getColor(java.lang.Object)
-	 */
-	@Override
-	public Color getColor(GlassBox obj) {
-		return new Color(1.0f, 1.0f, 1.0f, 0.0f);
-	}
+    /* (non-Javadoc)
+     * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getColor(java.lang.Object)
+     */
+    @Override
+    public Color getColor(GlassBox obj) {
+        return new Color(1.0f, 1.0f, 1.0f, 0.0f);
+    }
 
-	/* (non-Javadoc)
-	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getComponents(java.lang.Object)
-	 */
-	@Override
-	public List<Component> getComponents(GlassBox obj) {
-		return components;
-	}
+    /* (non-Javadoc)
+     * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getComponents(java.lang.Object)
+     */
+    @Override
+    public List<Component> getComponents(GlassBox obj) {
+        return components;
+    }
 
-	/* (non-Javadoc)
-	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getConnections(java.lang.Object)
-	 */
-	@Override
-	public List<Connection> getConnections(GlassBox obj) {
-		return new LinkedList<Connection>();
-	}
+    /* (non-Javadoc)
+     * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getConnections(java.lang.Object)
+     */
+    @Override
+    public List<Connection> getConnections(GlassBox obj) {
+        return new LinkedList<Connection>();
+    }
 
-	/* Use space-packing layout
-	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getMaxComponentsPerRow(java.lang.Object)
-	 */
-	@Override
-	public int getMaxComponentsPerRow(GlassBox obj) {
-		return 0;
-	}
+    /* Use space-packing layout
+     * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getMaxComponentsPerRow(java.lang.Object)
+     */
+    @Override
+    public int getMaxComponentsPerRow(GlassBox obj) {
+        return 0;
+    }
 
-	/* (non-Javadoc)
-	 * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getValue(java.lang.Object)
-	 */
-	@Override
-	public String getValue(GlassBox obj) {
-		return label;
-	}
+    /* (non-Javadoc)
+     * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getValue(java.lang.Object)
+     */
+    @Override
+    public String getValue(GlassBox obj) {
+        return label;
+    }
 
-	/**
-	 * @param label the label to set
-	 */
-	public void setLabel(String label) {
-		this.label = label;
-	}
+    /**
+     * @param label the label to set
+     */
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
 
-	/**
-	 * @param components the components to set
-	 */
-	public void setComponents(List<Component> components) {
-		this.components.clear();
-		this.components.addAll(components);
-	}
+    /**
+     * @param components the components to set
+     */
+    public void setComponents(List<Component> components) {
+        this.components.clear();
+        this.components.addAll(components);
+    }
 
-	
+    
 
 }

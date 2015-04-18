@@ -22,174 +22,174 @@ import edu.odu.cs.AlgAE.Server.Server;
  **/
 public class AnimationApplet extends JApplet
 {
-	private AppletMenuSupport client;
-	private Server server;
+    private AppletMenuSupport client;
+    private Server server;
 
-	private String theTitle;
-	
-	
-	private int inlineDisplay;
-	final static int INLINE_DEFAULT = 0;
-	private boolean serverStarted = false;
-
-
-	public AnimationApplet (String title, AppletMenuSupport client, Server server)
-	{
-		theTitle = title;
-		this.client = client;
-		this.server = server;
-		inlineDisplay = INLINE_DEFAULT;
-	}
-
-	public AnimationApplet (String title)
-	{
-		theTitle = title;
-		this.client = null;
-		this.server = null;
-		inlineDisplay = INLINE_DEFAULT;
-	}
+    private String theTitle;
+    
+    
+    private int inlineDisplay;
+    final static int INLINE_DEFAULT = 0;
+    private boolean serverStarted = false;
 
 
-	/**
-	 * Applet init action - build the GUI and get ready to go
-	 */
-	public void init ()
-	{
-		DefaultLogSetting.setupLogging(true, "algae%u.log");
-		inlineDisplay = INLINE_DEFAULT;
-		String inlineParam = getParameter("inline");
-		if (inlineParam != null) {
-			try {
-				inlineDisplay= Integer.parseInt(inlineParam);
-			} catch (NumberFormatException ex) {}
-		}
-		
-		client.init(true);
+    public AnimationApplet (String title, AppletMenuSupport client, Server server)
+    {
+        theTitle = title;
+        this.client = client;
+        this.server = server;
+        inlineDisplay = INLINE_DEFAULT;
+    }
 
-		if (inlineDisplay > 0) {
-			setJMenuBar(client.buildMenu());
-			getContentPane().add(client);
-		} else {
-			JFrame window = new JFrame(theTitle);
-			window.setJMenuBar(client.buildMenu());
-			window.getContentPane().add(client);
-			
-			window.addWindowListener(new WindowAdapter() {
-				public void windowClosing(WindowEvent e) {
-					client.stop();
-					client.destroy();
-					server.shutdown();
-					setVisible(false);
-				}
-			});
-			window.pack();
-			window.setVisible(true);
-		}
-	}
-
-	/**
-	 * Applet start action - begin running the animation
-	 */
-	public void start ()
-	{
-		client.start();
-		if (server != null && !serverStarted) {
-			server.start();
-			serverStarted = true;
-		}
-	}
+    public AnimationApplet (String title)
+    {
+        theTitle = title;
+        this.client = null;
+        this.server = null;
+        inlineDisplay = INLINE_DEFAULT;
+    }
 
 
-	/**
-	 * Applet stop action - pause the animation
-	 */
-	public void stop ()
-	{
-		client.stop();
-	}
+    /**
+     * Applet init action - build the GUI and get ready to go
+     */
+    public void init ()
+    {
+        DefaultLogSetting.setupLogging(true, "algae%u.log");
+        inlineDisplay = INLINE_DEFAULT;
+        String inlineParam = getParameter("inline");
+        if (inlineParam != null) {
+            try {
+                inlineDisplay= Integer.parseInt(inlineParam);
+            } catch (NumberFormatException ex) {}
+        }
+        
+        client.init(true);
 
-	/**
-	 * Applet destroy action - shut everything down for good
-	 */
-	public void destroy()
-	{
-		client.destroy();
-		server.shutdown();
-	}
+        if (inlineDisplay > 0) {
+            setJMenuBar(client.buildMenu());
+            getContentPane().add(client);
+        } else {
+            JFrame window = new JFrame(theTitle);
+            window.setJMenuBar(client.buildMenu());
+            window.getContentPane().add(client);
+            
+            window.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                    client.stop();
+                    client.destroy();
+                    server.shutdown();
+                    setVisible(false);
+                }
+            });
+            window.pack();
+            window.setVisible(true);
+        }
+    }
 
-	
-	/**
-	 * Used to run this as a standalone application from main() rather than as an applet
-	 */
-	public void runAsMain()
-	{
-		DefaultLogSetting.setupLogging(false, "algae%u.log");
-		
-		inlineDisplay = 0;
-		JFrame window = new JFrame(theTitle);
-		
-		client.init(false);
-		
-		
-		window.setJMenuBar(client.buildMenu());
-
-		window.getContentPane().add(client);
-		
-		window.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				client.stop();
-				client.destroy();
-				server.shutdown();
-				System.exit (0);
-			}
-		});
-		window.pack();
-		window.setVisible(true);
-		//window.setPreferredSize(new Dimension(800, 600));
-		start();
-		//client.start();
-	}
-
+    /**
+     * Applet start action - begin running the animation
+     */
+    public void start ()
+    {
+        client.start();
+        if (server != null && !serverStarted) {
+            server.start();
+            serverStarted = true;
+        }
+    }
 
 
-	/**
-	 * @return the client
-	 */
-	public AppletMenuSupport getClient() {
-		return client;
-	}
+    /**
+     * Applet stop action - pause the animation
+     */
+    public void stop ()
+    {
+        client.stop();
+    }
+
+    /**
+     * Applet destroy action - shut everything down for good
+     */
+    public void destroy()
+    {
+        client.destroy();
+        server.shutdown();
+    }
+
+    
+    /**
+     * Used to run this as a standalone application from main() rather than as an applet
+     */
+    public void runAsMain()
+    {
+        DefaultLogSetting.setupLogging(false, "algae%u.log");
+        
+        inlineDisplay = 0;
+        JFrame window = new JFrame(theTitle);
+        
+        client.init(false);
+        
+        
+        window.setJMenuBar(client.buildMenu());
+
+        window.getContentPane().add(client);
+        
+        window.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                client.stop();
+                client.destroy();
+                server.shutdown();
+                System.exit (0);
+            }
+        });
+        window.pack();
+        window.setVisible(true);
+        //window.setPreferredSize(new Dimension(800, 600));
+        start();
+        //client.start();
+    }
 
 
 
-
-	/**
-	 * @return the server
-	 */
-	public Server getServer() {
-		return server;
-	}
-
-
-
-	/**
-	 * @param client the client to set
-	 */
-	public void setClient(AppletMenuSupport client) {
-		this.client = client;
-	}
+    /**
+     * @return the client
+     */
+    public AppletMenuSupport getClient() {
+        return client;
+    }
 
 
 
-	/**
-	 * @param server the server to set
-	 */
-	public void setServer(Server server) {
-		this.server = server;
-	}
+
+    /**
+     * @return the server
+     */
+    public Server getServer() {
+        return server;
+    }
 
 
 
-	
+    /**
+     * @param client the client to set
+     */
+    public void setClient(AppletMenuSupport client) {
+        this.client = client;
+    }
+
+
+
+    /**
+     * @param server the server to set
+     */
+    public void setServer(Server server) {
+        this.server = server;
+    }
+
+
+
+    
 }
 
 

@@ -11,5 +11,5 @@ import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
  */
 public interface SourceViewer {
 
-	public void display (SourceLocation sloc);
+    public void display (SourceLocation sloc);
 }

@@ -17,12 +17,12 @@ public class IOPane extends JPanel
   public IOPane(ServerCommunications anim)
   {
     super();
-	setLayout (new BorderLayout());
-	stdOutputArea = new JTextArea();
-	stdOutputArea.setEditable(false);
-	stdOutputArea.setRows(12);
-	add(new JScrollPane(stdOutputArea), BorderLayout.CENTER);
-	
+    setLayout (new BorderLayout());
+    stdOutputArea = new JTextArea();
+    stdOutputArea.setEditable(false);
+    stdOutputArea.setRows(12);
+    add(new JScrollPane(stdOutputArea), BorderLayout.CENTER);
+    
 
   }
 
@@ -44,17 +44,17 @@ public class IOPane extends JPanel
 
   public void print (String str)
   {
-	  stdOutputArea.append(str);
+      stdOutputArea.append(str);
 
-	  // Make sure the last line is always visible
-	  stdOutputArea.setCaretPosition(stdOutputArea.getDocument().getLength());
+      // Make sure the last line is always visible
+      stdOutputArea.setCaretPosition(stdOutputArea.getDocument().getLength());
 
-	  // Keep the text area down to a certain character size
-	  int maxSize = 50000;
-	  int consoleSize = stdOutputArea.getDocument().getLength();
-	  if (consoleSize >= maxSize) {
-		  stdOutputArea.replaceRange("", 0, maxSize/2);
-	  }
+      // Keep the text area down to a certain character size
+      int maxSize = 50000;
+      int consoleSize = stdOutputArea.getDocument().getLength();
+      if (consoleSize >= maxSize) {
+          stdOutputArea.replaceRange("", 0, maxSize/2);
+      }
   }
 
 

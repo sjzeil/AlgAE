@@ -10,12 +10,12 @@ import java.io.Serializable;
  *
  */
 public class MessageBase implements Serializable {
-	
-	protected String kind;
-	
-	public MessageBase (String messageKind)
-	{
-		kind = messageKind;
-	}
+    
+    protected String kind;
+    
+    public MessageBase (String messageKind)
+    {
+        kind = messageKind;
+    }
 
 }

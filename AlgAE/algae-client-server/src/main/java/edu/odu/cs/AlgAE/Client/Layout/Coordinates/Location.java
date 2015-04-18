@@ -23,25 +23,25 @@ import edu.odu.cs.AlgAE.Client.Layout.Optimization.Variable;
  *
  */
 public interface Location extends Cloneable, FreeOrFixed {
-	
-	/**
-	 * Evaluate the location to get a cartesian coordinate.
-	 *
-	 */
-	public Point2D getCoordinates();
-	
-	/**
-	 * Quantities that can be manipulated to change a location.
-	 * @return a list of 0-2 variables
-	 */
-	public Variable[] getVariables();
-	
-	public Object clone();
-	
-	/**
-	 * Determine if this location has been fixed or is somehow relative
-	 * to some other location that has yet to be determined.
-	 */
-	//public boolean isFixed();
+    
+    /**
+     * Evaluate the location to get a cartesian coordinate.
+     *
+     */
+    public Point2D getCoordinates();
+    
+    /**
+     * Quantities that can be manipulated to change a location.
+     * @return a list of 0-2 variables
+     */
+    public Variable[] getVariables();
+    
+    public Object clone();
+    
+    /**
+     * Determine if this location has been fixed or is somehow relative
+     * to some other location that has yet to be determined.
+     */
+    //public boolean isFixed();
 
 }

@@ -9,13 +9,13 @@ import java.awt.geom.Rectangle2D;
  *
  */
 public interface BoundedRegion extends FreeOrFixed {
-	
-	/**
-	 * Get the bounding box for this region.
-	 *
-	 * @return Smallest rectangular area containing the region of interest.
-	 */
-	public Rectangle2D getBBox();
-	
-	
+    
+    /**
+     * Get the bounding box for this region.
+     *
+     * @return Smallest rectangular area containing the region of interest.
+     */
+    public Rectangle2D getBBox();
+    
+    
 }

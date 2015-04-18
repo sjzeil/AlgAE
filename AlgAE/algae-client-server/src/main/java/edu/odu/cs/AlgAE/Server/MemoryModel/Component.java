@@ -11,37 +11,37 @@ package edu.odu.cs.AlgAE.Server.MemoryModel;
  */
 public class Component {
 
-	private Object component;
-	private String label;
-		
-	
-	public Component (Object comp, String label) {
-		component = comp;
-		this.label = label;
-	}
-	
-	public Component (Object comp) {
-		component = comp;
-		this.label = null;
-	}
-	
+    private Object component;
+    private String label;
+        
+    
+    public Component (Object comp, String label) {
+        component = comp;
+        this.label = label;
+    }
+    
+    public Component (Object comp) {
+        component = comp;
+        this.label = null;
+    }
+    
 
-	
-	public Object getComponentObject() {
-		return component;
-	}
-	
-	public String getLabel() {
-		return label;
-	}
-	
-	public String toString() {
-		if (label == null)
-			return "<" + component.toString() + ">";
-		else
-			return "<" + label + ":" + component.toString() + ">";
-	}
-	
-	
-	
+    
+    public Object getComponentObject() {
+        return component;
+    }
+    
+    public String getLabel() {
+        return label;
+    }
+    
+    public String toString() {
+        if (label == null)
+            return "<" + component.toString() + ">";
+        else
+            return "<" + label + ":" + component.toString() + ">";
+    }
+    
+    
+    
 }

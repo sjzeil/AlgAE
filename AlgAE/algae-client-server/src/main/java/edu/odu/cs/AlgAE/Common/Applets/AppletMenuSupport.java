@@ -15,14 +15,14 @@ import javax.swing.JPanel;
  */
 public abstract class AppletMenuSupport extends JPanel implements AppletLifetimeSupport {
 
-	/**
-	 * Construct a menu bar.
-	 *
-	 * Should be called after init(isAnApplet), so that the object knows whether to include a
-	 * File->exit menu item.
-	 *
-	 * @return a menu bar
-	 */
-	public abstract JMenuBar buildMenu();
-	
+    /**
+     * Construct a menu bar.
+     *
+     * Should be called after init(isAnApplet), so that the object knows whether to include a
+     * File->exit menu item.
+     *
+     * @return a menu bar
+     */
+    public abstract JMenuBar buildMenu();
+    
 }
