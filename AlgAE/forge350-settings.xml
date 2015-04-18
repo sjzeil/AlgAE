@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-settings>
+  <credentials host="archive350.cs.odu.edu"
+               username="${archive350.user}"
+               passwd="${archive350.passwd}"
+               realm="Artifactory Realm"/>
+ <resolvers>
+    <chain name="default">
+      <ibiblio name="public" m2compatible="true" 
+         root="http://archive350.cs.odu.edu:8080/artifactory/libs-release" />
+    </chain>
+    <ibiblio name="publish" m2compatible="true"
+      root="http://archive350.cs.odu.edu:8080/artifactory/libs-release-local" />
+  </resolvers>
+</ivy-settings>

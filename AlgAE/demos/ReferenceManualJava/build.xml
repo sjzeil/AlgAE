@@ -95,9 +95,6 @@
     <!-- ivy:settings file="${user.home}/ivysettings.xml"/ -->
   	<ivy:settings file="ivysettings.xml"/>
     <ivy:resolve/>
-  	<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
-  		<classpath refid="test.classpath"/>
-  	</taskdef>
   	
   	<ivy:cachepath conf="build" pathid="ivy.build.classpath"/>
   	<ivy:cachepath conf="test" pathid="ivy.test.classpath"/>
@@ -177,11 +174,6 @@
     <jar destfile="target/${projectName}.jar">
       <fileset dir="${compile.dest}">
       </fileset>
-      <zipfileset src="lib/algae-client-${version}.jar">
-      	<include name="**/*"/>
-      	<exclude name="META-INF/**/*"/>
-      </zipfileset>
-      <zipfileset includes="**/*.class" src="lib/algae-jserver-${version}.jar"/>
       <fileset dir="${compile.src}"/>
       <manifest>
 	     <attribute name="Main-Class" value="${mainClassName}" />
