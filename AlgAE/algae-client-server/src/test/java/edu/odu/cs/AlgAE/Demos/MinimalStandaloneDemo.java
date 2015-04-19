@@ -3,9 +3,12 @@ package edu.odu.cs.AlgAE.Demos;
 import static edu.odu.cs.AlgAE.Server.LocalServer.algae;
 
 import java.awt.Color;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
+import edu.odu.cs.AlgAE.Animations.StandaloneAnimation;
 import edu.odu.cs.AlgAE.Server.JavaStandAloneServer;
 import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
@@ -407,8 +410,22 @@ public class MinimalStandaloneDemo extends JavaStandAloneServer {
 	
 	
 	public static void main (String[] args) {
-		MinimalStandaloneDemo demo = new MinimalStandaloneDemo();
-		demo.runAsMain();
+	    if (args.length == 1 && args[0].equals("--server")) {
+            MinimalStandaloneDemo demo = new MinimalStandaloneDemo();
+            Logger logger
+                = Logger.getLogger(MinimalStandaloneDemo.class.getName());
+            logger.info("Launched with --server");
+            demo.runAsMain();
+            logger.info("Returned from runAsMain");
+	    } else {
+	           String[] command = {"java", "-cp", "target/classes:target/test-classes", 
+	                   "-agentlib:jdwp=transport=dt_socket,address=127.0.0.1:8888,server=y,suspend=n",
+	                   "edu.odu.cs.AlgAE.Demos.MinimalStandaloneDemo", "--server"};
+	           List<String> commandL = Arrays.asList(command);
+	           StandaloneAnimation anim =
+	                   new StandaloneAnimation("MinimalStandaloneDemo", commandL);
+	           anim.start();
+	    }
 	}
 
 }

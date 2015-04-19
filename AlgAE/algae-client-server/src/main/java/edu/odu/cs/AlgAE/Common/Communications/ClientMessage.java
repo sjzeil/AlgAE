@@ -4,6 +4,7 @@
 package edu.odu.cs.AlgAE.Common.Communications;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
@@ -78,29 +79,45 @@ public abstract class ClientMessage extends MessageBase {
     {
         Gson gson = new Gson();
         BufferedReader reader = new BufferedReader(new InputStreamReader(serializedInput));
-        JsonReader jreader = new JsonReader(reader);
-        jreader.setLenient(true);
-        String messageClass = gson.fromJson(jreader, String.class);
-        messageClass = ClientMessage.class.getPackage().getName()
-                + "." + messageClass;
-        Class<ClientMessage> actualMessageClass;
+        Class<ClientMessage> actualMessageClass = null;
+        // Read forward until we get the name of a recognized message class within quotation marks.
+        while (actualMessageClass == null) {
+            String messageClass;
+            try {
+                messageClass = reader.readLine();
+            } catch (IOException e1) {
+                logger.severe("Unable to read message class: " + e1);
+                return new ForceShutDownMessage("protocol failure");
+            }
+            if (messageClass == null) {
+                return new ForceShutDownMessage("protocol failure");
+            }
+            if (messageClass.startsWith("\"") && messageClass.endsWith("\"")) {
+                messageClass = messageClass.substring(1, messageClass.length()-1);
+                messageClass = ClientMessage.class.getPackage().getName()
+                        + "." + messageClass;
+                try {
+                    @SuppressWarnings("unchecked")
+                    Class<ClientMessage> amClass = (Class<ClientMessage>)Class.forName(messageClass);
+                    actualMessageClass = amClass;
+                } catch (ClassNotFoundException e) {
+                    actualMessageClass = null;
+                }
+            }
+        }
+        // Then parse a value of the message type.
         try {
-            @SuppressWarnings("unchecked")
-            Class<ClientMessage> amClass = (Class<ClientMessage>)Class.forName(messageClass);
-            actualMessageClass = amClass;
+            JsonReader jreader = new JsonReader(reader);
+            jreader.setLenient(true);
             ClientMessage message = gson.fromJson(jreader, actualMessageClass);
             return message;
-        } catch (ClassNotFoundException e) {
-            logger.severe("Unable to parse message, expected to have type "
-                    + messageClass + ": " + e);
-            return new ForceShutDownMessage("protocol failure");
         } catch (JsonSyntaxException e) {
             logger.severe("Unable to parse message, for type "
-                    + messageClass + ": " + e);
+                    + actualMessageClass.getName() + ": " + e);
             return new ForceShutDownMessage("protocol failure");
         } catch (JsonIOException e) {
             logger.severe("Unable to parse message, for type "
-                    + messageClass + ": " + e);
+                    + actualMessageClass.getName() + ": " + e);
             return new ForceShutDownMessage("protocol failure");
         }
     }

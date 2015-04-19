@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
@@ -101,7 +102,8 @@ public class StandaloneAnimation  {
     public StandaloneAnimation (
             final String title,
             final List<String> executableCommand) {
-
+        //DefaultLogSetting.setupLogging(false,  "algae-client%u.log");
+        DefaultLogSetting.defaultLevel = Level.FINE;
         final ProcessBuilder pb = new ProcessBuilder (executableCommand);
         try {
             serverProcess = pb.start();

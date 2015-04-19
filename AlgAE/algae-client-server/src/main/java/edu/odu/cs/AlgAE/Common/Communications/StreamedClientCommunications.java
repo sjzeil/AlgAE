@@ -115,7 +115,9 @@ public class StreamedClientCommunications implements ClientCommunications {
                  * the queue or block until that time.
                  */
                 while (!stopping) {
+                    LOG.finer("Awaiting message from client");
                     String line = messagesIn.readLine();
+                    LOG.fine("Received from client: " + line);
                     if (line == null) {
                         line = "Shutdown:";
                     }
@@ -169,11 +171,14 @@ public class StreamedClientCommunications implements ClientCommunications {
         }
         synchronized (manager) {
             while (awaitingAck) {
+                LOG.fine("Server is awaiting ack of prior message before sending: " + message);
                 manager.wait();
             }
             awaitingAck = true;
         }
+        LOG.fine("About to send to client: " + message);
         messagesOut.println(message.serialize());
+        LOG.fine("Sent to client: " + message);
     }
 
 

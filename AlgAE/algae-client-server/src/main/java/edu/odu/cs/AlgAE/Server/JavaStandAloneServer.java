@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import edu.odu.cs.AlgAE.Animations.AnimationContext;
@@ -105,6 +106,7 @@ public abstract class JavaStandAloneServer extends Server
             final InputStream msgsIn,
             final PrintStream msgsOut) {
         DefaultLogSetting.setupLogging(false,  "algae-server%u.log");
+        DefaultLogSetting.defaultLevel = Level.FINE;
 
         theTitle = title;
         communications = new StreamedClientCommunications(msgsIn, msgsOut);
@@ -115,6 +117,8 @@ public abstract class JavaStandAloneServer extends Server
         launcher = new LauncherThread();
         sourceCodeAlreadySent = new HashSet<String>();
         algorithmsMenu = new HashMap<String, MenuFunction>();
+        buildMenu();
+
     }
 
     /**

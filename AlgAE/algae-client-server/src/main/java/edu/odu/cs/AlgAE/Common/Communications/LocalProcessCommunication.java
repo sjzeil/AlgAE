@@ -90,6 +90,7 @@ public class LocalProcessCommunication implements ServerCommunications {
     public final void sendToServer(final ServerMessage message) {
         LOG.fine(message.toString());
         messagesOut.println(message.toString());
+        messagesOut.flush();
         LOG.finer("sent");
     }
 

@@ -171,7 +171,6 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
         thread.setPriority(Thread.MIN_PRIORITY);
         thread.start();
         launcher.setPriority(Thread.MIN_PRIORITY);
-        menuBuilder.buildMenu();
     }
 
 
