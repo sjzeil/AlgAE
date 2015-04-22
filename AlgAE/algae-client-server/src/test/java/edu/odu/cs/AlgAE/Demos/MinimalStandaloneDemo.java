@@ -1,6 +1,5 @@
 package edu.odu.cs.AlgAE.Demos;
 
-import static edu.odu.cs.AlgAE.Server.LocalServer.algae;
 
 import java.awt.Color;
 import java.util.Arrays;
@@ -10,7 +9,6 @@ import java.util.logging.Logger;
 
 import edu.odu.cs.AlgAE.Animations.StandaloneAnimation;
 import edu.odu.cs.AlgAE.Server.JavaStandAloneServer;
-import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
@@ -144,7 +142,7 @@ public class MinimalStandaloneDemo extends JavaStandAloneServer {
 		
 		public void addFirst (String d)
 		{
-			ActivationRecord active = LocalServer.activate(this);//!
+			ActivationRecord active = activate(this);//!
 			active.param("d",d).breakHere("starting addFirst");//!
 			if (first == null) {
 				active.breakHere("adding first node");//!
@@ -159,7 +157,7 @@ public class MinimalStandaloneDemo extends JavaStandAloneServer {
 		
 		public boolean contains (String value)
 		{
-			ActivationRecord active = LocalServer.activate(this);
+			ActivationRecord active = activate(this);
 			LLNode current = first;
 			active.param("value",value).refVar("current", current).breakHere("contains: start at beginning");//!
 			while (current != null) {
@@ -204,15 +202,15 @@ public class MinimalStandaloneDemo extends JavaStandAloneServer {
 
 	
 	private void findSelected() {
-		LocalServer.activate(list).breakHere("Prompt for input");
-			String value = algae().promptForInput("Search for ...", "[0-9]+");
-			boolean found = list.contains (value);
-			if (found) {
-				out.println ("Found it!");
-			} else {
-				out.println ("Could not find it.");
-			}
-		}
+	    activate(list).breakHere("Prompt for input");
+	    String value = algae().promptForInput("Search for ...", "[0-9]+");
+	    boolean found = list.contains (value);
+	    if (found) {
+	        out.println ("Found it!");
+	    } else {
+	        out.println ("Could not find it.");
+	    }
+	}
 	
 
 	
@@ -264,7 +262,7 @@ public class MinimalStandaloneDemo extends JavaStandAloneServer {
 		register ("lots of locals", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord arec = LocalServer.activate(list);
+				ActivationRecord arec = activate(list);
 				//arec.breakHere("lots of locals").refVar("list", list);
 				//arec.breakHere("lots of locals").refVar("list", list).var("j", 1);
 				int[] array = new int[5];
@@ -418,13 +416,14 @@ public class MinimalStandaloneDemo extends JavaStandAloneServer {
             demo.runAsMain();
             logger.info("Returned from runAsMain");
 	    } else {
-	           String[] command = {"java", "-cp", "target/classes:target/test-classes", 
-	                   "-agentlib:jdwp=transport=dt_socket,address=127.0.0.1:8888,server=y,suspend=n",
-	                   "edu.odu.cs.AlgAE.Demos.MinimalStandaloneDemo", "--server"};
-	           List<String> commandL = Arrays.asList(command);
-	           StandaloneAnimation anim =
-	                   new StandaloneAnimation("MinimalStandaloneDemo", commandL);
-	           anim.start();
+	        String classpath = System.getProperty("java.class.path");
+	        String[] command = {"java", "-cp", classpath, 
+	                "-agentlib:jdwp=transport=dt_socket,address=127.0.0.1:8888,server=y,suspend=n",
+	                "edu.odu.cs.AlgAE.Demos.MinimalStandaloneDemo", "--server"};
+	        List<String> commandL = Arrays.asList(command);
+	        StandaloneAnimation anim =
+	                new StandaloneAnimation("MinimalStandaloneDemo", commandL);
+	        anim.start();
 	    }
 	}
 

@@ -32,6 +32,7 @@ import edu.odu.cs.AlgAE.Common.Communications.StreamedClientCommunications;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SnapshotDiff;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
+import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
 
 /**
@@ -49,6 +50,13 @@ public abstract class JavaStandAloneServer extends Server
     private static Logger logger
         = Logger.getLogger(JavaStandAloneServer.class.getName());
 
+    /**
+     * This is actually a singleton class. The created instance is stored here
+     * to facilitate static access.
+     */
+    private static JavaStandAloneServer instance = null;
+    
+    
     /**
      * Communications between here and the client.
      */
@@ -118,7 +126,7 @@ public abstract class JavaStandAloneServer extends Server
         sourceCodeAlreadySent = new HashSet<String>();
         algorithmsMenu = new HashMap<String, MenuFunction>();
         buildMenu();
-
+        instance = this;
     }
 
     /**
@@ -153,6 +161,43 @@ public abstract class JavaStandAloneServer extends Server
     public final MemoryModel getMemoryModel() {
         return memoryModel;
     }
+    
+    
+    /**
+     * Animated code must be able to access the relevant Animation instance
+     * even though such code was written independently of the animation system.
+     * This function returns that animation instance, under the assumption that the
+     * server (which launches the animated code) will have registered its thread
+     * for that purpose.
+     *
+     * @return the animation associated with a thread
+     */
+    public static JavaStandAloneServer algae()
+    {
+        return instance;
+    }
+
+    
+    
+    /**
+     * This must be called at the beginning of each new function to signal
+     * that a new empty record should be pushed onto the top of the stack.
+     *
+     * @param thisObj - A reference to an object of the class of
+     *    which the current function is a member. Normally, "this"
+     *    will do just fine.  thisObj is used to help locate
+     *    the source code being animated, so, in a pinch (e.g., if
+     *    animating a static function) another object whose source
+     *    code lies in the same directory/folder will do.
+     *
+     * @return ActivationRecord for the new function call
+     */
+
+    public static ActivationRecord activate (Object thisObject) {
+        return algae().memoryModel.getActivationStack().activate (thisObject);
+    }
+
+
 
 
     /**

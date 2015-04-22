@@ -102,7 +102,7 @@ public class StandaloneAnimation  {
     public StandaloneAnimation (
             final String title,
             final List<String> executableCommand) {
-        //DefaultLogSetting.setupLogging(false,  "algae-client%u.log");
+        DefaultLogSetting.setupLogging(false,  "algae-client%u.log");
         DefaultLogSetting.defaultLevel = Level.FINE;
         final ProcessBuilder pb = new ProcessBuilder (executableCommand);
         try {

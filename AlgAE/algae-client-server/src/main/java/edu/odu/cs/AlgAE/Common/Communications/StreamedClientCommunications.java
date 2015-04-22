@@ -134,8 +134,11 @@ public class StreamedClientCommunications implements ClientCommunications {
                         final int divider = line.indexOf(':');
                         final String kind 
                             = (divider > 0) ? line.substring(0, divider) : line;
-                        final String detail 
+                        String detail 
                             = (divider > 0) ? line.substring(divider + 1) : "";
+                        while (detail.length() > 0 && detail.charAt(0) == ' ') {
+                            detail = detail.substring(1);
+                        }
                         serverMessages.put(new ServerMessage(kind, detail));
                     }
                 }

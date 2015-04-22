@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.logging.Logger;
 
 import com.google.gson.Gson;
@@ -26,6 +27,14 @@ import com.google.gson.stream.JsonReader;
  */
 public abstract class ClientMessage extends MessageBase {
     
+    /**
+     * A string used to indicate the end of a serialized message.
+     */
+    public static final String MessageTerminationMarker = "--------";
+    
+    /**
+     * Message logger
+     */
     private static Logger logger = Logger.getLogger(ClientMessage.class.getName());
 
     /**
@@ -60,7 +69,7 @@ public abstract class ClientMessage extends MessageBase {
         }
         String json0 = gson.toJson(className);
         String json = gson.toJson(this);
-        return json0 + "\n" + json;
+        return json0 + "\n" + json + "\n" + MessageTerminationMarker + "\n";
     }
     
     /**
@@ -77,7 +86,6 @@ public abstract class ClientMessage extends MessageBase {
      */
     public static ClientMessage load(InputStream serializedInput)
     {
-        Gson gson = new Gson();
         BufferedReader reader = new BufferedReader(new InputStreamReader(serializedInput));
         Class<ClientMessage> actualMessageClass = null;
         // Read forward until we get the name of a recognized message class within quotation marks.
@@ -105,9 +113,27 @@ public abstract class ClientMessage extends MessageBase {
                 }
             }
         }
+        // Now accumulate the lines making up the message, terminated by a 
+        // line containing only MessageTerminationMarker. 
+        StringBuffer messageBuffer = new StringBuffer();
+        String line = "";
+        while (true) {
+            try {
+                line = reader.readLine();
+            } catch (IOException e) {
+                line = null;
+            }
+            if (line != null && !line.equals(MessageTerminationMarker)) {
+                messageBuffer.append(line);
+                messageBuffer.append("\n");
+            } else {
+                break;
+            }
+        }
         // Then parse a value of the message type.
+        Gson gson = new Gson();
         try {
-            JsonReader jreader = new JsonReader(reader);
+            JsonReader jreader = new JsonReader(new StringReader(messageBuffer.toString()));
             jreader.setLenient(true);
             ClientMessage message = gson.fromJson(jreader, actualMessageClass);
             return message;
