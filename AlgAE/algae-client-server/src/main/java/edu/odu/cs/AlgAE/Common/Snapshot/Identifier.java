@@ -42,7 +42,7 @@ public class Identifier {
         if (obj == null) {
             return 0;
         }
-        int hash = obj.hashCode() % hashTableSize;
+        int hash = (obj.hashCode() & 0x7fffffff) % hashTableSize;
         Bucket bucket = identifiers[hash];
         if (bucket == null) {
             return 0;
@@ -65,7 +65,7 @@ public class Identifier {
 
     private int addID(Object obj) {
         if (obj != null) {
-            int hash = obj.hashCode() % hashTableSize;
+            int hash = (obj.hashCode() & 0x7fffffff)  % hashTableSize;
             Bucket bucket = identifiers[hash];
             if (bucket == null) {
                 bucket = new Bucket();

@@ -167,6 +167,7 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
         //    menuSelection = msgHandler.getMenuSelection ();
         //    invoke (menuSelection);
         //      }
+        menuBuilder.buildMenu();
         client.start();
         thread.setPriority(Thread.MIN_PRIORITY);
         thread.start();

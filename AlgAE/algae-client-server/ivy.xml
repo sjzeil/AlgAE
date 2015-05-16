@@ -1,7 +1,7 @@
 <ivy-module version="2.0">
     <info organisation="edu.odu.cs.algae" module="${projectName}"/>
     <configurations>
-        <conf name="build"  
+        <conf name="default"  
 	      description="things needed to compile and run non-test code"
 	      />
         <conf name="test" 
@@ -20,19 +20,20 @@
 	      />
     </configurations>
     <publications>
-       <artifact name="${projectName}" conf="build" type="jar" ext="jar"/>
-       <artifact name="${projectName}-src" conf="build" type="sources" ext="jar"/>
+       <artifact name="${projectName}" conf="default" type="jar" ext="jar"/>
+       <artifact name="${projectName}-src" conf="default" type="sources" ext="jar"/>
+       <artifact type="pom" ext="pom" conf="default"/>
     </publications>
     <dependencies>
         <dependency org="com.google.code.gson" name="gson" 
           rev="2.3.1"
-          conf="build,integration,findbugs,test,all->default"/>
+          conf="default,integration,findbugs,test,all->default"/>
         <dependency org="junit" name="junit" 
 		  rev="4.11" 
 		  conf="test,integration,reports,all->default"/>
        <dependency org="javax.help" name="javahelp" 
           rev="2.0.05"
-		  conf="build,integration,findbugs,test,all->default"/>
+		  conf="default,integration,findbugs,test,all->default"/>
        <dependency org="org.jacoco" name="org.jacoco.ant" 
           rev="latest.integration"
           conf="test,integration,reports,all->default"/>

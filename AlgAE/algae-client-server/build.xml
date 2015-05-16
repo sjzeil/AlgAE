@@ -9,7 +9,7 @@
     AlgAE (Algorithm Animation Engine): Java Client and Server
   </description>
   
-  <property file="${user.home}/ivy.properties"/>
+  <property file="${user.home}/.ant-global.properties"/>
   <property name="projectName" value="algae" />
   <property name="sharedPropertiesFile" location="../../shared.properties"/>
   <property file="${sharedPropertiesFile}"/>
@@ -84,7 +84,7 @@
   	<!-- === Class Paths for Compilation and Execution === -->
     
     
-    <ivy:cachepath conf="build" pathid="ivy.build.classpath"/>
+    <ivy:cachepath conf="default" pathid="ivy.build.classpath"/>
     <ivy:cachepath conf="test" pathid="ivy.test.classpath"/>
     <ivy:cachepath conf="integration" pathid="ivy.integration.classpath"/>
     <ivy:cachepath conf="reports" pathid="ivy.reports.classpath"/>
@@ -332,6 +332,13 @@
   
   <target name="pre-publish" depends="package,install-ivy">
     <ivy:resolve/>
+  	<property name="ivy.pom.version" value="${build.version}"/>
+  	 <ivy:makepom ivyfile="ivy.xml" 
+  	 	          pomfile="target/${projectName}.pom" 
+  	 	          conf="default"
+  	 	          >
+  	   <mapping conf="default" scope="compile"/>
+  	</ivy:makepom>
   </target>
   
   <target name="publish-local" depends="pre-publish" description="Publish the binary library in the default local repository">
@@ -343,19 +350,17 @@
     </ivy:publish>
   </target>
   
-  <!--
-    <target name="publish" depends="pre-publish" 
+  <target name="publish" depends="pre-publish" 
             description="Publish the binary library on the Forge350 repository">
-    <ivy:publish resolver="archiva-publish"
-         pubrevision="${version}"
+     <ivy:publish resolver="publish"
+         pubrevision="${build.version}"
 		 status="release"
 		 update="true"
 		 overwrite="true"
-		 publishivy="true">
-      <artifacts pattern="target/[artifact].[ext]"/>
-    </ivy:publish>
+		 publishivy="false">
+        <artifacts pattern="target/[artifact].[ext]"/>
+      </ivy:publish>
   </target>
-  -->
 	
   <target name="clean" description="Remove all normal build products">
     <delete dir="target"/>
