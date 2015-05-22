@@ -66,6 +66,7 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
      *  Collection of algorithm menu items.
      **/
     private HashMap<String, MenuFunction> algorithmsMenu;
+    private ArrayList<String> algorithmsMenuEntries;
 
     /**
      * Animated code to be performed upon start of the animation
@@ -112,6 +113,7 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
         SimulatedPrintStream.setMsgQueue(communications);
         
         algorithmsMenu = new HashMap<String, MenuFunction>();
+        algorithmsMenuEntries = new ArrayList<String>();
         startingAction = null;
         thread = new ServerThread();
         launcher = new LauncherThread();
@@ -134,6 +136,7 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
     public void register(String menuItemTitle, MenuFunction theOperation)
     {
         algorithmsMenu.put (menuItemTitle, theOperation);
+        algorithmsMenuEntries.add (menuItemTitle);
     }
 
     public void registerStartingAction(MenuFunction action) {
@@ -552,7 +555,7 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
             public void doIt(String msgDetail) throws InterruptedException {
                 String[] menuItemTitles = new String[algorithmsMenu.size()];
                 int i = 0;
-                for (String item: algorithmsMenu.keySet()) {
+                for (String item: algorithmsMenuEntries) {
                     menuItemTitles[i] = item;
                     i++;
                 }
