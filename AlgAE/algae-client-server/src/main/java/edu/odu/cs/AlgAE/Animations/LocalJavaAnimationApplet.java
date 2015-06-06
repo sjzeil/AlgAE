@@ -62,7 +62,14 @@ public abstract class LocalJavaAnimationApplet extends AnimationApplet implement
     public abstract void buildMenu();
 
 
-
+    /**
+     * Provide access to the animation context.
+     * 
+     * @return the context information provided by the server
+     */
+    public AnimationContext getContext() {
+        return server;
+    }
     
     protected MemoryModel getMemoryModel() {
         return server.getMemoryModel();
