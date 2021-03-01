@@ -3,6 +3,7 @@ plugins {
 	id 'project-report'
 	id 'pmd'
 	id 'jacoco'
+	id 'ivy-publish'
 }
 
 java {
@@ -10,7 +11,6 @@ java {
 	targetCompatibility = JavaVersion.toVersion(11)
 }
 
-def jmockitVersion = '1.49'
 
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
@@ -48,4 +48,43 @@ task reports (dependsOn: ['htmlDependencyReport', 'javadoc', 'check']) {
 javadoc.failOnError=false
 
 
+// Publishing
+
+// Credentials are loaded from ~/.gradle/gradle.properties
+if(project.hasProperty("ivyRepoUser")){
+    ext.ivyRepoUser = "$ivyRepoUser";
+} else {
+    ext.ivyRepoUser = "user";
+}
+if(project.hasProperty("ivyRepoPass")){
+    ext.ivyRepoPass = "$ivyRepoPass";
+} else {
+    ext.ivyRepoPass = "password";
+}
+
+publishing {
+    publications {
+        ivyJava(IvyPublication) {
+            organisation 'edu.odu.cs.algae'
+            module project.name
+            revision project.version
+            descriptor.status = 'integration'   // milestone, release
+            descriptor.branch = 'v4'
+
+            from components.java
+        }
+    }
+
+    repositories {
+        ivy {
+            name 'ivyRepo'
+            url 'sftp://atria.cs.odu.edu:22/home/zeil/secure_html/ivyrepo'
+            // Readable via https://www.cs.odu.edu/~zeil/ivyrepo
+            credentials {
+                username project.ivyRepoUser
+                password project.ivyRepoPass
+            }
+        }
+    }
+}
 

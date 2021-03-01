@@ -4,3 +4,7 @@
 /bin/
 /algae-server0.log
 /.gradle/
+**/.settings/
+**/*.log
+**/bin/
+**/build/
