@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+	id 'project-report'
+	id 'pmd'
+	id 'jacoco'
+}
+
+java {
+	sourceCompatibility = JavaVersion.toVersion(11)
+	targetCompatibility = JavaVersion.toVersion(11)
+}
+
+def jmockitVersion = '1.49'
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'javax.help:javahelp:2.0.05'
+	testImplementation 'junit:junit:4.13.2'
+}
+
+
+test {
+	ignoreFailures = true
+    useJUnitPlatform()
+	testLogging {
+		events "passed", "skipped", "failed"
+	}
+	
+}
+
+
+
+// Reporting
+
+
+pmd {
+    ignoreFailures = true
+    consoleOutput = false
+}
+
+pmdTest.enabled = false
+check.dependsOn htmlDependencyReport
+
+task reports (dependsOn: ['htmlDependencyReport', 'javadoc', 'check']) {
+    description 'Generate all reports for this project'
+}
+
+javadoc.failOnError=false
+
+
+

@@ -1,0 +1,17 @@
+pluginManagement {
+    repositories {
+        ivy { // Use my own CS dept repo
+            url 'https://www.cs.odu.edu/~zeil/ivyrepo'
+        }
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+rootProject.name = 'AlgAE'
+
+include 'algae-client-server'
+//include 'algae-referenceManual'
+//include 'demos:FordTopp-BST'
+include 'demos:ReferenceManualJava'
+
+

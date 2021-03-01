@@ -1,0 +1,14 @@
+subprojects {
+    version = "4.2-SNAPSHOT"
+
+    repositories {
+        jcenter()
+		//mavenCentral()
+        ivy { // Use my own CS dept repo
+            url 'https://www.cs.odu.edu/~zeil/ivyrepo'
+        }         
+    }
+
+}
+
+
