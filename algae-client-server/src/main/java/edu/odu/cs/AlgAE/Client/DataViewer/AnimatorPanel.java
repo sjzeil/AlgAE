@@ -216,6 +216,8 @@ public class AnimatorPanel extends JPanel
         });
 
 
+        JPanel spacer = new JPanel();
+        controls2.add(spacer);
 
 
         JPanel speedPanel = new JPanel();
@@ -238,6 +240,9 @@ public class AnimatorPanel extends JPanel
         });
         speedPanel.add(speedControl);
         controls2.add (speedPanel);
+        
+        spacer = new JPanel();
+        controls2.add(spacer);
 
         JPanel zoomPanel = new JPanel();
         zoomPanel.setLayout(new BoxLayout(zoomPanel, BoxLayout.Y_AXIS));

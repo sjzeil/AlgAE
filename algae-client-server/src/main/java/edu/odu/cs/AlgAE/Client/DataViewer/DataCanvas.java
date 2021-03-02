@@ -129,7 +129,7 @@ public class DataCanvas extends JPanel
         paintCurrent (g);
     }
 
-    private synchronized void paintCurrent (Graphics g)
+    private void paintCurrent (Graphics g)
     {
         Graphics2D g2d = (Graphics2D)g;
 
@@ -146,12 +146,16 @@ public class DataCanvas extends JPanel
         xyScalingfactor = (((float)wd) / 3.0f) /hgt;
         g2d.setStroke(new BasicStroke(0.0f));
 
+        Frame toBeDrawn = null;
+        synchronized (this) {
+            toBeDrawn = currentPicture;
+        }
         
-        if (currentPicture != null) {
+        if (toBeDrawn != null) {
             float scale = fontScale * zoom / 100.0f;
             g2d.scale (scale*xyScalingfactor, scale);
             ArrayList<LinkedList<DataShape> > byDepth = new ArrayList<LinkedList<DataShape>>();
-            for (DataShape shape: currentPicture) {
+            for (DataShape shape: toBeDrawn) {
                 int d = shape.getDepth();
                 while (byDepth.size() <= d) {
                     byDepth.add(new LinkedList<DataShape>());
