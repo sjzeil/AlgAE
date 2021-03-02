@@ -132,19 +132,12 @@ public class GUIClient extends Client {
      */
     private boolean terminated;
 
-    /**
-     * Remembers whether we are running this as an applet or as a main program.
-     */
-    private boolean isAnApplet;
-
 
     /**
      * Create a GUI client. Communications must be set later. 
      */
     public GUIClient() {
         super(null);
-
-        isAnApplet = false;
 
         running = false;
         terminated = false;
@@ -161,8 +154,6 @@ public class GUIClient extends Client {
     public GUIClient(final ServerCommunications serverComm) {
         super(serverComm);
 
-        isAnApplet = false;
-
         running = false;
         terminated = false;
         algorithmItems = new LinkedList<JMenuItem>();
@@ -175,8 +166,7 @@ public class GUIClient extends Client {
      * @see edu.odu.cs.AlgAE.Client.ClientBase#init(boolean)
      */
     @Override
-    public final void init (final boolean isanApplet) {
-        this.isAnApplet = isanApplet;
+    public final void init () {
         setLayout (new BorderLayout());
 
 
@@ -195,27 +185,27 @@ public class GUIClient extends Client {
     public final JMenuBar buildMenu() {
 
         final JMenuBar menuBar = new JMenuBar();
-        if (!isAnApplet) {
-            final JMenu fileMenu = new JMenu ("File", false);
-            menuBar.add(fileMenu);
 
-            final JMenuItem exitItem = new JMenuItem ("Exit");
-            fileMenu.add (exitItem);
-            exitItem.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(final ActionEvent e) {
-                    Component src = ioPane;
-                    while (!(src instanceof JFrame)) {
-                        src = src.getParent();
-                    }
-                    final JFrame mainWindow = (JFrame) src;
-                    mainWindow.dispatchEvent(
+        final JMenu fileMenu = new JMenu ("File", false);
+        menuBar.add(fileMenu);
+
+        final JMenuItem exitItem = new JMenuItem ("Exit");
+        fileMenu.add (exitItem);
+        exitItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                Component src = ioPane;
+                while (!(src instanceof JFrame)) {
+                    src = src.getParent();
+                }
+                final JFrame mainWindow = (JFrame) src;
+                mainWindow.dispatchEvent(
                         new WindowEvent(mainWindow, 
                                 WindowEvent.WINDOW_CLOSING));
-                    mainWindow.setVisible(false);
-                }
-            });
-        }
+                mainWindow.setVisible(false);
+            }
+        });
+
 
         algorithmMenu = new JMenu ("Algorithm", false);
         menuBar.add (algorithmMenu);

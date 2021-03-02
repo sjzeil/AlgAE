@@ -297,7 +297,7 @@ public class Snapshot  implements Iterable<Entity> {
                 out.writeStatement (new Statement(oldInstance, "add", new Object[]{ e } ));
                 if (isGlobal) {
                     out.writeStatement (new Statement(oldInstance, "setGlobal",
-                            new Object[]{ e.getEntityIdentifier(), new Boolean(isGlobal) } ));
+                            new Object[]{ e.getEntityIdentifier(), Boolean.valueOf(isGlobal) } ));
                 }
             }
         }

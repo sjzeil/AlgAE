@@ -51,7 +51,7 @@ public class DemoClientVisually  implements ServerCommunications {
 			JFrame window = new JFrame("Client Test");
 			
 			client = new GUIClient (this);
-			client.init(false);
+			client.init();
 			window.setJMenuBar(client.buildMenu());
 
 			window.getContentPane().add(client);

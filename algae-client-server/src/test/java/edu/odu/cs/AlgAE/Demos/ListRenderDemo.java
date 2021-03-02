@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import edu.odu.cs.AlgAE.Animations.LocalJavaAnimationApplet;
+import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
 import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
@@ -16,7 +16,7 @@ import edu.odu.cs.AlgAE.Server.Utilities.Index;
 import edu.odu.cs.AlgAE.Server.Utilities.LinkedIterator;
 
 
-public class ListRenderDemo extends LocalJavaAnimationApplet {
+public class ListRenderDemo extends LocalJavaAnimation {
 
 	public ListRenderDemo() {
 		super("List Rendering Demo");

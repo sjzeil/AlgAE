@@ -2,15 +2,16 @@ package edu.odu.cs.AlgAE.Demos;
 
 import java.util.ArrayList;
 
-import edu.odu.cs.AlgAE.Animations.LocalJavaAnimationApplet;
+import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
 import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 import edu.odu.cs.AlgAE.Server.Utilities.Index;
 
-public class ArrayDemo extends LocalJavaAnimationApplet {
+public class ArrayDemo extends LocalJavaAnimation {
 
-	public ArrayDemo() {
+
+    public ArrayDemo() {
 		super("Array Demo");
 	}
 

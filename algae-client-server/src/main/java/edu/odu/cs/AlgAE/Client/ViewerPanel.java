@@ -45,20 +45,20 @@ public class ViewerPanel extends JPanel
       ioPane.setPreferredSize(new Dimension(200,300));
       sourcePane.setPreferredSize(new Dimension(600,300));
 
-
       JSplitPane splitPanel = new JSplitPane (JSplitPane.HORIZONTAL_SPLIT,
               sourcePane, ioPane);
       splitPanel.setResizeWeight(0.33);
       splitPanel.setOneTouchExpandable(true);
 
       JSplitPane mainPanel = new JSplitPane (JSplitPane.VERTICAL_SPLIT,
-              dataPane, splitPanel);
+               splitPanel, dataPane);
       mainPanel.setResizeWeight(0.33);
       mainPanel.setOneTouchExpandable(true);
       splitPanel.setMinimumSize(new Dimension(0,0));
       splitPanel.setPreferredSize(new Dimension(800,200));
       dataPane.setMinimumSize(new Dimension(200,100));
-
+      
+      
 
       setLayout(new BorderLayout());
 

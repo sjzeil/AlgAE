@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 import edu.odu.cs.AlgAE.Client.GUIClient;
-import edu.odu.cs.AlgAE.Common.Applets.AnimationApplet;
 import edu.odu.cs.AlgAE.Common.Communications.LocalProcessCommunication;
 
 /**
@@ -119,7 +118,7 @@ public class StandaloneAnimation  {
 
         communications = new LocalProcessCommunication(fromServer, toServer);
         client = new GUIClient(communications);
-        client.init(false);
+        client.init();
         
         window = new JFrame(title);
         window.setJMenuBar(client.buildMenu());

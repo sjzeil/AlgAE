@@ -2,9 +2,9 @@ package edu.odu.cs.AlgAE.Demos;
 
 
 import edu.odu.cs.AlgAE.Server.MenuFunction;
-import edu.odu.cs.AlgAE.Animations.LocalJavaAnimationApplet;
+import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
 
-public class SLLInsertionDriver0 extends LocalJavaAnimationApplet {
+public class SLLInsertionDriver0 extends LocalJavaAnimation {
 
 	public SLLInsertionDriver0() {
 		super("Linked List Insertions");

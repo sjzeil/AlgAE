@@ -1,11 +1,11 @@
 package edu.odu.cs.AlgAE.Demos;
 
 import edu.odu.cs.AlgAE.Server.MenuFunction;
-import edu.odu.cs.AlgAE.Animations.LocalJavaAnimationApplet;
+import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
 
 
 
-public class SortingDriver1 extends LocalJavaAnimationApplet {
+public class SortingDriver1 extends LocalJavaAnimation {
 
 	public SortingDriver1() {
 		super("Sorting Algorithms");

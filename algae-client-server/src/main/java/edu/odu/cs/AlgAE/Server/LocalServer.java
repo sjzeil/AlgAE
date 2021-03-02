@@ -19,7 +19,7 @@ import edu.odu.cs.AlgAE.Animations.ContextAware;
 import edu.odu.cs.AlgAE.Animations.MenuBuilder;
 import edu.odu.cs.AlgAE.Animations.SimulatedPrintStream;
 import edu.odu.cs.AlgAE.Client.Client;
-import edu.odu.cs.AlgAE.Common.Applets.AppletLifetimeSupport;
+import edu.odu.cs.AlgAE.Common.Animation.LifetimeSupport;
 import edu.odu.cs.AlgAE.Common.Communications.AckMessage;
 import edu.odu.cs.AlgAE.Common.Communications.ClientCommunications;
 import edu.odu.cs.AlgAE.Common.Communications.ClientMessage;
@@ -43,7 +43,7 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
  * @author zeil
  *
  */
-public class LocalServer extends Server implements AnimationContext, ContextAware, AppletLifetimeSupport
+public class LocalServer extends Server implements AnimationContext, ContextAware, LifetimeSupport
 {
     private static Logger logger = Logger.getLogger(LocalServer.class.getName());
 
@@ -145,9 +145,9 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
 
 
     @Override
-    public void init(boolean isAnApplet)
+    public void init()
     {
-        client.init(isAnApplet);
+        client.init();
     }
 
     /**

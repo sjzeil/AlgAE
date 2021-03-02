@@ -3,12 +3,11 @@
  */
 package edu.odu.cs.AlgAE.Client.SourceViewer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
-import edu.odu.cs.AlgAE.Client.SourceViewer.SourceFile;
 
 
 /**

@@ -1,12 +1,12 @@
 package edu.odu.cs.AlgAE.Demos;
 
-import edu.odu.cs.AlgAE.Animations.LocalJavaAnimationApplet;
+import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
 import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 import edu.odu.cs.AlgAE.Server.Utilities.SimpleReference;
 
-public class RefDemo extends LocalJavaAnimationApplet {
+public class RefDemo extends LocalJavaAnimation {
 
 	public RefDemo() {
 		super("Reference Demo");
@@ -23,8 +23,8 @@ public class RefDemo extends LocalJavaAnimationApplet {
 	public void testRefs()
 	{
 		ActivationRecord arec = LocalServer.activate(RefDemo.class);
-		Integer one = new Integer(1);
-		Integer two = new Integer(2);
+		Integer one = Integer.valueOf(1);
+		Integer two = Integer.valueOf(2);
 		SimpleReference r1 = new SimpleReference(null, 90, 90);
 		SimpleReference r2 = new SimpleReference(null, 90, 90);
 		arec.var("ref1", r1).var("ref2", r2).breakHere("start");

@@ -77,7 +77,7 @@ public class LoggingClient extends Client {
      * @see edu.odu.cs.AlgAE.Client.Client#init(boolean)
      */
     @Override
-    public void init (boolean isAnApplet)
+    public void init ()
     {
     }
 

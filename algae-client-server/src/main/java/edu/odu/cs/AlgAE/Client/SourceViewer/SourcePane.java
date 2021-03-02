@@ -128,7 +128,7 @@ public class SourcePane extends JPanel implements SourceViewer
               mainPanel.setCaretPosition(start);
               mainPanel.moveCaretPosition(stop-1);
               mainPanel.requestFocus();
-              mainPanel.repaint();
+              getParent().repaint();
           }
       }
       if (msg != null) {

@@ -1,7 +1,7 @@
 package edu.odu.cs.AlgAE.Client;
 
-import edu.odu.cs.AlgAE.Common.Applets.AppletLifetimeSupport;
-import edu.odu.cs.AlgAE.Common.Applets.AppletMenuSupport;
+import edu.odu.cs.AlgAE.Common.Animation.LifetimeSupport;
+import edu.odu.cs.AlgAE.Common.Animation.MenuSupport;
 import edu.odu.cs.AlgAE.Common.Communications.ServerCommunications;
 
 /**
@@ -23,7 +23,7 @@ import edu.odu.cs.AlgAE.Common.Communications.ServerCommunications;
  * @author Zeil
  *
  */
-public abstract class Client extends AppletMenuSupport implements AppletLifetimeSupport {
+public abstract class Client extends MenuSupport implements LifetimeSupport {
 
 
     private ServerCommunications serverAccess;
@@ -45,9 +45,8 @@ public abstract class Client extends AppletMenuSupport implements AppletLifetime
      * For GUI-based clients, this provides a convenient time to build the GUI elements.
      * If a server proxy has already been supplied, the client thread may be started.
      *
-     * @param isAnApplet  true if this client is running as a Java Applet
      */
-    public abstract void init(boolean isAnApplet);
+    public abstract void init();
 
     /**
      * Called to indicate that an animation portrayal is active. May restart a paused Client thread.

@@ -1,7 +1,7 @@
 /**
  *
  */
-package edu.odu.cs.AlgAE.Common.Applets;
+package edu.odu.cs.AlgAE.Common.Animation;
 
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -13,12 +13,12 @@ import javax.swing.JPanel;
  * @author zeil
  *
  */
-public abstract class AppletMenuSupport extends JPanel implements AppletLifetimeSupport {
+public abstract class MenuSupport extends JPanel implements LifetimeSupport {
 
     /**
      * Construct a menu bar.
      *
-     * Should be called after init(isAnApplet), so that the object knows whether to include a
+     * Should be called after init(), so that the object knows whether to include a
      * File->exit menu item.
      *
      * @return a menu bar

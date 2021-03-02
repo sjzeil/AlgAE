@@ -1,10 +1,10 @@
-package edu.odu.cs.AlgAE.Common.Applets;
+package edu.odu.cs.AlgAE.Common.Animation;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.JApplet;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import edu.odu.cs.AlgAE.Animations.DefaultLogSetting;
 import edu.odu.cs.AlgAE.Server.Server;
@@ -12,41 +12,37 @@ import edu.odu.cs.AlgAE.Server.Server;
 
 /**
  *  This is the base class for all AlgAE Java animations.
- *
- *  Animations can be run as applets (the usual method of deployment)
- *  or as main programs (more convenient for testing).  If run as applets, they
- *  can appear with all content inline within an HTML page or can pop up a separate
- *  window.
+ *  
+ *  An animation combines a client (responsible for displaying the
+ *  animation frames) and a server (collecting info about the state
+ *  of the program being animated).
+ *  
  *
  *  @author Steven J Zeil
  **/
-public class AnimationApplet extends JApplet
+public class Animation extends JPanel
 {
-    private AppletMenuSupport client;
+    private MenuSupport client;
     private Server server;
 
     private String theTitle;
     
     
-    private int inlineDisplay;
-    final static int INLINE_DEFAULT = 0;
     private boolean serverStarted = false;
 
 
-    public AnimationApplet (String title, AppletMenuSupport client, Server server)
+    public Animation (String title, MenuSupport client, Server server)
     {
         theTitle = title;
         this.client = client;
         this.server = server;
-        inlineDisplay = INLINE_DEFAULT;
     }
 
-    public AnimationApplet (String title)
+    public Animation (String title)
     {
         theTitle = title;
         this.client = null;
         this.server = null;
-        inlineDisplay = INLINE_DEFAULT;
     }
 
 
@@ -56,39 +52,29 @@ public class AnimationApplet extends JApplet
     public void init ()
     {
         DefaultLogSetting.setupLogging(true, "algae%u.log");
-        inlineDisplay = INLINE_DEFAULT;
-        String inlineParam = getParameter("inline");
-        if (inlineParam != null) {
-            try {
-                inlineDisplay= Integer.parseInt(inlineParam);
-            } catch (NumberFormatException ex) {}
-        }
-        
-        client.init(true);
 
-        if (inlineDisplay > 0) {
-            setJMenuBar(client.buildMenu());
-            getContentPane().add(client);
-        } else {
-            JFrame window = new JFrame(theTitle);
-            window.setJMenuBar(client.buildMenu());
-            window.getContentPane().add(client);
-            
-            window.addWindowListener(new WindowAdapter() {
-                public void windowClosing(WindowEvent e) {
-                    client.stop();
-                    client.destroy();
-                    server.shutdown();
-                    setVisible(false);
-                }
-            });
-            window.pack();
-            window.setVisible(true);
-        }
+        client.init();
+
+        JFrame window = new JFrame(theTitle);
+
+        window.setJMenuBar(client.buildMenu());
+        window.getContentPane().add(client);
+
+        window.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                client.stop();
+                client.destroy();
+                server.shutdown();
+                setVisible(false);
+            }
+        });
+        window.pack();
+        window.setVisible(true);
+
     }
 
     /**
-     * Applet start action - begin running the animation
+     * Start action - begin running the animation
      */
     public void start ()
     {
@@ -101,7 +87,7 @@ public class AnimationApplet extends JApplet
 
 
     /**
-     * Applet stop action - pause the animation
+     * Stop action - pause the animation
      */
     public void stop ()
     {
@@ -109,7 +95,7 @@ public class AnimationApplet extends JApplet
     }
 
     /**
-     * Applet destroy action - shut everything down for good
+     * Destroy action - shut everything down for good
      */
     public void destroy()
     {
@@ -119,16 +105,15 @@ public class AnimationApplet extends JApplet
 
     
     /**
-     * Used to run this as a standalone application from main() rather than as an applet
+     * Used to run this as a standalone application from main()
      */
     public void runAsMain()
     {
         DefaultLogSetting.setupLogging(false, "algae%u.log");
         
-        inlineDisplay = 0;
         JFrame window = new JFrame(theTitle);
         
-        client.init(false);
+        client.init();
         
         
         window.setJMenuBar(client.buildMenu());
@@ -155,7 +140,7 @@ public class AnimationApplet extends JApplet
     /**
      * @return the client
      */
-    public AppletMenuSupport getClient() {
+    public MenuSupport getClient() {
         return client;
     }
 
@@ -174,7 +159,7 @@ public class AnimationApplet extends JApplet
     /**
      * @param client the client to set
      */
-    public void setClient(AppletMenuSupport client) {
+    public void setClient(MenuSupport client) {
         this.client = client;
     }
 

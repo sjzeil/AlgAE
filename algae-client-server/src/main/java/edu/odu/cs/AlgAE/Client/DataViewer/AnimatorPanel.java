@@ -1,6 +1,8 @@
 package edu.odu.cs.AlgAE.Client.DataViewer;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
@@ -130,6 +132,7 @@ public class AnimatorPanel extends JPanel
         controls.setLayout(new BoxLayout(controls, BoxLayout.Y_AXIS));
 
         JPanel controls2 = new JPanel();
+        controls2.setLayout(new BoxLayout(controls2, BoxLayout.LINE_AXIS));
 
 
         byte[] rewindImage = loadImage("rewind.gif");
@@ -243,6 +246,7 @@ public class AnimatorPanel extends JPanel
                 5000.0, // max
                 10.0); // increment
         JSpinner zoomControl = new JSpinner(zoomModel);
+        zoomControl.setMaximumSize(new Dimension(80,40));
         zoomControl.addChangeListener(new ChangeListener() {
 
             @Override
@@ -507,7 +511,7 @@ public class AnimatorPanel extends JPanel
             }
             if (currentFrame != null && currentFrame != saved) {
                 canvas.setPicture (currentFrame);
-                canvas.repaint();
+                getParent().repaint();
                 status.setText(currentFrame.getMessage());
                 if (currentFrame.isKey()) {
                     if (direction == Direction.Stepping || direction == Direction.StepReversed) {

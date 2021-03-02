@@ -3,7 +3,8 @@
  */
 package edu.odu.cs.AlgAE.Common.Snapshot;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.awt.Color;
 import java.beans.XMLDecoder;
@@ -14,12 +15,6 @@ import java.io.ByteArrayOutputStream;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import edu.odu.cs.AlgAE.Common.Snapshot.Connector;
-import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
-import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
-import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
-import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
 
 /**
  * @author zeil

@@ -3,7 +3,7 @@ package edu.odu.cs.AlgAE.Animations;
 import java.io.InputStream;
 
 import edu.odu.cs.AlgAE.Client.GUIClient;
-import edu.odu.cs.AlgAE.Common.Applets.AnimationApplet;
+import edu.odu.cs.AlgAE.Common.Animation.Animation;
 import edu.odu.cs.AlgAE.Common.Communications.LocalJavaCommunication;
 import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
@@ -16,13 +16,10 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
  *  Like all algorithm animations, it combines a client, a server, and a communications
  *  path between them.
  *
- *  It also implements a mechanism by which multiple instances can be running in the same JVM
- *  (common if a web page includes two or more animations as applets) with the animated algorithm code
- *  able to identify its own instance and obtain access to the appropriate animation state.
- *
+ *  
  *  @author Steven J Zeil
  **/
-public abstract class LocalJavaAnimationApplet extends AnimationApplet implements MenuBuilder
+public abstract class LocalJavaAnimation extends Animation implements MenuBuilder
 {
 
     private LocalServer server;
@@ -31,7 +28,7 @@ public abstract class LocalJavaAnimationApplet extends AnimationApplet implement
     
     
 
-    public LocalJavaAnimationApplet (String title)
+    public LocalJavaAnimation (String title)
     {
         super(title);
 

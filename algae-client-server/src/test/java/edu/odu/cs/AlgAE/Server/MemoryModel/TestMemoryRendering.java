@@ -11,7 +11,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.odu.cs.AlgAE.Animations.LocalJavaAnimationApplet;
+import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
 import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
@@ -28,14 +28,15 @@ import edu.odu.cs.AlgAE.Server.Rendering.Renderer;
 public class TestMemoryRendering {
 
      
-    private LocalJavaAnimationApplet applet;
+    private LocalJavaAnimation applet;
     private LocalServer anim;
     
     @Before
     public void setUp() {
-    	applet = new LocalJavaAnimationApplet("dummy") {
+    	applet = new LocalJavaAnimation("dummy") {
 			
-			@Override
+
+            @Override
 			public String about() {
 				return "";
 			}
