@@ -62,6 +62,14 @@ public class DiscreteInteger implements CanBeRendered<DiscreteInteger>, Renderer
         value = v.value;
     }
     
+    public void incr() {
+        ++value;
+    }
+
+    public void decr() {
+        --value;
+    }
+
     @Override
     public Renderer<DiscreteInteger> getRenderer() {
         return this;

@@ -35,7 +35,7 @@ public class ArrayList<T>
         }
     }
     
-    private java.util.ArrayList<IndexEntry> indices;
+    private java.util.ArrayList<java.util.ArrayList<IndexEntry>> indexStack;
     
     private static class Label implements CanBeRendered<Label>, Renderer<Label> {
         
@@ -103,10 +103,13 @@ public class ArrayList<T>
             java.util.LinkedList<Component> components = new java.util.LinkedList<>(); 
             components.add (new Component(inList.data.get(position)));
             
-            for (int i = 0; i < inList.indices.size(); ++i) {
-                if (inList.indices.get(i).index.get() == position) {
-                    String label = inList.labelPrefix + inList.indices.get(i).name + inList.labelSuffix;
-                    components.add(new Component(new Label(label)));
+            if (inList.indexStack.size() > 0) {
+                java.util.ArrayList<IndexEntry> indices = inList.indexStack.get(inList.indexStack.size()-1);
+                for (int i = 0; i < indices.size(); ++i) {
+                    if (indices.get(i).index.get() == position) {
+                        String label = inList.labelPrefix + indices.get(i).name + inList.labelSuffix;
+                        components.add(new Component(new Label(label)));
+                    }
                 }
             }
             return components;
@@ -143,7 +146,7 @@ public class ArrayList<T>
         super();
         data = new java.util.ArrayList<T>();
         cells = new java.util.ArrayList<Cell<T>>();
-        indices = new java.util.ArrayList<IndexEntry>();
+        indexStack = new java.util.ArrayList<>();
         componentsPerRow = 50;
     }
 
@@ -154,7 +157,7 @@ public class ArrayList<T>
         super();
         data = new java.util.ArrayList<T>(initialCapacity);
         cells = new java.util.ArrayList<Cell<T>>(initialCapacity);
-        indices = new java.util.ArrayList<IndexEntry>();
+        indexStack = new java.util.ArrayList<>();
         componentsPerRow = 50;
     }
 
@@ -168,7 +171,7 @@ public class ArrayList<T>
         for (int i = 0; i < data.size(); ++i) {
             cells.add(new Cell<T>(this, i));
         }
-        indices = new java.util.ArrayList<IndexEntry>();
+        indexStack = new java.util.ArrayList<>();
         componentsPerRow = 50;
     }
 
@@ -183,10 +186,17 @@ public class ArrayList<T>
         data.set(index, element);
         return element;
     }
+    public T set (DiscreteInteger index, T element) {
+        data.set(index.get(), element);
+        return element;
+    }
     
     @Override
     public T get(int index) {
         return data.get(index);
+    }
+    public T get(DiscreteInteger index) {
+        return data.get(index.get());
     }
     
     @Override
@@ -207,11 +217,27 @@ public class ArrayList<T>
 
     //////// Indexing /////////////
     
+    public void pushIndices() {
+        indexStack.add(new java.util.ArrayList<>());
+    }
+    
+    public void popIndices() {
+        if (indexStack.size() > 0) {
+            indexStack.remove(indexStack.size()-1);
+        }
+    }
+    
     public void indexedBy(DiscreteInteger intVar, String name) {
+        if (indexStack.size() == 0)
+            pushIndices();
+        java.util.ArrayList<IndexEntry> indices = indexStack.get(indexStack.size()-1);
         indices.add(new IndexEntry(intVar, name));
     }
     
     public void removeIndex(String name) {
+        if (indexStack.size() == 0)
+            pushIndices();
+        java.util.ArrayList<IndexEntry> indices = indexStack.get(indexStack.size()-1);
         for (int i = 0; i < indices.size(); ++i)
         {
             if (indices.get(i).name.equals(name)) {
