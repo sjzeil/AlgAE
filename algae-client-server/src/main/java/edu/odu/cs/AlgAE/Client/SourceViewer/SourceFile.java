@@ -82,43 +82,10 @@ public class SourceFile
 
     public void setContents(String text)
     {
-        contents = "";
-        StringBuffer contentBuf = new StringBuffer();
-        BufferedReader in = new BufferedReader (new StringReader(text));
-        int offSet = 0;
-        int lineCount = 0;
-        lineOffsets.clear();
-        try {
-            while (in.ready()) {
-                lineOffsets.add(offSet);
-                String line = in.readLine();
-                if (line == null)
-                    break;
-                ++lineCount;
-                if (line.contains(SpecialSourceMarker)) {
-                    line = line.substring(line.indexOf(SpecialSourceMarker) + SpecialSourceMarker.length());
-                    if (line.length() == 0) {
-                        continue;
-                    }
-                }
-                line = line.replace("\t", "    ");
-                String lineNum = "" + lineCount;
-                while (lineNum.length() < 3) {
-                    lineNum = "0" + lineNum;
-                }
-                line = lineNum + ": " + line + "\n";
-                contentBuf.append(line);
-                offSet += line.length();
-            }
-            contents = contentBuf.toString();
+        try (BufferedReader in = new BufferedReader (new StringReader(text))) {
+            extractSourceCode(in);
         } catch (IOException ex) {
             ex.printStackTrace();
-        } finally {
-            try {
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -129,44 +96,48 @@ public class SourceFile
         InputStream resourceIn = container.getResourceAsStream(resourceName);
         //System.err.println ("resourceIn: " + resourceIn);
         if (resourceIn != null) {
-            StringBuffer contentBuf = new StringBuffer();
-            BufferedReader in = new BufferedReader (new InputStreamReader(resourceIn));
-            int offSet = 0;
-            int lineCount = 0;
-            lineOffsets.clear();
-            try {
-                while (in.ready()) {
-                    lineOffsets.add(offSet);
-                    String line = in.readLine();
-                    ++lineCount;
-                    if (line.contains(SpecialSourceMarker)) {
-                        line = line.substring(line.indexOf(SpecialSourceMarker) + SpecialSourceMarker.length());
-                        if (line.length() == 0) {
-                            continue;
-                        }
-                    }
-                    line = line.replace("\t", "    ");
-                    String lineNum = "" + lineCount;
-                    while (lineNum.length() < 3) {
-                        lineNum = "0" + lineNum;
-                    }
-                    line = lineNum + ": " + line + "\n";
-                    contentBuf.append(line);
-                    offSet += line.length();
-                }
-                contents = contentBuf.toString();
+            try (BufferedReader in = new BufferedReader (new InputStreamReader(resourceIn));) {
+                
+            extractSourceCode(in);
             } catch (IOException ex) {
                 ex.printStackTrace();
-            } finally {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
             }
         } else {
             contents = "Could not load " + fileName;
         }
+    }
+
+
+    private void extractSourceCode(BufferedReader in) throws IOException {
+        StringBuffer contentBuf = new StringBuffer();
+        int offSet = 0;
+        int lineCount = 0;
+        lineOffsets.clear();
+            while (in.ready()) {
+                lineOffsets.add(offSet);
+                String line = in.readLine();
+                if (line == null)
+                    break;
+                if (line.endsWith(SpecialSourceMarker)) {
+                    continue;
+                }
+                if (line.contains(SpecialSourceMarker)) {
+                    line = line.substring(line.indexOf(SpecialSourceMarker) + SpecialSourceMarker.length());
+                    if (line.trim().length() == 0) {
+                        continue;
+                    }
+                }
+                line = line.replace("\t", "    ");
+                ++lineCount;
+                String lineNum = "" + lineCount;
+                while (lineNum.length() < 3) {
+                    lineNum = "0" + lineNum;
+                }
+                line = lineNum + ": " + line + "\n";
+                contentBuf.append(line);
+                offSet += line.length();
+            }
+            contents = contentBuf.toString();
     }
 
 

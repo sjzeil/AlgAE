@@ -55,6 +55,36 @@ public class TestSourceFile {
 		assertTrue (sourceCode.contains("Show this instead"));
 	}
 
+	@Test
+    public void testSetContents2() {
+        SourceFile file = new SourceFile("someOtherFile.java");
+        String sourceCode = file.getContents();
+        System.out.print (sourceCode);
+        assertTrue(sourceCode.contains("**"));
+        
+        file.setContents("abc\nhidden//!\r\ndef\n");
+        
+        sourceCode = file.getContents();
+        assertTrue (sourceCode.contains("abc"));
+        assertFalse (sourceCode.contains("hidden"));
+        assertTrue (sourceCode.contains("def"));
+        assertTrue (sourceCode.contains("002: def"));
+    }
 	
+    @Test
+    public void testSetContents3() {
+        SourceFile file = new SourceFile("someOtherFile.java");
+        String sourceCode = file.getContents();
+        System.out.print (sourceCode);
+        assertTrue(sourceCode.contains("**"));
+        
+        file.setContents("abc\nhidden//! \t\r\ndef\n");
+        
+        sourceCode = file.getContents();
+        assertTrue (sourceCode.contains("abc"));
+        assertFalse (sourceCode.contains("hidden"));
+        assertTrue (sourceCode.contains("def"));
+        assertTrue (sourceCode.contains("002: def"));
+    }
 }
 // last line

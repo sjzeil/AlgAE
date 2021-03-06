@@ -203,6 +203,7 @@ public class ArrayList<T>
 
     public void trimToSize() {
     }
+    
 
     //////// Indexing /////////////
     
