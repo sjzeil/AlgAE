@@ -69,6 +69,12 @@ public class DiscreteInteger implements CanBeRendered<DiscreteInteger>, Renderer
     public void decr() {
         --value;
     }
+    
+    public void swap (DiscreteInteger other) {
+        int temp = value;
+        value = other.value;
+        other.value = temp;
+    }
 
     @Override
     public Renderer<DiscreteInteger> getRenderer() {
