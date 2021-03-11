@@ -21,6 +21,8 @@ import java.util.ArrayList;
 public class SourceFile
 {
     private static final String SpecialSourceMarker = "//!";
+    private static final String SpecialOpenCommentMarker = "/*!";
+    private static final String SpecialCloseCommentMarker = "!*/";
     private String fileName;
     private String contents;
     private ArrayList<Integer> lineOffsets;
@@ -113,32 +115,52 @@ public class SourceFile
         int offSet = 0;
         int lineCount = 0;
         lineOffsets.clear();
-            while (in.ready()) {
-                lineOffsets.add(offSet);
-                String line = in.readLine();
-                if (line == null)
-                    break;
-                if (line.endsWith(SpecialSourceMarker)) {
+        boolean inBlockComment = false;
+        while (in.ready()) {
+            lineOffsets.add(offSet);
+            String line = in.readLine();
+            if (line == null)
+                break;
+            if (inBlockComment) {
+                if (line.contains(SpecialCloseCommentMarker)) {
+                    line = line.substring(line.indexOf(SpecialCloseCommentMarker)+SpecialCloseCommentMarker.length());
+                    inBlockComment = false;
+                } else {
                     continue;
                 }
-                if (line.contains(SpecialSourceMarker)) {
-                    line = line.substring(line.indexOf(SpecialSourceMarker) + SpecialSourceMarker.length());
-                    if (line.trim().length() == 0) {
-                        continue;
-                    }
-                }
-                line = line.replace("\t", "    ");
-                ++lineCount;
-                String lineNum = "" + lineCount;
-                while (lineNum.length() < 3) {
-                    lineNum = "0" + lineNum;
-                }
-                line = lineNum + ": " + line + "\n";
-                contentBuf.append(line);
-                offSet += line.length();
             }
-            contents = contentBuf.toString();
+            while ((!inBlockComment) && line.contains(SpecialOpenCommentMarker)) {
+                if (line.contains(SpecialCloseCommentMarker)) {
+                    line = line.substring(0, line.indexOf(SpecialOpenCommentMarker))
+                            + line.substring(line.indexOf(SpecialCloseCommentMarker)+SpecialCloseCommentMarker.length());
+                } else {
+                    line = line.substring(0, line.indexOf(SpecialOpenCommentMarker));
+                    inBlockComment = true;
+                }
+            }
+            if (line.endsWith(SpecialSourceMarker)) {
+                continue;
+            }
+            if (line.contains(SpecialSourceMarker)) {
+                line = line.substring(line.indexOf(SpecialSourceMarker) + SpecialSourceMarker.length());
+                if (line.trim().length() == 0) {
+                    continue;
+                }
+            }
+            line = line.replace("\t", "    ");
+            ++lineCount;
+            String lineNum = "" + lineCount;
+            while (lineNum.length() < 3) {
+                lineNum = "0" + lineNum;
+            }
+            line = lineNum + ": " + line + "\n";
+            contentBuf.append(line);
+            offSet += line.length();
+        }
+        contents = contentBuf.toString();
     }
+
+
 
 
 
