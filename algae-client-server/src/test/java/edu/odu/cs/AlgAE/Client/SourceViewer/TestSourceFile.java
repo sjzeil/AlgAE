@@ -86,5 +86,20 @@ public class TestSourceFile {
         assertTrue (sourceCode.contains("def"));
         assertTrue (sourceCode.contains("002: def"));
     }
+    
+    
+    @Test
+    public void testBlockComment() {
+        SourceFile file = new SourceFile("someOtherFile.java");
+        file.setContents("abc /*! def\n ghi !*/jkl\n");
+        
+        String sourceCode = file.getContents();
+        assertTrue (sourceCode.contains("abc"));
+        assertFalse (sourceCode.contains("def"));
+        assertFalse (sourceCode.contains("ghi"));
+        assertTrue (sourceCode.contains("jkl"));
+    }
+
+    
 }
 // last line

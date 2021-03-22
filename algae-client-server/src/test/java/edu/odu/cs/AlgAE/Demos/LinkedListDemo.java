@@ -2,23 +2,26 @@ package edu.odu.cs.AlgAE.Demos;
 
 import static edu.odu.cs.AlgAE.Server.LocalServer.algae;
 
+import java.util.ListIterator;
+
 import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
 import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 import edu.odu.cs.AlgAE.Server.Utilities.ArrayList;
 import edu.odu.cs.AlgAE.Server.Utilities.DiscreteInteger;
+import edu.odu.cs.AlgAE.Server.Utilities.LinkedList;
 
 
-public class ArrayListDemo extends LocalJavaAnimation {
+public class LinkedListDemo extends LocalJavaAnimation {
 
-	public ArrayListDemo() {
-		super("ArrayList  Demo");
+	public LinkedListDemo() {
+		super("LinkedList  Demo");
 	}
 
 	@Override
 	public String about() {
-		return "ArrayList demo.";
+		return "LinkedList demo.";
 	}
 
 	private int c = 0;
@@ -26,8 +29,8 @@ public class ArrayListDemo extends LocalJavaAnimation {
 	
 
 
-	private ArrayList<String> list = new ArrayList<String>();
-	private ArrayList<Integer> list2 = new ArrayList<Integer>();
+	private LinkedList<String> list = new LinkedList<String>();
+	private LinkedList<Integer> list2 = new LinkedList<Integer>();
 	
 
 
@@ -41,7 +44,7 @@ public class ArrayListDemo extends LocalJavaAnimation {
 			public void selected() {
 				globalVar("list", list);
 				globalVar("list2", list2);
-				list2.renderHorizontally(false);
+				list2.showBackLinks(false);
 			}
 			
 		});
@@ -62,21 +65,16 @@ public class ArrayListDemo extends LocalJavaAnimation {
 				ActivationRecord arec = LocalServer.activate(getClass());
 				arec.breakHere("Prompt for input");
 				String value = algae().promptForInput("Search for ...", "[0-9]+");
-				DiscreteInteger i = new DiscreteInteger(0);
-				DiscreteInteger j = new DiscreteInteger(0);
-				list.indexedBy(i, "i");
-                list.indexedBy(j, "j");
-                list2.indexedBy(j, "j");
-				arec.var("i", i).var("j",j).var("value", value).breakHere("About to search");
+				ListIterator<String> it = list.listIterator();
+				arec.var("it", it).var("value", value).breakHere("About to search");
 				boolean found = false;
 				arec.var("found", found);
-				while (i.get() < list.size() && !found) {
+				while (it.hasNext() && !found) {
 					arec.breakHere("Iterator points to current element");
 					arec.pushScope();
-					String s = list.get(i.get());
+					String s = it.next();
 					found = value.equals(s);
 					arec.var("s", s).var("found", found).breakHere("Examined s");
-					i.set(i.get()+1);
 					arec.popScope();
 				}
 				if (found) {
@@ -86,9 +84,6 @@ public class ArrayListDemo extends LocalJavaAnimation {
 					arec.breakHere("Could not find it.");
 					algae().out.println ("Could not find it.");
 				}
-				list.removeIndex("i");
-                list.removeIndex("j");
-                list2.removeIndex("j");
 			}
 		});
 
@@ -229,7 +224,7 @@ public class ArrayListDemo extends LocalJavaAnimation {
 	
 	
 	public static void main (String[] args) {
-		ArrayListDemo demo = new ArrayListDemo();
+		LinkedListDemo demo = new LinkedListDemo();
 		demo.runAsMain();
 	}
 

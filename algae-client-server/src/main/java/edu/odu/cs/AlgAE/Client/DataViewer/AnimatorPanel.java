@@ -523,6 +523,7 @@ public class AnimatorPanel extends JPanel
                         directionChange (Direction.Paused);
                     }
                 }
+                getParent().repaint();
             }
         }
         } catch (NoSuchElementException e) {
