@@ -357,7 +357,7 @@ public class LinkedList<T>
     public T remove (int index) {
         LLIterator it = new LLIterator(this, index);
         it.next();
-        T removed = it.current.data;
+        T removed = (it.current != null) ? it.current.data : last.data;
         it.remove();
         return removed;
     }
