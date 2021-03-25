@@ -8,8 +8,6 @@ import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
 import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
-import edu.odu.cs.AlgAE.Server.Utilities.ArrayList;
-import edu.odu.cs.AlgAE.Server.Utilities.DiscreteInteger;
 import edu.odu.cs.AlgAE.Server.Utilities.LinkedList;
 
 
@@ -45,6 +43,7 @@ public class LinkedListDemo extends LocalJavaAnimation {
 				globalVar("list", list);
 				globalVar("list2", list2);
 				list2.showBackLinks(false);
+				list2.showFirstLast(false);
 			}
 			
 		});

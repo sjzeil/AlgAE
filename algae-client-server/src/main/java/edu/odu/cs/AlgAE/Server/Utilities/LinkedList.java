@@ -30,6 +30,7 @@ public class LinkedList<T>
     private RenderedReference<LLNode> firstref; 
     private RenderedReference<LLNode> lastref; 
     private boolean showingBackLinks;
+    private boolean showingFirstLast;
     
     private class LLNode implements CanBeRendered<LLNode>, Renderer<LLNode> {
 
@@ -95,21 +96,12 @@ public class LinkedList<T>
     private  class LLIterator implements java.util.ListIterator<T>,
             CanBeRendered<LLIterator>, Renderer<LLIterator> {
         
-        LinkedList<T> theList;
         LLNode current;
         
         RenderedReference<LinkedList<T>> theListref;
         RenderedReference<LLNode> currentref;
 
-        public LLIterator(LinkedList<T> inList) {
-            theList = inList;
-            current = null;
-            theListref = new RenderedReference<LinkedList<T>>(theList);
-            currentref = new RenderedReference<LinkedList<T>.LLNode>(current);
-        }
-
         public LLIterator(LinkedList<T> inList, int index) {
-            theList = inList;
             if (index >= inList.theSize-1) {
                 if (index == inList.theSize) {
                     current = null;
@@ -119,15 +111,20 @@ public class LinkedList<T>
                     throw new IndexOutOfBoundsException(index);
                 }
             } else {
-                current = theList.first;
+                current = first;
                 try {
-                    for (int i = 1; i < index; ++i)
-                        current = current.next;
+                    for (int i = 0; i < index; ++i)
+                    {
+                        if (current != last)
+                            current = current.next;
+                        else
+                            current = null;
+                    }
                 } catch (NullPointerException ex) {
                     throw new IndexOutOfBoundsException(index);
                 }
             }
-            theListref = new RenderedReference<LinkedList<T>>(theList);
+            theListref = new RenderedReference<LinkedList<T>>(inList);
             currentref = new RenderedReference<LinkedList<T>.LLNode>(current);
         }
 
@@ -141,23 +138,29 @@ public class LinkedList<T>
             if (current == null)
                 throw new NoSuchElementException();
             T saved = current.data;
-            if (current != null)
+            if (current != last)
                 current = current.next;
+            else
+                current = null;
             return saved;
         }
 
         @Override
         public boolean hasPrevious() {
-            return (current == null && theList.last != null) 
-                    || (current != null && current.prev != null);  
+            return (current == null && last != null) 
+                    || (current != null && current != first);  
         }
 
         @Override
         public T previous() {
-            if (current != null)
-                current = current.prev;
+            if (current != null) {
+                if (current != first) 
+                    current = current.prev;
+                else
+                    current = null;
+            }
             else
-                current = theList.last;
+                current = last;
             if (current == null)
                 throw new NoSuchElementException();
             return current.data;
@@ -166,10 +169,10 @@ public class LinkedList<T>
         @Override
         public int nextIndex() {
             if (current == null)
-                return theList.theSize;
+                return theSize;
             else {
                 int i = 0;
-                LLNode p = theList.first;
+                LLNode p = first;
                 while (p != current) {
                     p = p.next;
                     ++i;
@@ -181,10 +184,10 @@ public class LinkedList<T>
         @Override
         public int previousIndex() {
             if (current == null)
-                return theList.theSize-1;
+                return theSize-1;
             else {
                 int i = 0;
-                LLNode p = theList.first;
+                LLNode p = first;
                 while (p != current) {
                     p = p.next;
                     ++i;
@@ -197,48 +200,61 @@ public class LinkedList<T>
         public void remove() {
             if (current == null)
                 return;
-            if (current.prev == null && current.next == null)
-                theList.first = theList.last = null;
-            else if (current.prev == null) {
-                theList.first = current.next;
-                current.next.prev = null;
-                current.dead = true;
-            } else if (current.next == null) {
-                theList.last = current.prev;
-                current.prev.next = null;
-                current.dead = true;
-            } else {
-                current.next.prev = current.prev;
-                current.prev.next = current.next;
-                current.dead = true;
+            if (current.prev == null && current.next == null) {
+                first = last = null;
+                current = null;
             }
-            --theList.theSize;
+            else {
+                current = current.prev;
+                if (current.prev == null) {
+                    first = current.next;
+                    current.next.prev = null;
+                    current.dead = true;
+                } else if (current.next == null) {
+                    last = current.prev;
+                    current.prev.next = null;
+                    current.dead = true;
+                } else {
+                    current.next.prev = current.prev;
+                    current.prev.next = current.next;
+                    current.dead = true;
+                }
+                current = current.next;
+            }
+            --theSize;
         }
 
         @Override
         public void set(T e) {
-           if (current != null)
-               current.data = e;
+           LLNode prev = null;
+           if (current != null) {
+        	   prev = current.prev;
+           } else {
+        	   prev = last;
+           }
+           if (prev == null)
+        	   throw new IllegalStateException();
+           prev.data = e;
         }
 
         @Override
         public void add(T e) {
             if (current == null) {
-                if (theList.first == null) {
-                    theList.first = theList.last = new LLNode(e, null, null);
+                if (first == null) {
+                    first = last = new LLNode(e, null, null);
                 } else {
-                    theList.last.next = new LLNode(e, theList.last, null);
-                    theList.last = theList.last.next; 
+                    last.next = new LLNode(e, last, null);
+                    last = last.next; 
                 }
-            } else if (current == theList.first) {
-                theList.first = new LLNode(e, null, current);
-                current.prev = theList.first;
+            } else if (current == first) {
+                first = new LLNode(e, null, current);
+                current.prev = first;
             } else {
                 LLNode newNode = new LLNode(e, current.prev, current);
                 current.prev.next = newNode;
                 current.prev = newNode;
             }
-            ++theList.theSize;
+            ++theSize;
         }
 
         
@@ -291,9 +307,10 @@ public class LinkedList<T>
         super();
         first = last = null; 
         theSize = 0;
-        firstref = new RenderedReference<LLNode>(first);
-        lastref = new RenderedReference<LLNode>(last);
+        firstref = new RenderedReference<LLNode>(first, 80, 100);
+        lastref = new RenderedReference<LLNode>(last, 80, 100);
         showingBackLinks = true;
+        showingFirstLast = true;
     }
 
 
@@ -310,6 +327,7 @@ public class LinkedList<T>
         firstref = new RenderedReference<>(first);
         lastref = new RenderedReference<>(last);
         showingBackLinks = true;
+        showingFirstLast = true;
     }
 
     @Override
@@ -349,9 +367,6 @@ public class LinkedList<T>
         return theSize;
     }
 
-    public void trimToSize() {
-    }
-    
     @Override
     public ListIterator<T> listIterator(int index) {
         return new LLIterator(this, index);
@@ -359,10 +374,14 @@ public class LinkedList<T>
 
 
     @Override
-    public String toString() {
-    	return "List of size " + theSize;
+    public List<T> subList(int fromIndex, int toIndex)
+    {
+        LinkedList<T> result = new LinkedList<T>();
+        result.first = new LLIterator(this, fromIndex).current;
+        result.last = new LLIterator(this, toIndex).current;
+        result.theSize = toIndex - fromIndex;
+        return result;
     }
-
     
     //////// Rendering ////////////
     @Override
@@ -378,16 +397,22 @@ public class LinkedList<T>
     @Override
     public List<Component> getComponents(LinkedList<T> obj) {
         java.util.LinkedList<Component> components = new java.util.LinkedList<>();
-        firstref.set(first);
-        lastref.set(last);
-        components.add(new Component(firstref, "first"));
-        components.add(new Component(lastref, "last"));
+        if (showingFirstLast) {
+            firstref.set(first);
+            lastref.set(last);
+            components.add(new Component(firstref, "first"));
+            components.add(new Component(lastref, "last"));
+        }
         return components;
     }
 
     @Override
     public List<Connection> getConnections(LinkedList<T> obj) {
-        return new java.util.LinkedList<Connection>();
+        java.util.LinkedList<Connection> connections = new java.util.LinkedList<Connection>();
+        if (!showingFirstLast) {
+            connections.add(new Connection(first, 80, 100));
+        }
+        return connections;
     }
 
     @Override
@@ -405,6 +430,9 @@ public class LinkedList<T>
         showingBackLinks = b;
     }
 
+    public void showFirstLast(boolean b) {
+        showingFirstLast = b;
+    }
 
 
 }

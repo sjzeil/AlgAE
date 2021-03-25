@@ -1,4 +1,5 @@
-/.project
+**/.project
+**/.classpath
 /ant.log
 /build.xml~
 /bin/

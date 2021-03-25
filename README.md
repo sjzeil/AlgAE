@@ -26,4 +26,27 @@ display these animations in a classroom setting (relatively few
 objects on the screen, but drawn large enough to be visible in a large
 classroom) or embed them into a web page.
 
+## Library Info
+
+Current version: **4.2**
+
+To import the client-server library:
+
+```
+repositories {
+    ...
+    ivy { // Use my own CS dept repo
+        url 'https://www.cs.odu.edu/~zeil/ivyrepo'
+    }
+    ...         
+}
+
+
+dependencies {
+    ...
+    implementation 'edu.odu.cs.algae:algae-client-server:4.2'
+    ...
+}
+```
+
 

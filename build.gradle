@@ -1,5 +1,5 @@
 subprojects {
-    version = "4.2-SNAPSHOT"
+    version = "4.2"
 
     repositories {
         jcenter()

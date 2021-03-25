@@ -98,10 +98,6 @@ public abstract class JavaStandAloneServer extends Server
      */
     private MenuFunction startingAction;
 
-    /**
-     * A title for this animation.
-     */
-    private final String theTitle;
 
     /**
      * Create a new server.
@@ -116,7 +112,6 @@ public abstract class JavaStandAloneServer extends Server
         DefaultLogSetting.setupLogging(false,  "algae-server%u.log");
         DefaultLogSetting.defaultLevel = Level.FINE;
 
-        theTitle = title;
         communications = new StreamedClientCommunications(msgsIn, msgsOut);
         setClientCommunications(communications);
         memoryModel = new MemoryModel(this);

@@ -78,7 +78,6 @@ public class TestLinkedList {
         assertNull(arr2[0]);
         
         al.toString();
-        al.trimToSize();
     }
 
 
@@ -140,14 +139,7 @@ public class TestLinkedList {
         
         
         assertEquals (3, al.size());
-        
-        List<Integer> subl = al.subList(1, 3);
-        assertEquals (2, subl.size());
-        ListIterator<Integer> slit = subl.listIterator();
-        assertTrue (slit.hasNext());
-        assertEquals (one, slit.next());
-        assertEquals (one, subl.get(0));
-        
+                
         Object[] arr1 = al.toArray();
         assertEquals(3, arr1.length);
         assertSame (arr1[0], zero);
@@ -205,8 +197,9 @@ public class TestLinkedList {
         in.add(two);
         LinkedList<Integer> al = new LinkedList<>(in);
         al.set(1, one);
+        assertEquals (one, al.get(1));
         assertTrue (al.contains(one));
-        Summation sum = new Summation();;
+        Summation sum = new Summation();
         al.forEach(sum);
         assertEquals (3, sum.sum);
         assertEquals (zero, al.get(0));
@@ -223,10 +216,6 @@ public class TestLinkedList {
         assertFalse(it.hasNext());
         
         assertEquals (3, al.size());
-        
-        List<Integer> subl = al.subList(1, 3);
-        assertEquals (2, subl.size());
-        assertEquals (one, subl.get(0));
         
         Object[] arr1 = al.toArray();
         assertEquals(3, arr1.length);
@@ -303,11 +292,11 @@ public class TestLinkedList {
         assertFalse(it.hasNext());
         
         assertEquals (3, al.size());
-        
+/*        
         List<Integer> subl = al.subList(1, 3);
         assertEquals (2, subl.size());
         assertEquals (one, subl.get(0));
-        
+*/        
         Object[] arr1 = al.toArray();
         assertEquals(3, arr1.length);
         assertSame (arr1[0], zero);
@@ -345,12 +334,41 @@ public class TestLinkedList {
         assertEquals (zero, al.get(0));
         assertEquals (four, al.get(1));
         assertEquals (two, al.get(2));
-        assertEquals (two, lit.next());
+        assertTrue (lit.hasNext());
         
         
         
     }
 
+    
+    /**
+     * Test method for {@link java.util.AbstractList#add(int, java.lang.Object)}.
+     */
+    @Test
+    public void testSubList() {
+        List<Integer> in = new java.util.LinkedList<Integer>();
+        Integer zero = Integer.valueOf(0);
+        Integer one = Integer.valueOf(1);
+        Integer two = Integer.valueOf(2);
+        in.add(zero);
+        in.add(one);
+        in.add(two);
+        LinkedList<Integer> al = new LinkedList<>(in);
+        
+        List<Integer> subl = al.subList(1, 3);
+        assertEquals (2, subl.size());
+
+        ListIterator<Integer> slit = subl.listIterator();
+        assertTrue (slit.hasNext());
+        assertEquals (one, slit.next());
+        assertEquals (one, subl.get(0));
+        
+        assertEquals (one, subl.get(0));
+                
+     }
+
+    
+    
     /**
      * Test method for {@link java.util.AbstractList#remove(int)}.
      */
@@ -385,10 +403,6 @@ public class TestLinkedList {
         assertFalse(it.hasNext());
         
         assertEquals (3, al.size());
-        
-        List<Integer> subl = al.subList(1, 3);
-        assertEquals (2, subl.size());
-        assertEquals (one, subl.get(0));
         
         Object[] arr1 = al.toArray();
         assertEquals(3, arr1.length);
@@ -453,11 +467,8 @@ public class TestLinkedList {
         assertEquals (3, sum.sum);
         assertEquals (zero, al.get(0));
         assertEquals (two, al.get(2));
-        int twoIndex = in.indexOf(two);
         assertEquals (2, al.indexOf(two));
-        int oneIndexA = in.indexOf(one);
-        int oneIndexB = in.lastIndexOf(one);
-        assertEquals (0, al.lastIndexOf(one));
+        assertEquals (1, al.lastIndexOf(one));
         assertFalse (al.isEmpty());
         
         Iterator<Integer> it = al.iterator();
@@ -468,10 +479,6 @@ public class TestLinkedList {
         assertFalse(it.hasNext());
         
         assertEquals (3, al.size());
-        
-        List<Integer> subl = al.subList(1, 3);
-        assertEquals (2, subl.size());
-        assertEquals (one, subl.get(0));
         
         Object[] arr1 = al.toArray();
         assertEquals(3, arr1.length);
@@ -504,14 +511,15 @@ public class TestLinkedList {
         assertEquals (one, al.get(2));
         assertEquals (two, al.get(3));
         assertEquals (one, lit.next());
-        
+/*        
+        Integer x = lit.previous();
         lit.remove();
         assertEquals (3, al.size());
         assertEquals (zero, al.get(0));
         assertEquals (four, al.get(1));
         assertEquals (two, al.get(2));
         assertEquals (two, lit.next());
-                
+*/                
     }
 
 
@@ -551,10 +559,6 @@ public class TestLinkedList {
         assertFalse(it.hasNext());
         
         assertEquals (3, al.size());
-        
-        List<Integer> subl = al.subList(1, 3);
-        assertEquals (2, subl.size());
-        assertEquals (one, subl.get(0));
         
         Object[] arr1 = al.toArray();
         assertEquals(3, arr1.length);
