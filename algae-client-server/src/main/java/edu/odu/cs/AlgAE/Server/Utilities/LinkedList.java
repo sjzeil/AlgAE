@@ -198,9 +198,13 @@ public class LinkedList<T>
 
         @Override
         public void remove() {
-            if (current == null)
-                return;
-            if (current.prev == null && current.next == null) {
+            if (current == null) {
+              last = last.prev;
+              if (last == null)
+                  first = null;
+              else
+                  last.next = null;
+            } else if (current.prev == null && current.next == null) {
                 first = last = null;
                 current = null;
             }

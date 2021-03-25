@@ -603,4 +603,41 @@ public class TestLinkedList {
         
    }
 
+    
+    
+    @Test
+    public void testRemoveInt2() {
+        List<Integer> in = new java.util.LinkedList<Integer>();
+        Integer zero = Integer.valueOf(0);
+        Integer one = Integer.valueOf(1);
+        Integer two = Integer.valueOf(2);
+        Integer five = Integer.valueOf(5);
+        in.add(zero);
+        in.add(one);
+        in.add(five);
+        in.add(two);
+        LinkedList<Integer> al = new LinkedList<>(in);
+        
+        al.remove(2);
+        assertEquals (zero, al.get(0));
+        assertEquals (one, al.get(1));
+        assertEquals (two, al.get(2));
+        assertEquals (3, al.size());
+        
+        al.remove(2);
+        assertEquals (zero, al.get(0));
+        assertEquals (one, al.get(1));
+        assertEquals (2, al.size());
+        
+        al.remove(0);
+        assertEquals (one, al.get(0));
+        assertEquals (1, al.size());
+        
+        al.remove(0);
+        assertEquals (0, al.size());
+
+   }
+
+    
+    
 }
