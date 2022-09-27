@@ -10,7 +10,7 @@ java {
 
 
 dependencies {
-    implementation ':algae-client-server'
+    implementation project(':algae-client-server')
 }
 
 
