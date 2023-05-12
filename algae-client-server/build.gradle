@@ -78,7 +78,7 @@ publishing {
     repositories {
         ivy {
             name 'ivyRepo'
-            url 'sftp://atria.cs.odu.edu:22/home/zeil/secure_html/ivyrepo'
+            url 'sftp://linux.cs.odu.edu:22/home/zeil/secure_html/ivyrepo'
             // Readable via https://www.cs.odu.edu/~zeil/ivyrepo
             credentials {
                 username project.ivyRepoUser
