@@ -1,8 +1,6 @@
 plugins {
     id 'java'
-	id 'project-report'
-	id 'pmd'
-	id 'jacoco'
+	id 'application'
 	id 'ivy-publish'
 }
 
@@ -11,41 +9,33 @@ java {
 	targetCompatibility = JavaVersion.toVersion(11)
 }
 
+version = '1.2'
+
+repositories {
+    jcenter()
+	//mavenCentral()
+    ivy { // Use my own CS dept repo
+        url 'https://www.cs.odu.edu/~zeil/ivyrepo'
+    }         
+}
+
 
 dependencies {
-    implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'javax.help:javahelp:2.0.05'
-	testImplementation 'junit:junit:4.13.2'
+    //implementation 'edu.odu.cs.algae:algae-client-server:4.2'
+    implementation project(':algae-client-server')
 }
 
 
-test {
-	ignoreFailures = true
-    useJUnitPlatform()
-	testLogging {
-		events "passed", "skipped", "failed"
-	}
-	
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'CS361/Array_Operations',
+           'Implementation-Version': version,
+            'Main-Class': 'edu.odu.cs.cs361.animations.CS361ArraysAnimation'
+    }
+    from { configurations.runtimeClasspath.collect {
+         it.isDirectory() ? it : zipTree(it) } }
+	from sourceSets.main.java
 }
-
-
-
-// Reporting
-
-
-pmd {
-    ignoreFailures = true
-    consoleOutput = false
-}
-
-pmdTest.enabled = false
-check.dependsOn htmlDependencyReport
-
-task reports (dependsOn: ['htmlDependencyReport', 'javadoc', 'check']) {
-    description 'Generate all reports for this project'
-}
-
-javadoc.failOnError=false
 
 
 // Publishing
@@ -65,8 +55,8 @@ if(project.hasProperty("ivyRepoPass")){
 publishing {
     publications {
         ivyJava(IvyPublication) {
-            organisation 'edu.odu.cs.algae'
-            module project.name
+            organisation 'edu.odu.cs.cs361'
+            module 'cs361-' + project.name
             revision project.version
             descriptor.status = 'integration'   // milestone, release
             descriptor.branch = 'v4'
@@ -78,7 +68,7 @@ publishing {
     repositories {
         ivy {
             name 'ivyRepo'
-            url 'sftp://atria.cs.odu.edu:22/home/zeil/secure_html/ivyrepo'
+            url 'sftp://linux.cs.odu.edu:22/home/zeil/secure_html/ivyrepo'
             // Readable via https://www.cs.odu.edu/~zeil/ivyrepo
             credentials {
                 username project.ivyRepoUser

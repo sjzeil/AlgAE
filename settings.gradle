@@ -13,5 +13,6 @@ include 'algae-client-server'
 //include 'algae-referenceManual'
 //include 'demos:FordTopp-BST'
 include 'demos:ReferenceManualJava'
+include 'demos:arrayOps'
 
 

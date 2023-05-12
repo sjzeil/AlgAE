@@ -1,6 +1,5 @@
 package edu.odu.cs.AlgAE.Common.Snapshot;
 
-import java.awt.Color;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -223,6 +222,13 @@ public class Entity implements Serializable {
      */
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    /**
+     * @param color the color to set
+     */
+    public void setColor(java.awt.Color color) {
+        this.color = new Color(color);
     }
 
     /**

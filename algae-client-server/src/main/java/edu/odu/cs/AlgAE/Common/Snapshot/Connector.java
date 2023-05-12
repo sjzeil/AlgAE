@@ -1,7 +1,5 @@
 package edu.odu.cs.AlgAE.Common.Snapshot;
 
-import java.awt.Color;
-
 public class Connector {
     private EntityIdentifier source;
     private EntityIdentifier destination;
@@ -211,6 +209,13 @@ public class Connector {
      */
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    /**
+     * @param color the color to set
+     */
+    public void setColor(java.awt.Color color) {
+        this.color = new Color(color);
     }
 
     /**

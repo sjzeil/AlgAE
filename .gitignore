@@ -1,11 +1,10 @@
 **/.project
 **/.classpath
-/ant.log
-/build.xml~
-/bin/
-/algae-server0.log
-/.gradle/
+**/.gradle/
 **/.settings/
 **/*.log
 **/bin/
 **/build/
+**/ivy
+**/.vscode/
+**/*.log

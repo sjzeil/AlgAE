@@ -1,6 +1,5 @@
 package edu.odu.cs.AlgAE.Client;
 
-import edu.odu.cs.AlgAE.Common.Animation.LifetimeSupport;
 import edu.odu.cs.AlgAE.Common.Animation.MenuSupport;
 import edu.odu.cs.AlgAE.Common.Communications.ServerCommunications;
 
@@ -23,7 +22,7 @@ import edu.odu.cs.AlgAE.Common.Communications.ServerCommunications;
  * @author Zeil
  *
  */
-public abstract class Client extends MenuSupport implements LifetimeSupport {
+public abstract class Client extends MenuSupport  {
 
 
     private ServerCommunications serverAccess;

@@ -852,7 +852,7 @@ public class Layout  {
         float yy = (float)p.getY();
         Dimension2DDouble size = loc.getSize();
         int depth = loc.getHeight();
-        Color color = e.getColor();
+        Color color = e.getColor().toAWTColor();
         String description = e.getDescription();
         
         // background box
@@ -910,7 +910,7 @@ public class Layout  {
         String label = connector.getLabel();
         if (label == null)
             label = "";
-        Color color = connector.getColor();
+        Color color = connector.getColor().toAWTColor();
         String id = source + "[" + connectorNum + "]=>";
         
         double minA = connector.getMinAngle();
