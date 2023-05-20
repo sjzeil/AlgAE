@@ -12,6 +12,7 @@ package edu.odu.cs.AlgAE.Client;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -28,10 +29,12 @@ import javax.help.HelpBroker;
 import javax.help.HelpSet;
 import javax.help.HelpSetException;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JSplitPane;
 
 import edu.odu.cs.AlgAE.Client.DataViewer.AnimatorPanel;
 import edu.odu.cs.AlgAE.Client.IOViewer.IOPane;
@@ -66,10 +69,6 @@ public class GUIClient extends Client {
     private static final Logger LOG
         = Logger.getLogger(GUIClient.class.getName());
 
-    /**
-     * The overall animation view: data, source code, & console.
-     */
-    private ViewerPanel clientView;
     
     /**
      * The panel portraying data states.
@@ -167,17 +166,45 @@ public class GUIClient extends Client {
      */
     @Override
     public final void init () {
-        setLayout (new BorderLayout());
+        //setLayout (new BorderLayout());
 
 
         ioPane = new IOPane (getServerAccess());
         sourcePane = new SourcePane(getServerAccess());
 
         animator = new AnimatorPanel(sourcePane);
-        clientView = new ViewerPanel ("AlgAE", animator, sourcePane, ioPane);
 
-        add (clientView, BorderLayout.CENTER);
-
+        ioPane.setMinimumSize(new Dimension(0,0));
+        sourcePane.setMinimumSize(new Dimension(0,0));
+        animator.setMinimumSize(new Dimension(0,0));
+  
+        animator.setPreferredSize(new Dimension(800,400));
+        ioPane.setPreferredSize(new Dimension(200,300));
+        sourcePane.setPreferredSize(new Dimension(600,300));
+  
+        JSplitPane splitPanel = new JSplitPane (JSplitPane.HORIZONTAL_SPLIT,
+                sourcePane, ioPane);
+        splitPanel.setResizeWeight(0.33);
+        splitPanel.setOneTouchExpandable(true);
+  
+        JSplitPane mainPanel = new JSplitPane (JSplitPane.VERTICAL_SPLIT,
+                 splitPanel, animator);
+        mainPanel.setResizeWeight(0.33);
+        mainPanel.setOneTouchExpandable(true);
+        splitPanel.setMinimumSize(new Dimension(0,0));
+        splitPanel.setPreferredSize(new Dimension(800,200));
+        animator.setMinimumSize(new Dimension(200,100));
+        
+        
+  
+        setLayout(new BorderLayout());
+  
+        add (mainPanel, BorderLayout.CENTER);
+  
+        JLabel statusLine = new JLabel("");
+  
+        add (statusLine, BorderLayout.SOUTH);
+  
     }
 
 
