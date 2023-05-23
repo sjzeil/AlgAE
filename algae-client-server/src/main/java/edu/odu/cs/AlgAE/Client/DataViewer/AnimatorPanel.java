@@ -140,10 +140,10 @@ public class AnimatorPanel extends JPanel
             }
         });
 
-        byte[] rstepImage = loadImage("rstep.gif");
-        if (rstepImage != null) {
-            ImageIcon rstepIcon = new ImageIcon (rstepImage, "step back");
-            reverseStepButton = new JButton(rstepIcon);
+        byte[] rStepImage = loadImage("rstep.gif");
+        if (rStepImage != null) {
+            ImageIcon rStepIcon = new ImageIcon (rStepImage, "step back");
+            reverseStepButton = new JButton(rStepIcon);
         } else {
             reverseStepButton = new JButton ("step back");
         }
@@ -293,11 +293,11 @@ public class AnimatorPanel extends JPanel
         switch (direction) {
         case Paused:
             pauseButton.setEnabled(false);
-            boolean reversable = pastFrames.size() > 0;
+            boolean reversible = pastFrames.size() > 0;
             boolean canGoForward = (!sequenceIsComplete) || nextPicture != null
                 || futureFrames.size() > 0;
-            reverseButton.setEnabled(reversable);
-            reverseStepButton.setEnabled(reversable);
+            reverseButton.setEnabled(reversible);
+            reverseStepButton.setEnabled(reversible);
             stepButton.setEnabled(canGoForward);
             playButton.setEnabled(canGoForward);
             break;
@@ -430,7 +430,7 @@ public class AnimatorPanel extends JPanel
      * Signals that the last picture added will be the final one in
      * an animation sequence.
      */
-    public synchronized void endofSequence ()
+    public synchronized void endOfSequence ()
     {
         sequenceIsComplete = true;
         directionChange(direction);

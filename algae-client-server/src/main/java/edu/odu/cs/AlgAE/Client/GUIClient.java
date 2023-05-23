@@ -666,7 +666,7 @@ public class GUIClient extends Client {
      */
     public void menuItemCompleted(final Snapshot snapshot) {
         animator.showStatus("Choose an Algorithm");
-        animator.endofSequence();
+        animator.endOfSequence();
         enableAlgorithmMenuItems (true);
     }
 

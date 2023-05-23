@@ -85,15 +85,15 @@ public class MemoryModel implements ContextAware
     /**
      * Establish a rendering for all objects of the indicated class.
      * Note that there are several ways to establish renderings, and that
-     * these are resolved as describedi getRenderer(), above.
+     * these are resolved as described in getRenderer(), above.
      *
      * If a prior rendering has been established for this class, it is replaced by this call.
      * Unlike object renderings, class renderings are "global" and do not lose effect when
      * we return from an activation.
      *
      */
-    public <T> MemoryModel render(Class<?> aclass, Renderer<T> newRendering) {
-        activationStack.render(aclass, newRendering);
+    public <T> MemoryModel render(Class<?> aClass, Renderer<T> newRendering) {
+        activationStack.render(aClass, newRendering);
         return this;
     }
 
@@ -202,8 +202,7 @@ public class MemoryModel implements ContextAware
      * will include all global variables, parameters and locals of the current call,
      * and non-ref parameters of the older calls.
      *
-     * @param ob
-     * @param tobeProcessed
+     * @param snap the snapshot to which to add the referenced objects
      */
     private void formClosure(Snapshot snap)
     {
@@ -264,15 +263,15 @@ public class MemoryModel implements ContextAware
         if (components != null && eid.depth() < DepthLimit) {
             int componentCount = 0;
             for (Component comp: components) {
-                Object cobj = comp.getComponentObject();
-                String clabel = comp.getLabel();
-                if (clabel == null || clabel.length() == 0)
-                    clabel = "\t" + componentCount;
+                Object cObj = comp.getComponentObject();
+                String cLabel = comp.getLabel();
+                if (cLabel == null || cLabel.length() == 0)
+                    cLabel = "\t" + componentCount;
                 ++componentCount;
-                if (cobj != null) {
-                    EntityIdentifier c_eid = new EntityIdentifier(new Identifier(cobj), eid, clabel);
+                if (cObj != null) {
+                    EntityIdentifier c_eid = new EntityIdentifier(new Identifier(cObj), eid, cLabel);
                     entity.getComponents().add(c_eid);
-                    InternalComponent intComp = new InternalComponent(eid, new Component(cobj, clabel));
+                    InternalComponent intComp = new InternalComponent(eid, new Component(cObj, cLabel));
                     //System.err.println ("" + entity.getEntityIdentifier() + " has component " + c_eid);
                     queue.add (intComp);
                 }
@@ -321,7 +320,7 @@ public class MemoryModel implements ContextAware
         HashMap<EntityIdentifier, Entity> unique = new HashMap<EntityIdentifier, Entity>();
         for (Identifier oid: snap.getEntities().keySet()) {
             LinkedList<Entity> aliases = snap.getEntities().get(oid);
-            int maxdepth = -1;
+            int maxDepth = -1;
             Entity deepest = null;
             Iterator<Entity> it = aliases.iterator();
             while (it.hasNext()) {
@@ -334,8 +333,8 @@ public class MemoryModel implements ContextAware
                     }        
                 }
                 int deep = entity.getEntityIdentifier().depth();
-                if (deep > maxdepth) {
-                    maxdepth = deep;
+                if (deep > maxDepth) {
+                    maxDepth = deep;
                     deepest = entity;
                 }
             }
@@ -347,8 +346,8 @@ public class MemoryModel implements ContextAware
         for (Identifier oid: snap.getEntities().keySet()) {
             LinkedList<Entity> aliases = snap.getEntities().get(oid);
             for (Entity e: aliases) {
-                EntityIdentifier ceid = e.getContainer();
-                if (ceid == null || ceid.equals(EntityIdentifier.nullID())) {
+                EntityIdentifier cEID = e.getContainer();
+                if (cEID == null || cEID.equals(EntityIdentifier.nullID())) {
                     queue.add(e);
                 }
             }
@@ -358,8 +357,8 @@ public class MemoryModel implements ContextAware
             queue.removeFirst();
             EntityIdentifier eid = e.getEntityIdentifier();
             keepThese.add(eid);
-            for (EntityIdentifier ceid: e.getComponents()) {
-                queue.add (unique.get(ceid));
+            for (EntityIdentifier cEID: e.getComponents()) {
+                queue.add (unique.get(cEID));
             }
         }
         HashMap<Identifier, LinkedList<Entity>> trimmedEntities = new HashMap<Identifier, LinkedList<Entity>>();

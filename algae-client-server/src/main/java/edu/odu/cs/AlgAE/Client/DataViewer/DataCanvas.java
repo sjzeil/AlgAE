@@ -31,7 +31,7 @@ public class DataCanvas extends JPanel
 
 
     private float zoom;
-    private static float xyScalingfactor;
+    private static float xyScalingFactor;
     private Frame currentPicture;
     private Dimension size;
     private boolean painted;
@@ -43,7 +43,7 @@ public class DataCanvas extends JPanel
     {
         sourceCode = source;
         zoom = 100.0f;
-        xyScalingfactor = 1.0f;
+        xyScalingFactor = 1.0f;
         currentPicture = null;
         size = new Dimension(50,50);
         setBackground (Color.white);
@@ -85,7 +85,7 @@ public class DataCanvas extends JPanel
         int hgt = metrics.getHeight();
         fontScale = (float)hgt;
         int wd = metrics.stringWidth("MWX");
-        xyScalingfactor = (((float)wd) / 3.0f) /hgt;
+        xyScalingFactor = (((float)wd) / 3.0f) /hgt;
         g2d.setStroke(new BasicStroke(0.0f));
 
         Frame toBeDrawn = null;
@@ -95,7 +95,7 @@ public class DataCanvas extends JPanel
         
         if (toBeDrawn != null) {
             float scale = fontScale * zoom / 100.0f;
-            g2d.scale (scale*xyScalingfactor, scale);
+            g2d.scale (scale*xyScalingFactor, scale);
             ArrayList<LinkedList<DataShape> > byDepth = new ArrayList<LinkedList<DataShape>>();
             for (DataShape shape: toBeDrawn) {
                 int d = shape.getDepth();
@@ -118,21 +118,21 @@ public class DataCanvas extends JPanel
 
     private synchronized void sizeCheck()
     {
-        Rectangle2D bbox = null;
+        Rectangle2D bBox = null;
         if (currentPicture != null) {
             for (DataShape shape: currentPicture) {
-                if (bbox == null) {
-                    bbox = shape.getBounds2D();
+                if (bBox == null) {
+                    bBox = shape.getBounds2D();
                 } else {
-                    Rectangle2D.union(bbox, shape.getBounds2D(), bbox);
+                    Rectangle2D.union(bBox, shape.getBounds2D(), bBox);
                 }
             }
         }
-        if (bbox == null) {
-            bbox = new Rectangle2D.Double(0.0, 0.0, 50.0, 50.0);
+        if (bBox == null) {
+            bBox = new Rectangle2D.Double(0.0, 0.0, 50.0, 50.0);
         }
-        int w = (int)(0.99 + fontScale*(bbox.getX() + bbox.getWidth())* zoom/100.0f);
-        int h = (int)(0.99 + fontScale*(bbox.getY() + bbox.getHeight()) * zoom/100.0f);
+        int w = (int)(0.99 + fontScale*(bBox.getX() + bBox.getWidth())* zoom/100.0f);
+        int h = (int)(0.99 + fontScale*(bBox.getY() + bBox.getHeight()) * zoom/100.0f);
         if (w != size.width || h != size.height) {
             setPreferredSize (new Dimension(w, h));
             revalidate();
@@ -160,7 +160,7 @@ public class DataCanvas extends JPanel
     }
 
     public static float getXFontScale() {
-        return fontScale * xyScalingfactor;
+        return fontScale * xyScalingFactor;
     }
 
     public void setZoom(float zoomValue) {
