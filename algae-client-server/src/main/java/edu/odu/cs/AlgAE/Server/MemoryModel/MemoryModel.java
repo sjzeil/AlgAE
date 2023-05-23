@@ -257,7 +257,15 @@ public class MemoryModel implements ContextAware
         Object obj = c.component.getComponentObject();
         Renderer<Object> render = activationStack.getRenderer(obj);
         entity.setColor(render.getColor(obj));
-        entity.setMaxComponentsPerRow(render.getMaxComponentsPerRow(obj));
+
+        int mCPR = render.getMaxComponentsPerRow(obj);
+        if (mCPR > 0) {
+            entity.setDirection(Entity.Directions.Horizontal);
+        } else if (mCPR < 0) {
+            entity.setDirection(Entity.Directions.Vertical);
+        } else {
+            entity.setDirection(Entity.Directions.Square);
+        }
         entity.setValue(render.getValue(obj));
         List<Component> components = render.getComponents(obj);
         if (components != null && eid.depth() < DepthLimit) {

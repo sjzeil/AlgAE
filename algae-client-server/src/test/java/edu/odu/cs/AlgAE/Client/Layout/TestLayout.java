@@ -36,7 +36,7 @@ public class TestLayout {
 
     	Entity stack = new Entity(new Identifier(stackID));
     	stack.setColor(Color.lightGray);
-    	stack.setMaxComponentsPerRow(1);
+    	stack.setDirection(Entity.Directions.Vertical);
     	s.add(stack);
     	s.setActivationStack(stack.getEntityIdentifier());
 
@@ -49,7 +49,7 @@ public class TestLayout {
     	Entity fooAct = new Entity(new Identifier(fooActID), stack, "call1");
     	fooAct.setValue("foo(");
     	fooAct.setColor(Color.cyan);
-    	fooAct.setMaxComponentsPerRow(100);
+    	fooAct.setDirection(Entity.Directions.Horizontal);
     	s.add(fooAct);
     	stack.getComponents().add(fooAct.getEntityIdentifier());
     	

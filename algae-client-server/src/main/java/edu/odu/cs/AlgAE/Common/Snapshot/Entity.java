@@ -5,6 +5,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Entity implements Serializable {
+
+    /**
+     * Indicates the direction in which components are laid out.
+     * 
+     * "Square" describes a packing in which elements are packed into
+     * rows and columns to fill a nearly square area.
+     */
+    public enum Directions {Vertical, Horizontal, Square};
+
     /**
      * The objects immediately contained within this one
      */
@@ -22,7 +31,11 @@ public class Entity implements Serializable {
     private String value;
     private Color color;
     private int maxComponentsPerRow;
+    private Directions direction;
+    private int spacing;
+    private boolean closedOnConnections;
     
+
 
     /**
      * Create an entity representing a "standalone" object
@@ -37,6 +50,9 @@ public class Entity implements Serializable {
         value = "";
         color = Color.lightGray;
         maxComponentsPerRow = 1;
+        direction = Directions.Vertical;
+        spacing = 1;
+        closedOnConnections = false;
     }
     
     /**
@@ -53,6 +69,9 @@ public class Entity implements Serializable {
         value = "";
         color = Color.lightGray;
         maxComponentsPerRow = 1;
+        direction = Directions.Vertical;
+        spacing = 1;
+        closedOnConnections = false;
     }
 
     
@@ -72,6 +91,9 @@ public class Entity implements Serializable {
         value = "";
         color = Color.lightGray;
         maxComponentsPerRow = 1;
+        direction = Directions.Vertical;
+        spacing = 1;
+        closedOnConnections = false;
     }
     
     
@@ -91,6 +113,9 @@ public class Entity implements Serializable {
         value = "";
         color = Color.lightGray;
         maxComponentsPerRow = 1;
+        direction = Directions.Vertical;
+        spacing = 1;
+        closedOnConnections = false;
     }
     
 
@@ -106,6 +131,9 @@ public class Entity implements Serializable {
         value = "";
         color = null;
         maxComponentsPerRow = 1;
+        direction = Directions.Vertical;
+        spacing = 1;
+        closedOnConnections = false;
     }
 
     
@@ -239,13 +267,6 @@ public class Entity implements Serializable {
     }
 
     /**
-     * @param maxComponentsPerRow the maxComponentsPerRow to set
-     */
-    public void setMaxComponentsPerRow(int maxComponentsPerRow) {
-        this.maxComponentsPerRow = maxComponentsPerRow;
-    }
-
-    /**
      * @return the components
      */
     public List<EntityIdentifier> getComponents() {
@@ -273,6 +294,58 @@ public class Entity implements Serializable {
         this.connections = connections;
     }
     
+    /**
+     * Indicates how components will be packed into the box representing
+     * this entity.
+     * @return the direction
+     */
+    public Directions getDirection() {
+        return direction;
+    }
+
+    /**
+     * Indicates how components will be packed into the box representing
+     * this entity.
+     * @param direction the direction to set
+     */
+    public void setDirection(Directions direction) {
+        this.direction = direction;
+    }
+
+    /**
+     * The spacing between adjacent components.
+     * 
+     * @return the spacing
+     */
+    public int getSpacing() {
+        return spacing;
+    }
+
+    /**
+     * The spacing between adjacent components.
+     * 
+     * @param spacing the spacing to set
+     */
+    public void setSpacing(int spacing) {
+        this.spacing = spacing;
+    }
+
+    /**
+     * Will all entities accessible via connections from the
+     * components of this entity be treated as components?
+     * When true, 
+     * @return the closedOnConnections
+     */
+    public boolean isClosedOnConnections() {
+        return closedOnConnections;
+    }
+
+    /**
+     * @param closedOnConnections the closedOnConnections to set
+     */
+    public void setClosedOnConnections(boolean closedOnConnections) {
+        this.closedOnConnections = closedOnConnections;
+    }
     
     
 

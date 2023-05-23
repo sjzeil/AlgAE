@@ -197,7 +197,6 @@ public class Layout  {
         
         loadEntities (current);
         positionComponents();
-        positionAnchoredEntities();
         positionFixedEntities(current);
         boolean anyNew = (previous == null);
         if (previous != null) {
@@ -229,42 +228,11 @@ public class Layout  {
         
         loadEntities (basedOn);
         positionComponents();
-        positionAnchoredEntities();
         positionOldEntities(basedOn);
         repositionAllEntities();
     }
     
     
-    /**
-     * Force an entity to always be drawn at a fixed position
-     * in any future scenes where it appears.
-     *
-     * @param eids  String equivalent of an entity identifier
-     * @param position
-     */
-    public void anchorAt (String eids, Point2D position)
-    {
-        for (EntityIdentifier eid: entities.keySet()) {
-            if (eid.toString().equals(eids)) {
-                anchors.anchorAt(eid, position);
-                break;
-            }
-        }
-    }
-
-    
-    /**
-     * Set the locations of any items that are anchored.
-     */
-    private void positionAnchoredEntities() {
-        for (EntityIdentifier eid: baseObjectIDs) {
-            Point2D p = anchors.getAnchor(eid);
-            if (p != null) {
-                LocationInfo loc = locations.get(eid);
-                loc.setLoc(new Point(p.getX(), p.getY()));
-            }
-        }
-    }
 
 
 
@@ -319,16 +287,14 @@ public class Layout  {
      *
      * @param eid  identifier of a container of zero or more components
      *
-     * @return the max height of all components, -1 if it has none
      */
-    private int positionComponentsOf(EntityIdentifier eid)
+    private void positionComponentsOf(EntityIdentifier eid)
     {
         Entity e = entities.get(eid);
         //System.err.println ("Layout: positioning components of " + eid);
         int maxHeight = -1;
-        for (EntityIdentifier ceid: e.getComponents()) {
-            int h = positionComponentsOf(ceid);
-            maxHeight = Math.max(maxHeight, h);
+        for (EntityIdentifier cEID: e.getComponents()) {
+            positionComponentsOf(cEID);
         }
         double yOffset = VerticalMargin;
         double xOffset = HorizontalMargin;
@@ -344,56 +310,20 @@ public class Layout  {
         LocationInfo loc = locations.get(eid);
         loc.setHeight(1+maxHeight);
         Dimension2DDouble sz =
-            layoutComponents (e.getComponents(), e.getMaxComponentsPerRow(),
-                loc, xOffset, yOffset-VerticalMargin);
+            layoutComponents (e, loc, xOffset, yOffset-VerticalMargin);
         sz.setSize(Math.max(minWidth, sz.getWidth())+HorizontalMargin, sz.getHeight()+yAddition);
         loc.setSize(sz);
-        return maxHeight+1;
     }
     
     
     
     private void positionFixedEntities(Snapshot snapshot) {
-/*        // Put the global variables into the upper left corner
-        EntityIdentifier globals = snapshot.getGlobalEntities();
-        LocationInfo gloc = locations.get(globals);
-        gloc.setLoc (new Point(0.0, 0.0));
-        anchors.put(globals, new Point2D.Double(0.0, 0.0));
-
-        // Put the local variables just beneath them
-        EntityIdentifier locals = snapshot.getLocalEntities();
-        LocationInfo lloc = locations.get(locals);
-        lloc.setLoc (new RelativePoint(0.0, 1.0, Connections.LL, gloc));
-
-        // Put the activation stack to the right of these
-        Dimension2DDouble globalsSize = gloc.getSize();
-        Dimension2DDouble localsSize = lloc.getSize();
-        
-        double w = Math.max(globalsSize.getWidth(), localsSize.getWidth());
-        EntityIdentifier stack = snapshot.getStackEntity();
-        LocationInfo sloc = locations.get(stack);
-        sloc.setLoc (new Point(w+2.0, 0.0));
-        anchors.put(stack, new Point2D.Double(w+2.0, 0.0));
-*/
         EntityIdentifier stack = snapshot.getActivationStack();
-        LocationInfo sloc = locations.get(stack);
-        if (sloc != null) {
-            sloc.setLoc (new Point(0.25, 0.0));
+        LocationInfo sLoc = locations.get(stack);
+        if (sLoc != null) {
+            sLoc.setLoc (new Point(0.25, 0.0));
             anchors.anchorAt(stack, new Point2D.Double(0.0, 0.0));
-        }
-        
-        // Put an invisible box over part of this area.
-/*        GlassBox g = new GlassBox();
-        Identifier boid = Identifier.getIdentifierFor(g);
-        EntityIdentifier beid = new EntityIdentifier(boid);
-        Entity be = new Entity(boid);
-        entities.put(beid, be);
-        LocationInfo bloc = new LocationInfo(be);
-        be.setColor (g.getColor(g));
-        locations.put(beid, bloc);
-        bloc.setLoc(new Point(0.0, 0.0));
-        bloc.setSize(new Dimension2DDouble(w+4.0, 1.0 + Math.min(sloc.getHeight(), gloc.getHeight() + 2.0 + lloc.getHeight())));
-*/
+        }        
     }
 
 
@@ -587,25 +517,91 @@ public class Layout  {
     /**
      * Arranges a list of components to pack a rectangular space whose upper left corner is
      *    specified.
-     * @param variables  list of components to be inserted into the snapshot
-     * @param upperLeft  upper left corner of the region where the variables should be placed
-     * @return dimension of the bounding rectangle of the placed variables
+     * @param container  entity whose components are to be inserted into the snapshot
+     * @param relativeTo  upper left corner of the region where the components should be placed
+     * @param xOffset distance from the left of relativeTo at which to start
+     * @param yOffset distance from the to of relativeTo at which to start
      */
     private Dimension2DDouble layoutComponents
-           (List<EntityIdentifier> variables,
-            int maxComponentsPerRow,
-            BoundedRegion relativeTo, double xOffset, double yOffset) {
+           (Entity container, BoundedRegion relativeTo, 
+            double xOffset, double yOffset) {
+        
+        switch (container.getDirection()) {
+            case Vertical:
+                return layoutComponentsVertically(container, relativeTo, xOffset, yOffset);
+            case Horizontal:
+                return layoutComponentsHorizontally(container, relativeTo, xOffset, yOffset);
+            case Square:
+                return layoutComponentsInSquare(container, relativeTo, xOffset, yOffset);
+            default:
+                return new Dimension2DDouble();
+        }
+
+    }
+    
+    /**
+     * Arranges a list of components to pack a rectangular space whose upper left corner is
+     *    specified.
+     * @param container  entity whose components are to be inserted into the snapshot
+     * @param relativeTo  upper left corner of the region where the components should be placed
+     * @param xOffset distance from the left of relativeTo at which to start
+     * @param yOffset distance from the to of relativeTo at which to start
+     */
+    private Dimension2DDouble layoutComponentsHorizontally
+           (Entity container, BoundedRegion relativeTo, 
+            double xOffset, double yOffset) {
         
         ArrayList<LinkedList<EntityIdentifier>> rows = new ArrayList<LinkedList<EntityIdentifier>>();
 
-        // Apportion the components to different rows.
-        if (maxComponentsPerRow > 0 && maxComponentsPerRow < Integer.MAX_VALUE) {
+        double x = HorizontalMargin;
+        double height = 0;
+        for (int i = 0; i < rows.size(); ++i) {
+            LinkedList<EntityIdentifier> row = rows.get(i);
+                if (i > 0 && row.size() > 0) {
+                    x += container.getSpacing();
+                }
+                double y = VerticalMargin - VerticalSpacing;
+                double width = 0.0;
+                if (row.size() > 0) {
+                    for (EntityIdentifier eid: row) {
+                        y += VerticalSpacing;
+                        LocationInfo loc = locations.get(eid);
+                        Dimension2DDouble sz = loc.getSize();
+                        loc.setLoc(new RelativePoint(x+xOffset, y+yOffset, Connections.LU, relativeTo));
+                        y += sz.getHeight();
+                        width = Math.max(width, sz.getWidth());
+                    }
+                    height = Math.max(height, y + VerticalMargin);
+                    x += width;
+                }
+            }
+            height += VerticalMargin;
+            x += HorizontalMargin;
+            return new Dimension2DDouble(x, height);
+            
+    }
+    
+    
+     /**
+     * Arranges a list of components to pack a rectangular space whose upper left corner is
+     *    specified.
+     * @param container  entity whose components are to be inserted into the snapshot
+     * @param relativeTo  upper left corner of the region where the components should be placed
+     * @param xOffset distance from the left of relativeTo at which to start
+     * @param yOffset distance from the to of relativeTo at which to start
+     */
+    private Dimension2DDouble layoutComponentsVertically
+           (Entity container, BoundedRegion relativeTo, 
+            double xOffset, double yOffset) {
+        
+        ArrayList<LinkedList<EntityIdentifier>> rows = new ArrayList<LinkedList<EntityIdentifier>>();
+
             // Arrange components into several rows, each with
             // maxComponentsPerRow columns.
             int r = -1;
-            int c = maxComponentsPerRow;
-            for (EntityIdentifier eid: variables) {
-                if (c >= maxComponentsPerRow) {
+            int c = container.getMaxComponentsPerRow();
+            for (EntityIdentifier eid: container.getComponents()) {
+                if (c >= container.getMaxComponentsPerRow()) {
                     ++r;
                     rows.add (new LinkedList<EntityIdentifier>());
                     c = 0;
@@ -613,26 +609,8 @@ public class Layout  {
                 rows.get(r).add (eid);
                 ++c;
             }
-        } else {
-            // Arranges a list of components to pack a rectangular space whose upper left corner is
-            //   specified.
-            int numRows = 0;
-            int r = 0;
-            rows.add(new LinkedList<EntityIdentifier>());
-            for (EntityIdentifier eid: variables) {
-                int nextr = r+1;
-                rows.get(r).add (eid);
-                if (r >= numRows) {
-                    ++numRows;
-                    rows.add(new LinkedList<EntityIdentifier>());
-                    nextr = 0;
-                }
-                r = nextr;
-            }
-        }
-        
-        // Compute the actual position within each row
-        if (maxComponentsPerRow < Integer.MAX_VALUE) {
+
+                    // Compute the actual position within each row
             double y = VerticalMargin;
             double width = 0;
             for (int i = 0; i < rows.size(); ++i) {
@@ -658,41 +636,68 @@ public class Layout  {
             width += HorizontalMargin;
             y += VerticalMargin;
             return new Dimension2DDouble(width, y);
-        } else {
-            // for maxComponentsPerRow < 0, transpose so that we lay things out in columns
-            // instead of rows
-            double x = HorizontalMargin;
-            double height = 0;
+
+    }
+   
+    /**
+     * Arranges a list of components to pack a rectangular space whose upper left corner is
+     *    specified.
+     * @param container  entity whose components are to be inserted into the snapshot
+     * @param relativeTo  upper left corner of the region where the components should be placed
+     * @param xOffset distance from the left of relativeTo at which to start
+     * @param yOffset distance from the to of relativeTo at which to start
+     */
+    private Dimension2DDouble layoutComponentsInSquare
+           (Entity container, BoundedRegion relativeTo, 
+            double xOffset, double yOffset) {
+        
+        ArrayList<LinkedList<EntityIdentifier>> rows = new ArrayList<LinkedList<EntityIdentifier>>();
+
+        // Apportion the components to different rows.
+            // Arranges a list of components to pack a rectangular space whose upper left corner is
+            //   specified.
+            int numRows = 0;
+            int r = 0;
+            rows.add(new LinkedList<EntityIdentifier>());
+            for (EntityIdentifier eid: container.getComponents()) {
+                int nextR = r+1;
+                rows.get(r).add (eid);
+                if (r >= numRows) {
+                    ++numRows;
+                    rows.add(new LinkedList<EntityIdentifier>());
+                    nextR = 0;
+                }
+                r = nextR;
+            }
+        
+        
+        // Compute the actual position within each row
+            double y = VerticalMargin;
+            double width = 0;
             for (int i = 0; i < rows.size(); ++i) {
                 LinkedList<EntityIdentifier> row = rows.get(i);
                 if (i > 0 && row.size() > 0) {
-                    x += 4/*HorizontalSpacing*/;
+                    y += VerticalSpacing;
                 }
-                double y = VerticalMargin - VerticalSpacing;
-                double width = 0.0;
+                double x = HorizontalMargin - HorizontalSpacing;
+                double height = 0.0;
                 if (row.size() > 0) {
                     for (EntityIdentifier eid: row) {
-                        y += VerticalSpacing;
+                        x += HorizontalSpacing;
                         LocationInfo loc = locations.get(eid);
                         Dimension2DDouble sz = loc.getSize();
                         loc.setLoc(new RelativePoint(x+xOffset, y+yOffset, Connections.LU, relativeTo));
-                        y += sz.getHeight();
-                        width = Math.max(width, sz.getWidth());
+                        x += sz.getWidth();
+                        height = Math.max(height, sz.getHeight());
                     }
-                    height = Math.max(height, y + VerticalMargin);
-                    x += width;
+                    width = Math.max(width, x + HorizontalMargin);
+                    y += height;
                 }
             }
-            height += VerticalMargin;
-            x += HorizontalMargin;
-            return new Dimension2DDouble(x, height);
-            
-        }
+            width += HorizontalMargin;
+            y += VerticalMargin;
+            return new Dimension2DDouble(width, y);
     }
-    
-    
-    
-    
     
     private double positionScore()
     {
@@ -730,18 +735,18 @@ public class Layout  {
          * separated by OverlapGutter.
          */
         LocationInfo loc = locations.get(eid);
-        Rectangle2D bbox = loc.getBBox();
+        Rectangle2D bBox = loc.getBBox();
         double score = 0.0;
         for (EntityIdentifier other : baseObjectIDs) {
             if (!other.equals(eid)) {
                 LocationInfo otherLoc = locations.get(other);
-                Rectangle2D obox = otherLoc.getBBox();
+                Rectangle2D oBox = otherLoc.getBBox();
 
-                double dx0 = bbox.getWidth()/2.0 + obox.getWidth()/2.0 + OverlapGutter;
-                double dy0 = bbox.getHeight()/2.0 + obox.getHeight()/2.0 + OverlapGutter;
+                double dx0 = bBox.getWidth()/2.0 + oBox.getWidth()/2.0 + OverlapGutter;
+                double dy0 = bBox.getHeight()/2.0 + oBox.getHeight()/2.0 + OverlapGutter;
                 
-                double dx = Math.abs(bbox.getCenterX() - obox.getCenterX());
-                double dy = Math.abs(bbox.getCenterY() - obox.getCenterY());
+                double dx = Math.abs(bBox.getCenterX() - oBox.getCenterX());
+                double dy = Math.abs(bBox.getCenterY() - oBox.getCenterY());
                 
                 if (dx < dx0 && dy < dy0) {
                     // Boxes overlap or nearly overlap
@@ -756,18 +761,18 @@ public class Layout  {
         // Artificial collision calculation to keep coordinates positive
         double dx = 0.0;
         double dy = 0.0;
-        if (bbox.getX() < ReservedHorizontalMargin)
-            dx = ReservedHorizontalMargin-bbox.getX();
+        if (bBox.getX() < ReservedHorizontalMargin)
+            dx = ReservedHorizontalMargin-bBox.getX();
         else
             dx = 0.0;
-        if (bbox.getY() < 0)
-            dy = -bbox.getY();
+        if (bBox.getY() < 0)
+            dy = -bBox.getY();
         else
             dy = 0.0;
         score += dx + dy;
         
         // Gravity pulls all objects gently towards 0,0
-        double gravity = Math.abs(bbox.getX() - HorizontalMargin) + Math.abs(bbox.getY() - VerticalMargin);
+        double gravity = Math.abs(bBox.getX() - HorizontalMargin) + Math.abs(bBox.getY() - VerticalMargin);
         score += Gravity * gravity;
         
         return score;
