@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Point2D;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -111,16 +110,7 @@ public class AnimatorPanel extends JPanel
         
         setLayout(new BorderLayout());
 
-        canvas = new DataCanvas(source, new ShapeMover() {
-            @Override
-            public void moved(String id, double x, double y) {
-                if (id.endsWith("__box")) {
-                    id = id.substring(0, id.length() - 5);
-                    moveShapeInFuture (id, x, y);
-                }
-            }            
-        });
-
+        canvas = new DataCanvas(source);
 
         JScrollPane scrolledCanvas = new JScrollPane(canvas);
 
@@ -310,7 +300,6 @@ public class AnimatorPanel extends JPanel
             reverseStepButton.setEnabled(reversable);
             stepButton.setEnabled(canGoForward);
             playButton.setEnabled(canGoForward);
-            canvas.setMovingEnabled(futureFrames.size() == 0);
             break;
         case Stepping:
         case StepReversed:
@@ -319,7 +308,6 @@ public class AnimatorPanel extends JPanel
             reverseStepButton.setEnabled(false);
             stepButton.setEnabled(false);
             playButton.setEnabled(false);
-            canvas.setMovingEnabled(false);
             break;
         case Playing:
         case Reversed:
@@ -328,7 +316,6 @@ public class AnimatorPanel extends JPanel
             reverseStepButton.setEnabled(false);
             stepButton.setEnabled(false);
             playButton.setEnabled(false);
-            canvas.setMovingEnabled(false);
             break;
         }
     }
@@ -529,31 +516,6 @@ public class AnimatorPanel extends JPanel
             System.err.println (e);
             e.printStackTrace();
         }
-    }
-
-    /**
-     * The user has dragged a shape to a new position on the screen.
-     * (This should be possible only when the simulation is paused at a
-     * key frame.)
-     * Update the layout of the current frame and regenerate the frame.
-     * Then discard all future frames, updating the layouts of all future key frames
-     * and regenerating the frames derived from them.
-     *
-     * @param id   string equivalent ofthe entirty identifier of the box
-     *                   that was dragged
-     * @param x    x coordinate of new position of dragged box
-     * @param y    y coordinate of new position of dragged box
-     */
-    private void moveShapeInFuture(String id, double x, double y) {
-        Layout currentLayout = currentFrame.getKeyFor();
-        currentLayout.anchorAt(id, new Point2D.Double(x,y));
-        Layout movedLayout = new Layout(currentLayout, anchors);
-        Frame movedFrame = movedLayout.toPicture();
-        Frame tweenedPics[] = tween(currentFrame, movedFrame);
-        for (int i = 0; i < tweenedPics.length; ++i) {
-            futureFrames.addFirst(tweenedPics[tweenedPics.length - i - 1]);
-        }
-        directionChange(Direction.Stepping);
     }
 
     /**

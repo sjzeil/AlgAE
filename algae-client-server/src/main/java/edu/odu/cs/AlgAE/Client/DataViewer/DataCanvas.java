@@ -7,17 +7,12 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.swing.JPanel;
 
-import edu.odu.cs.AlgAE.Client.DataViewer.Frames.Box;
 import edu.odu.cs.AlgAE.Client.DataViewer.Frames.DataShape;
 import edu.odu.cs.AlgAE.Client.DataViewer.Frames.Frame;
 import edu.odu.cs.AlgAE.Client.SourceViewer.SourceViewer;
@@ -44,16 +39,7 @@ public class DataCanvas extends JPanel
     private SourceViewer sourceCode;
 
 
-    // Data members for portrayal of dragged boxes
-    private Box movingBox;
-    private Rectangle2D lastBoxMove;
-    private Point2D movingBoxOffset;
-
-    private ShapeMover shapeMover;
-    private boolean movingEnabled;
-
-
-    public DataCanvas(SourceViewer source, ShapeMover mover)
+    public DataCanvas(SourceViewer source)
     {
         sourceCode = source;
         zoom = 100.0f;
@@ -62,52 +48,9 @@ public class DataCanvas extends JPanel
         size = new Dimension(50,50);
         setBackground (Color.white);
         setPainted(false);
-
-        movingBox = null;
-        lastBoxMove = null;
-        movingBoxOffset = null;
-        shapeMover = mover;
-
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                if (movingEnabled)
-                    selectBox (e);
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                if (movingEnabled)
-                    releaseBox(e);    
-            }
-
-
-        });
-        addMouseMotionListener(new MouseMotionAdapter() {
-
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                if (movingEnabled)
-                    dragBox(e);
-            }
-        });
     }
 
 
-    /**
-     * @param movingEnabled the movingEnabled to set
-     */
-    public void setMovingEnabled(boolean movingEnabled) {
-        this.movingEnabled = movingEnabled;
-    }
-
-
-    /**
-     * @return the movingEnabled
-     */
-    public boolean isMovingEnabled() {
-        return movingEnabled;
-    }
 
 
     public synchronized void setPicture (Frame newPicture)
@@ -169,12 +112,6 @@ public class DataCanvas extends JPanel
         }
         
 
-        // Draw box being dragged
-        if (lastBoxMove != null) {
-            g2d.setColor (new Color(0.5f, 0.5f, 0.5f, 0.5f));
-            g2d.fill(lastBoxMove);
-        }
-
         setPainted(true);
     }
 
@@ -229,61 +166,6 @@ public class DataCanvas extends JPanel
     public void setZoom(float zoomValue) {
         zoom = zoomValue;
         sizeCheck();
-    }
-
-
-    private void selectBox(MouseEvent e) {
-        //System.out.println (e.getX() + " " + e.getY());
-        Box selected = null;
-        double x = e.getX() / getXFontScale() / (zoom/100.0);
-        double y = e.getY() / getYFontScale() / (zoom/100.0);
-        for (DataShape s: currentPicture) {
-            if (s instanceof Box){
-                Box b = (Box)s;
-                Point2D p = new Point2D.Double(x,y);    
-                if (b.getBounds().contains(p)) {
-                    //System.out.println (b.getID() + " at " + b.getBounds());
-                    if (selected == null ||
-                            b.getBounds().getWidth() * b.getBounds().getHeight()
-                            > selected.getBounds().getWidth() * selected.getBounds().getHeight()) {
-                        selected = b;
-                    }
-                }
-            }
-        }
-        if (selected != null) {
-            movingBox = selected;
-            lastBoxMove = selected.getBounds();
-            movingBoxOffset = new Point2D.Double(selected.getBounds().getX()-x, selected.getBounds().getY()-y);
-        }
-        repaint();
-    }
-
-    public void dragBox(MouseEvent e) {
-        if (movingBox != null) {
-            double x = e.getX() / getXFontScale() / (zoom/100.0);
-            double y = e.getY() / getYFontScale() / (zoom/100.0);
-            x += movingBoxOffset.getX();
-            y += movingBoxOffset.getY();
-            lastBoxMove = new Rectangle2D.Double (x, y, lastBoxMove.getWidth(), lastBoxMove.getHeight());
-            repaint();
-        }
-    }
-
-    public void releaseBox(MouseEvent e) {
-        if (movingBox != null) {
-            double x = e.getX() / getXFontScale() / (zoom/100.0);
-            double y = e.getY() / getYFontScale() / (zoom/100.0);
-            x += movingBoxOffset.getX();
-            y += movingBoxOffset.getY();
-            shapeMover.moved (movingBox.getID(), x, y);
-            currentPicture.add (new Box(movingBox.getID(), (float)x, (float)y,
-                    (float)movingBox.getBounds().getWidth(), (float)movingBox.getBounds().getHeight(),
-                    movingBox.getColor(), movingBox.getDepth()));
-            movingBox = null;
-            lastBoxMove = null;
-            repaint();
-        }
     }
 
 
