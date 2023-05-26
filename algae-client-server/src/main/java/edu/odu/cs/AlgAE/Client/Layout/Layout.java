@@ -36,42 +36,43 @@ import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
 
 /**
- * A layout is a snapshot in which all entities and connections have been assigned a location.
+ * A layout is a snapshot in which all entities and connections have been
+ * assigned a location.
  *
- * A layout is created from a snapshot and a (possibly null) prior layout, so that entities that
- * have already been assigned a location in the prior layout can retain those positions in the
+ * A layout is created from a snapshot and a (possibly null) prior layout, so
+ * that entities that
+ * have already been assigned a location in the prior layout can retain those
+ * positions in the
  * subsequent layout.
  *
  *
  * @author zeil
  *
  */
-public class Layout  {
-    
-    private HashMap <EntityIdentifier, Entity> entities;
-    private HashMap <EntityIdentifier, LocationInfo> locations;
+public class Layout {
+
+    private HashMap<EntityIdentifier, Entity> entities;
+    private HashMap<EntityIdentifier, LocationInfo> locations;
     private LinkedList<LocationInfo> movable;
     private String descriptor;
     private SourceLocation sourceLoc;
     private Anchors anchors;
-    
-    
+
     /**
-     *  A subset of the total objects of the snapshot, consisting of those objects that
-     *  are not components of other objects (i.e., container == null)
+     * A subset of the total objects of the snapshot, consisting of those objects
+     * that
+     * are not components of other objects (i.e., container == null)
      *
      */
     private HashSet<EntityIdentifier> baseObjectIDs;
 
-    private class LocationInfo  implements BoundedRegion {
+    private class LocationInfo implements BoundedRegion {
         private Dimension2DDouble size;
         private Location loc;
         private int height;
         private Entity describes;
-        
 
-        public LocationInfo(Entity e)
-        {
+        public LocationInfo(Entity e) {
             size = null;
             loc = null;
             describes = e;
@@ -108,23 +109,21 @@ public class Layout  {
             else
                 return loc;
         }
-        
+
         /**
          * True if this entity has been assigned a position
          *
          */
-        public boolean hasBeenPositioned()
-        {
+        public boolean hasBeenPositioned() {
             return loc != null;
         }
-
 
         /**
          * @return the entity described by this location
          */
-//        public Entity getEntity() {
-//            return describes;
-//        }
+        // public Entity getEntity() {
+        // return describes;
+        // }
 
         @Override
         public Rectangle2D getBBox() {
@@ -132,8 +131,7 @@ public class Layout  {
             Dimension2DDouble sz = getSize();
             return new Rectangle2D.Double(location.getX(), location.getY(), sz.getWidth(), sz.getHeight());
         }
-        
-        
+
         @Override
         public boolean isFixed(IdentityHashMap<FreeOrFixed, Boolean> alreadyChecked) {
             if (loc == null || size == null)
@@ -164,13 +162,12 @@ public class Layout  {
         public int getHeight() {
             return height;
         }
-        
-        
+
         public String toString() {
             StringBuffer result = new StringBuffer();
-            result.append ("describes:");
+            result.append("describes:");
             result.append(describes.getEntityIdentifier());
-            result.append (", height:");
+            result.append(", height:");
             result.append(height);
             result.append(", loc:");
             result.append(loc);
@@ -179,10 +176,10 @@ public class Layout  {
             return result.toString();
         }
     }
-    
-    
+
     /**
      * Create a new layout.
+     * 
      * @param description
      * @param loc
      */
@@ -194,8 +191,8 @@ public class Layout  {
         movable = new LinkedList<LocationInfo>();
         descriptor = current.getDescriptor();
         sourceLoc = current.getBreakpointLocation();
-        
-        loadEntities (current);
+
+        loadEntities(current);
         positionComponents();
         positionFixedEntities(current);
         boolean anyNew = (previous == null);
@@ -204,13 +201,12 @@ public class Layout  {
         }
         anyNew = true;
         if (anyNew) {
-            positionGlobals (current.getGlobals(), ReservedHorizontalMargin);
+            positionGlobals(current.getGlobals(), ReservedHorizontalMargin);
             positionNewEntities();
             repositionAllEntities();
         }
     }
-    
-    
+
     /**
      * Create a new layout, similar to basedOn but reflecting any
      * anchorAt calls since the former layout was created.
@@ -225,16 +221,12 @@ public class Layout  {
         movable = new LinkedList<LocationInfo>();
         descriptor = basedOn.descriptor;
         sourceLoc = basedOn.sourceLoc;
-        
-        loadEntities (basedOn);
+
+        loadEntities(basedOn);
         positionComponents();
         positionOldEntities(basedOn);
         repositionAllEntities();
     }
-    
-    
-
-
 
     /**
      * Load entities from the snapshot into this scene, with
@@ -243,12 +235,12 @@ public class Layout  {
      * @param current
      */
     private void loadEntities(Snapshot snapshot) {
-        for (Entity e: snapshot) {
+        for (Entity e : snapshot) {
             EntityIdentifier eid = e.getEntityIdentifier();
-            entities.put (eid, e);
+            entities.put(eid, e);
             locations.put(eid, new LocationInfo(e));
             if (e.getContainer() == null)
-                baseObjectIDs.add (eid);
+                baseObjectIDs.add(eid);
         }
     }
 
@@ -259,7 +251,7 @@ public class Layout  {
      * @param current
      */
     private void loadEntities(Layout snapshot) {
-        for (EntityIdentifier eid: snapshot.entities.keySet()) {
+        for (EntityIdentifier eid : snapshot.entities.keySet()) {
             Entity e = snapshot.entities.get(eid);
             locations.put(eid, new LocationInfo(e));
         }
@@ -269,31 +261,28 @@ public class Layout  {
      * Set the locations of all entities that are components of larger
      * entities.
      */
-    private void positionComponents()
-    {
-        for (EntityIdentifier eid: baseObjectIDs) {
+    private void positionComponents() {
+        for (EntityIdentifier eid : baseObjectIDs) {
             positionComponentsOf(eid);
         }
     }
-    
+
     private static final double VerticalMargin = 0.25;
     private static final double VerticalSpacing = 0.25;
     private static final double HorizontalMargin = 0.5;
     private static final double HorizontalSpacing = 0.25;
-    
 
     /**
      * Position all internal components of entity eid
      *
-     * @param eid  identifier of a container of zero or more components
+     * @param eid identifier of a container of zero or more components
      *
      */
-    private void positionComponentsOf(EntityIdentifier eid)
-    {
+    private void positionComponentsOf(EntityIdentifier eid) {
         Entity e = entities.get(eid);
-        //System.err.println ("Layout: positioning components of " + eid);
+        // System.err.println ("Layout: positioning components of " + eid);
         int maxHeight = -1;
-        for (EntityIdentifier cEID: e.getComponents()) {
+        for (EntityIdentifier cEID : e.getComponents()) {
             positionComponentsOf(cEID);
         }
         double yOffset = VerticalMargin;
@@ -305,41 +294,38 @@ public class Layout  {
             // Leave room at the top for the label and value
             yOffset = 1.0 + VerticalMargin + VerticalSpacing;
             yAddition = 1.0 + VerticalSpacing;
-            minWidth = 2* HorizontalMargin + description.length();
+            minWidth = 2 * HorizontalMargin + description.length();
         }
         LocationInfo loc = locations.get(eid);
-        loc.setHeight(1+maxHeight);
-        Dimension2DDouble sz =
-            layoutComponents (e, loc, xOffset, yOffset-VerticalMargin);
-        sz.setSize(Math.max(minWidth, sz.getWidth())+HorizontalMargin, sz.getHeight()+yAddition);
+        loc.setHeight(1 + maxHeight);
+        Dimension2DDouble sz = layoutComponents(e, loc, xOffset, yOffset - VerticalMargin);
+        sz.setSize(Math.max(minWidth, sz.getWidth()) + HorizontalMargin, sz.getHeight() + yAddition);
         loc.setSize(sz);
     }
-    
-    
-    
+
     private void positionFixedEntities(Snapshot snapshot) {
         EntityIdentifier stack = snapshot.getActivationStack();
         LocationInfo sLoc = locations.get(stack);
         if (sLoc != null) {
-            sLoc.setLoc (new Point(0.25, 0.0));
+            sLoc.setLoc(new Point(0.25, 0.0));
             anchors.anchorAt(stack, new Point2D.Double(0.0, 0.0));
-        }        
+        }
     }
-
 
     /**
      * Assign initial positions to any unfixed globals
      * at top of screen alongside the activation stack
+     * 
      * @param set
      * @param xOffset
      */
-    private void positionGlobals (Set<EntityIdentifier> set, double xOffset) {
+    private void positionGlobals(Set<EntityIdentifier> set, double xOffset) {
         int count = 0;
         double y = 0.0;
         double height = 0.0;
         double x = 0.0;
         double maxWidth = 0.0;
-        for (EntityIdentifier eid: set) {
+        for (EntityIdentifier eid : set) {
             LocationInfo loc = locations.get(eid);
             if (loc != null && !loc.hasBeenPositioned()) {
                 ++count;
@@ -352,14 +338,13 @@ public class Layout  {
                     x += HorizontalMargin;
                 }
                 loc.setLoc(new Point(x + ReservedHorizontalMargin, y));
-                movable.add (loc);
+                movable.add(loc);
                 x += sz.getWidth();
                 maxWidth = Math.max(maxWidth, x);
                 height = Math.max(height, sz.getHeight());
             }
         }
     }
-
 
     /**
      * Check to see if any of the base entities in this scene were
@@ -371,17 +356,17 @@ public class Layout  {
      *
      * @param previous a prior scene
      * @return true if any base entities in this scene were not in the prior scene
-     *                 and therefore still have no location
+     *         and therefore still have no location
      */
     private boolean positionOldEntities(Layout previous) {
         if (previous != null) {
             boolean anyNew = false;
-            for (EntityIdentifier eid: baseObjectIDs) {
+            for (EntityIdentifier eid : baseObjectIDs) {
                 LocationInfo newLocationInfo = locations.get(eid);
                 boolean hasOldPosition = previous.baseObjectIDs.contains(eid);
                 anyNew = anyNew || !hasOldPosition;
                 if (!newLocationInfo.hasBeenPositioned()) {
-                    movable.add (newLocationInfo);
+                    movable.add(newLocationInfo);
                     if (hasOldPosition) {
                         Location formerLocation = previous.locations.get(eid).getLoc();
                         Location newLocation = new Point(formerLocation.getCoordinates());
@@ -395,7 +380,6 @@ public class Layout  {
         }
     }
 
-
     static private Random random = new Random();
     static private final double InitialXRange = 100.0;
     static private final double InitialYRange = 10.0;
@@ -403,12 +387,11 @@ public class Layout  {
     private class MinimizePositionScore implements OptimizationProblem {
 
         private ArrayList<Variable> variables;
-        
-        public MinimizePositionScore (ArrayList<Variable> vars)
-        {
+
+        public MinimizePositionScore(ArrayList<Variable> vars) {
             variables = vars;
         }
-        
+
         @Override
         public ArrayList<Variable> getVariables() {
             return variables;
@@ -418,39 +401,38 @@ public class Layout  {
         public double objectiveFunction() {
             return positionScore();
         }
-        
+
     }
-    
-    
+
     private void positionNewEntities() {
         ArrayList<Variable> newEntityVariables = new ArrayList<Variable>();
         HashSet<EntityIdentifier> newEntities = new HashSet<EntityIdentifier>();
         // Collect all the new entities
-        for (EntityIdentifier eid: baseObjectIDs) {
+        for (EntityIdentifier eid : baseObjectIDs) {
             LocationInfo locInfo = locations.get(eid);
             if (!locInfo.hasBeenPositioned()) {
-                newEntities.add (eid);
+                newEntities.add(eid);
             }
         }
-        
+
         boolean done = false;
         while (!done) {
             // Try to find a good position for at least one new entity
             done = true;
-            for (EntityIdentifier eid: entities.keySet()) {
+            for (EntityIdentifier eid : entities.keySet()) {
                 LocationInfo locInfo = locations.get(eid);
                 if (locInfo.isFixed(null)) {
                     // See if this already positioned entity has a connector to
                     // any of the new entities
                     Entity oldEntity = entities.get(eid);
-                    for (Connector c: oldEntity.getConnections()) {
+                    for (Connector c : oldEntity.getConnections()) {
                         if (newEntities.contains(c.getDestination())) {
                             double angle = c.getMinAngle() + random.nextDouble() * (c.getMaxAngle() - c.getMinAngle());
                             PerimeterPoint pp = new PerimeterPoint(angle, locInfo);
                             Point2D p = pp.getCoordinates();
                             double dx = p.getX() - locInfo.getBBox().getCenterX();
                             double dy = p.getY() - locInfo.getBBox().getCenterY();
-                            double d = Math.sqrt(dx*dx + dy*dy);
+                            double d = Math.sqrt(dx * dx + dy * dy);
                             if (d == 0.0)
                                 d = 1.0;
                             dx = dx / d;
@@ -458,26 +440,27 @@ public class Layout  {
                             double x = p.getX() + c.getPreferredLength() * dx;
                             double y = p.getY() + c.getPreferredLength() * dy;
                             LocationInfo newInfo = locations.get(c.getDestination());
-                            newInfo.setLoc(new Point(x,y));
+                            newInfo.setLoc(new Point(x, y));
                             done = false;
                             newEntities.remove(c.getDestination());
                             break;
                         }
                     }
                 }
-                
+
             }
-            
+
             if (done) {
                 // Fallback: random initial position
-                for (EntityIdentifier eid: newEntities) {
+                for (EntityIdentifier eid : newEntities) {
                     LocationInfo locInfo = locations.get(eid);
-                    double x = random.nextDouble() * (InitialXRange - ReservedHorizontalMargin) + ReservedHorizontalMargin;
-                    double y = random.nextDouble() * InitialYRange + InitialYRange/2.0;
-                    Point p = new Point(x,y);
-                    locInfo.setLoc (p);
-                    for (Variable v: p.getVariables()) {
-                        newEntityVariables.add (v);
+                    double x = random.nextDouble() * (InitialXRange - ReservedHorizontalMargin)
+                            + ReservedHorizontalMargin;
+                    double y = random.nextDouble() * InitialYRange + InitialYRange / 2.0;
+                    Point p = new Point(x, y);
+                    locInfo.setLoc(p);
+                    for (Variable v : p.getVariables()) {
+                        newEntityVariables.add(v);
                     }
                     done = false;
                     newEntities.remove(eid);
@@ -495,37 +478,36 @@ public class Layout  {
     private void repositionAllEntities() {
         ArrayList<Variable> entityVariables = new ArrayList<Variable>();
         // Copy the locations of all non-anchored base objects into
-        for (LocationInfo locInfo: movable) {
-            Location loc = locInfo.getLoc ();
-            for (Variable v: loc.getVariables()) {
-                entityVariables.add (v);
+        for (LocationInfo locInfo : movable) {
+            Location loc = locInfo.getLoc();
+            for (Variable v : loc.getVariables()) {
+                entityVariables.add(v);
             }
         }
         // Now solve the optimization problems to get a better position
         // for all entities.
         MinimizePositionScore optProblem = new MinimizePositionScore(entityVariables);
-        //System.err.println ("repositionAllEntities: " + entityVariables.size() + " variables");
+        // System.err.println ("repositionAllEntities: " + entityVariables.size() + "
+        // variables");
         Optimizer opt = new Optimizer(optProblem);
         opt.solve(20.0, 0.25, 10000);
     }
 
-
-
-
-
-        
     /**
-     * Arranges a list of components to pack a rectangular space whose upper left corner is
-     *    specified.
-     * @param container  entity whose components are to be inserted into the snapshot
-     * @param relativeTo  upper left corner of the region where the components should be placed
-     * @param xOffset distance from the left of relativeTo at which to start
-     * @param yOffset distance from the to of relativeTo at which to start
+     * Arranges a list of components to pack a rectangular space whose upper left
+     * corner is
+     * specified.
+     * 
+     * @param container  entity whose components are to be inserted into the
+     *                   snapshot
+     * @param relativeTo upper left corner of the region where the components should
+     *                   be placed
+     * @param xOffset    distance from the left of relativeTo at which to start
+     * @param yOffset    distance from the to of relativeTo at which to start
      */
-    private Dimension2DDouble layoutComponents
-           (Entity container, BoundedRegion relativeTo, 
+    private Dimension2DDouble layoutComponents(Entity container, BoundedRegion relativeTo,
             double xOffset, double yOffset) {
-        
+
         switch (container.getDirection()) {
             case Vertical:
                 return layoutComponentsVertically(container, relativeTo, xOffset, yOffset);
@@ -538,177 +520,180 @@ public class Layout  {
         }
 
     }
-    
+
     /**
-     * Arranges a list of components to pack a rectangular space whose upper left corner is
-     *    specified.
-     * @param container  entity whose components are to be inserted into the snapshot
-     * @param relativeTo  upper left corner of the region where the components should be placed
-     * @param xOffset distance from the left of relativeTo at which to start
-     * @param yOffset distance from the to of relativeTo at which to start
+     * Arranges a list of components to pack a rectangular space whose upper left
+     * corner is
+     * specified.
+     * 
+     * @param container  entity whose components are to be inserted into the
+     *                   snapshot
+     * @param relativeTo upper left corner of the region where the components should
+     *                   be placed
+     * @param xOffset    distance from the left of relativeTo at which to start
+     * @param yOffset    distance from the to of relativeTo at which to start
      */
-    private Dimension2DDouble layoutComponentsHorizontally
-           (Entity container, BoundedRegion relativeTo, 
+    private Dimension2DDouble layoutComponentsHorizontally(Entity container, BoundedRegion relativeTo,
             double xOffset, double yOffset) {
-        
-        ArrayList<LinkedList<EntityIdentifier>> rows = new ArrayList<LinkedList<EntityIdentifier>>();
 
         double x = HorizontalMargin;
         double height = 0;
-        for (int i = 0; i < rows.size(); ++i) {
-            LinkedList<EntityIdentifier> row = rows.get(i);
-                if (i > 0 && row.size() > 0) {
-                    x += container.getSpacing();
-                }
-                double y = VerticalMargin - VerticalSpacing;
-                double width = 0.0;
-                if (row.size() > 0) {
-                    for (EntityIdentifier eid: row) {
-                        y += VerticalSpacing;
-                        LocationInfo loc = locations.get(eid);
-                        Dimension2DDouble sz = loc.getSize();
-                        loc.setLoc(new RelativePoint(x+xOffset, y+yOffset, Connections.LU, relativeTo));
-                        y += sz.getHeight();
-                        width = Math.max(width, sz.getWidth());
-                    }
-                    height = Math.max(height, y + VerticalMargin);
-                    x += width;
-                }
+        double width = 0;
+        boolean first = true;
+        for (EntityIdentifier eid : container.getComponents()) {
+            if (!first) {
+                x += container.getSpacing();
             }
-            height += VerticalMargin;
-            x += HorizontalMargin;
-            return new Dimension2DDouble(x, height);
-            
-    }
-    
-    
-     /**
-     * Arranges a list of components to pack a rectangular space whose upper left corner is
-     *    specified.
-     * @param container  entity whose components are to be inserted into the snapshot
-     * @param relativeTo  upper left corner of the region where the components should be placed
-     * @param xOffset distance from the left of relativeTo at which to start
-     * @param yOffset distance from the to of relativeTo at which to start
-     */
-    private Dimension2DDouble layoutComponentsVertically
-           (Entity container, BoundedRegion relativeTo, 
-            double xOffset, double yOffset) {
-        
-        ArrayList<LinkedList<EntityIdentifier>> rows = new ArrayList<LinkedList<EntityIdentifier>>();
-
-            // Arrange components into several rows, each with
-            // maxComponentsPerRow columns.
-            int r = -1;
-            int c = container.getMaxComponentsPerRow();
-            for (EntityIdentifier eid: container.getComponents()) {
-                if (c >= container.getMaxComponentsPerRow()) {
-                    ++r;
-                    rows.add (new LinkedList<EntityIdentifier>());
-                    c = 0;
-                }
-                rows.get(r).add (eid);
-                ++c;
-            }
-
-                    // Compute the actual position within each row
+            first = false;
             double y = VerticalMargin;
-            double width = 0;
-            for (int i = 0; i < rows.size(); ++i) {
-                LinkedList<EntityIdentifier> row = rows.get(i);
-                if (i > 0 && row.size() > 0) {
-                    y += VerticalSpacing;
-                }
-                double x = HorizontalMargin - HorizontalSpacing;
-                double height = 0.0;
-                if (row.size() > 0) {
-                    for (EntityIdentifier eid: row) {
-                        x += HorizontalSpacing;
-                        LocationInfo loc = locations.get(eid);
-                        Dimension2DDouble sz = loc.getSize();
-                        loc.setLoc(new RelativePoint(x+xOffset, y+yOffset, Connections.LU, relativeTo));
-                        x += sz.getWidth();
-                        height = Math.max(height, sz.getHeight());
-                    }
-                    width = Math.max(width, x + HorizontalMargin);
-                    y += height;
-                }
-            }
-            width += HorizontalMargin;
-            y += VerticalMargin;
-            return new Dimension2DDouble(width, y);
+            LocationInfo loc = locations.get(eid);
+            Dimension2DDouble sz = loc.getSize();
+            loc.setLoc(new RelativePoint(x + xOffset, y + yOffset, Connections.LU, relativeTo));
+            y += sz.getHeight();
+            width = sz.getWidth();
+            height = Math.max(height, y + VerticalMargin);
+            x += width;
+        }
+        x += HorizontalMargin;
+        height += VerticalMargin;
+        return new Dimension2DDouble(x, height);
 
     }
-   
+
     /**
-     * Arranges a list of components to pack a rectangular space whose upper left corner is
-     *    specified.
-     * @param container  entity whose components are to be inserted into the snapshot
-     * @param relativeTo  upper left corner of the region where the components should be placed
-     * @param xOffset distance from the left of relativeTo at which to start
-     * @param yOffset distance from the to of relativeTo at which to start
+     * Arranges a list of components to pack a rectangular space whose upper left
+     * corner is
+     * specified.
+     * 
+     * @param container  entity whose components are to be inserted into the
+     *                   snapshot
+     * @param relativeTo upper left corner of the region where the components should
+     *                   be placed
+     * @param xOffset    distance from the left of relativeTo at which to start
+     * @param yOffset    distance from the to of relativeTo at which to start
      */
-    private Dimension2DDouble layoutComponentsInSquare
-           (Entity container, BoundedRegion relativeTo, 
+    private Dimension2DDouble layoutComponentsVertically(Entity container, BoundedRegion relativeTo,
             double xOffset, double yOffset) {
-        
-        ArrayList<LinkedList<EntityIdentifier>> rows = new ArrayList<LinkedList<EntityIdentifier>>();
+
+        // Arrange components into several rows, each with
+        // maxComponentsPerRow columns.
+        double y = VerticalMargin;
+        double width = 0;
+        boolean first = true;
+        for (EntityIdentifier eid : container.getComponents()) {
+            if (!first) {
+                y += container.getSpacing();
+            }
+            first = false;
+            double x = HorizontalMargin;
+            double height = 0.0;
+            LocationInfo loc = locations.get(eid);
+            Dimension2DDouble sz = loc.getSize();
+            loc.setLoc(new RelativePoint(x + xOffset, y + yOffset, Connections.LU, relativeTo));
+            x += sz.getWidth();
+            height = Math.max(height, sz.getHeight());
+            width = Math.max(width, x + HorizontalMargin);
+            y += height;
+        }
+        width += HorizontalMargin;
+        y += VerticalMargin;
+        return new Dimension2DDouble(width, y);
+    }
+
+    /**
+     * Arranges a list of components to pack a rectangular space.
+     * 
+     * @param container  entity whose components are to be inserted into the
+     *                   snapshot
+     * @param relativeTo upper left corner of the region where the components
+     *                   should be placed
+     * @param xOffset    distance from the left of relativeTo at which to start
+     * @param yOffset    distance from the to of relativeTo at which to start
+     */
+    private Dimension2DDouble layoutComponentsInSquare(Entity container, BoundedRegion relativeTo,
+            double xOffset, double yOffset) {
+
+        ArrayList<LinkedList<EntityIdentifier>> rows 
+            = new ArrayList<LinkedList<EntityIdentifier>>();
+        ArrayList<Double> rowHeights = new ArrayList<>();
+        ArrayList<Double> rowWidths = new ArrayList<>();
 
         // Apportion the components to different rows.
-            // Arranges a list of components to pack a rectangular space whose upper left corner is
-            //   specified.
-            int numRows = 0;
-            int r = 0;
-            rows.add(new LinkedList<EntityIdentifier>());
-            for (EntityIdentifier eid: container.getComponents()) {
-                int nextR = r+1;
-                rows.get(r).add (eid);
-                if (r >= numRows) {
-                    ++numRows;
-                    rows.add(new LinkedList<EntityIdentifier>());
-                    nextR = 0;
-                }
-                r = nextR;
-            }
-        
-        
-        // Compute the actual position within each row
-            double y = VerticalMargin;
-            double width = 0;
-            for (int i = 0; i < rows.size(); ++i) {
-                LinkedList<EntityIdentifier> row = rows.get(i);
-                if (i > 0 && row.size() > 0) {
-                    y += VerticalSpacing;
-                }
-                double x = HorizontalMargin - HorizontalSpacing;
-                double height = 0.0;
-                if (row.size() > 0) {
-                    for (EntityIdentifier eid: row) {
-                        x += HorizontalSpacing;
-                        LocationInfo loc = locations.get(eid);
-                        Dimension2DDouble sz = loc.getSize();
-                        loc.setLoc(new RelativePoint(x+xOffset, y+yOffset, Connections.LU, relativeTo));
-                        x += sz.getWidth();
-                        height = Math.max(height, sz.getHeight());
-                    }
-                    width = Math.max(width, x + HorizontalMargin);
-                    y += height;
+        // Arranges a list of components to pack a rectangular space.
+        int numRows = 0;
+        rows.add(new LinkedList<EntityIdentifier>());
+        rowHeights.add(0.0);
+        rowWidths.add(0.0);
+        for (EntityIdentifier eid : container.getComponents()) {
+            double totalRowHeight = sum(rowHeights);
+            double maxRowWidth = max(rowWidths);
+
+            // Suppose that we add a new row...
+            LocationInfo loc = locations.get(eid);
+            Dimension2DDouble sz = loc.getSize();
+            double h = totalRowHeight + sz.getHeight();
+            double w = Math.max(maxRowWidth, sz.getWidth());
+
+            double bestAreaSoFar = h*w;
+            double minHeightSoFar = h; 
+            int bestRowSoFar = numRows;
+
+            for (int r = 0; r < numRows; ++r) {
+                // Suppose that we add this to row r
+                double h0 = Math.max(rowHeights.get(r), sz.getHeight());
+                double w0 = Math.max(maxRowWidth, 
+                    rowWidths.get(r)+sz.getWidth());
+                double newArea = h0 * w0;
+                if (newArea < bestAreaSoFar || (newArea == bestAreaSoFar && h0 < minHeightSoFar)) {
+                    bestAreaSoFar = newArea;
+                    minHeightSoFar = h0;
+                    bestRowSoFar = r;
                 }
             }
-            width += HorizontalMargin;
-            y += VerticalMargin;
-            return new Dimension2DDouble(width, y);
+
+            if (bestRowSoFar < numRows) {
+                // Add this to an existing row.
+                rows.get(bestRowSoFar).add(eid);
+                double h1 = (bestRowSoFar > 0) ? container.getSpacing() : VerticalMargin;
+                h1 += sz.getHeight();
+                rowHeights.set(bestRowSoFar, 
+                    Math.max(h1, rowHeights.get(bestRowSoFar)));
+                double w1 = (rowWidths.get(bestRowSoFar) > 0.0) ? container.getSpacing() : HorizontalMargin;
+                w1 += sz.getWidth() + rowWidths.get(bestRowSoFar);
+                rowWidths.set(bestRowSoFar, w1);
+                loc.setLoc(new RelativePoint(w1 + xOffset, h1 + yOffset, Connections.LU, relativeTo));
+            }
+        }
+        double totalRowHeight = sum(rowHeights) + VerticalMargin;
+        double maxRowWidth = max(rowWidths) + HorizontalMargin;
+        return new Dimension2DDouble(maxRowWidth, totalRowHeight);
     }
-    
-    private double positionScore()
-    {
+
+    private double max(ArrayList<Double> values) {
+        double theMax = values.get(0);
+        for (double d: values) {
+            theMax = Math.max(theMax, d);
+        }
+        return theMax;
+    }
+
+    private double sum(ArrayList<Double> values) {
+        double sum = 0.0;
+        for (double d: values) {
+            sum += d;
+        }
+        return sum;
+    }
+
+    private double positionScore() {
         double obScore = 0.0;
         double connScore = 0.0;
-        for (EntityIdentifier eid: baseObjectIDs) {
+        for (EntityIdentifier eid : baseObjectIDs) {
             obScore += baseObjectScore(eid);
         }
-        for (EntityIdentifier eid: entities.keySet()) {
+        for (EntityIdentifier eid : entities.keySet()) {
             Entity e = entities.get(eid);
-            for (Connector conn: e.getConnections()) {
+            for (Connector conn : e.getConnections()) {
                 connScore += connectorScore(conn);
             }
         }
@@ -716,18 +701,14 @@ public class Layout  {
         return score;
     }
 
-
-
-
-
     private static double OverlapForceMultiplier = 10.0;
     private static double OverlapGutter = 1.0;
     private static double Gravity = 0.01;
     private static final float TextColorThreshold = 1.5f;
-    
+
     private final static double ReservedHorizontalMargin = 40;
-    
-    private double baseObjectScore (EntityIdentifier eid) {
+
+    private double baseObjectScore(EntityIdentifier eid) {
         /*
          * This is a piecewise linear function that peaks at M1*M2
          * when the center of two objects overlap and that falls to 0
@@ -742,12 +723,12 @@ public class Layout  {
                 LocationInfo otherLoc = locations.get(other);
                 Rectangle2D oBox = otherLoc.getBBox();
 
-                double dx0 = bBox.getWidth()/2.0 + oBox.getWidth()/2.0 + OverlapGutter;
-                double dy0 = bBox.getHeight()/2.0 + oBox.getHeight()/2.0 + OverlapGutter;
-                
+                double dx0 = bBox.getWidth() / 2.0 + oBox.getWidth() / 2.0 + OverlapGutter;
+                double dy0 = bBox.getHeight() / 2.0 + oBox.getHeight() / 2.0 + OverlapGutter;
+
                 double dx = Math.abs(bBox.getCenterX() - oBox.getCenterX());
                 double dy = Math.abs(bBox.getCenterY() - oBox.getCenterY());
-                
+
                 if (dx < dx0 && dy < dy0) {
                     // Boxes overlap or nearly overlap
                     double fx = 1.0 - dx / dx0;
@@ -757,12 +738,12 @@ public class Layout  {
                 }
             }
         }
-        
+
         // Artificial collision calculation to keep coordinates positive
         double dx = 0.0;
         double dy = 0.0;
         if (bBox.getX() < ReservedHorizontalMargin)
-            dx = ReservedHorizontalMargin-bBox.getX();
+            dx = ReservedHorizontalMargin - bBox.getX();
         else
             dx = 0.0;
         if (bBox.getY() < 0)
@@ -770,65 +751,58 @@ public class Layout  {
         else
             dy = 0.0;
         score += dx + dy;
-        
+
         // Gravity pulls all objects gently towards 0,0
         double gravity = Math.abs(bBox.getX() - HorizontalMargin) + Math.abs(bBox.getY() - VerticalMargin);
         score += Gravity * gravity;
-        
+
         return score;
     }
 
-    
-
     private static final double TorsionTensionRatio = 5.0;
 
-    private double connectorScore(Connector conn)
-    {
+    private double connectorScore(Connector conn) {
         EntityIdentifier destination = conn.getDestination();
         EntityIdentifier source = conn.getSource();
-        
+
         if (destination.equals(EntityIdentifier.nullID()) || destination.equals(source))
             return 0.0;
-        
+
         LocationInfo destInfo = locations.get(destination);
         LocationInfo sourceInfo = locations.get(source);
-        
+
         Location destCenter = new RelativePoint(0.0, 0.0, Connections.CC, destInfo);
         Location sourceCenter = new RelativePoint(0.0, 0.0, Connections.CC, sourceInfo);
 
-        Location sourceExitLoc = new ClosestPointOnPerimeter(sourceInfo, destCenter, conn.getMinAngle(), conn.getMaxAngle());
+        Location sourceExitLoc = new ClosestPointOnPerimeter(sourceInfo, destCenter, conn.getMinAngle(),
+                conn.getMaxAngle());
         Location destEntryLoc = new ClosestPointOnPerimeter(destInfo, sourceCenter, 0.0, 360.0);
 
-        Point2D sourceCenterPt = new Point2D.Double (sourceInfo.getBBox().getCenterX(), sourceInfo.getBBox().getCenterY());
+        Point2D sourceCenterPt = new Point2D.Double(sourceInfo.getBBox().getCenterX(),
+                sourceInfo.getBBox().getCenterY());
         Point2D sourceExit = sourceExitLoc.getCoordinates();
         Point2D destEntry = destEntryLoc.getCoordinates();
 
         double len = sourceExit.distance(destEntry);
-        double tension = Math.abs (len - conn.getPreferredLength());
-        
+        double tension = Math.abs(len - conn.getPreferredLength());
+
         double dx1 = sourceExit.getX() - sourceCenterPt.getX();
         double dy1 = sourceExit.getY() - sourceCenterPt.getY();
-        
-        double d1 = Math.sqrt(dx1*dx1 + dy1*dy1);
+
+        double d1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
         if (d1 == 0.0)
             d1 = 1.0;
-        
+
         double dx2 = destEntry.getX() - sourceExit.getX();
         double dy2 = destEntry.getY() - sourceExit.getY();
-        
-        double d2 = Math.sqrt(dx2*dx2 + dy2*dy2);
+
+        double d2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
         if (d2 == 0.0)
             d2 = 1.0;
-        
-        double torsion = 1.0 - (dx1*dx2 + dy1*dy2) / (d1*d2);
+
+        double torsion = 1.0 - (dx1 * dx2 + dy1 * dy2) / (d1 * d2);
         return TorsionTensionRatio * torsion + tension / conn.getElasticity();
     }
-    
-    
-    
-
-    
-
 
     /**
      * Convert this state model to a DataPicture suitable for tweening and drawing.
@@ -837,64 +811,66 @@ public class Layout  {
      */
     public Frame toPicture() {
         Frame result = new Frame(descriptor, sourceLoc, this);
-        for (EntityIdentifier eid: entities.keySet()) {
-            renderInto (eid, result);
+        for (EntityIdentifier eid : entities.keySet()) {
+            renderInto(eid, result);
         }
         return result;
     }
 
     /**
      * Render this entity, and its outgoing connections in a frame
-     * @param eid  ID of the entity to be rendered
-     * @param frame  the frame into which the entity should be rendered
+     * 
+     * @param eid   ID of the entity to be rendered
+     * @param frame the frame into which the entity should be rendered
      */
     private void renderInto(EntityIdentifier eid, Frame frame) {
         Entity e = entities.get(eid);
         LocationInfo loc = locations.get(eid);
-        
+
         Point2D p = loc.getLoc().getCoordinates();
-        float xx = (float)p.getX();
-        float yy = (float)p.getY();
+        float xx = (float) p.getX();
+        float yy = (float) p.getY();
         Dimension2DDouble size = loc.getSize();
         int depth = loc.getHeight();
         Color color = e.getColor().toAWTColor();
         String description = e.getDescription();
-        
+
         // background box
         frame.add(
                 new Box(eid + "__box",
-                    xx, yy, (float)size.getWidth(), (float)size.getHeight(),
-                    color, 2*depth+2));
-
+                        xx, yy, (float) size.getWidth(), (float) size.getHeight(),
+                        color, 2 * depth + 2));
 
         float[] colorComponents = color.getRGBColorComponents(null);
-        Color textColor = (colorComponents[0] + colorComponents[1] + colorComponents[2] >= TextColorThreshold )
-            ? Color.black : Color.white;
-        
+        Color textColor = (colorComponents[0] + colorComponents[1] + colorComponents[2] >= TextColorThreshold)
+                ? Color.black
+                : Color.white;
+
         // Text value
         if (description.length() > 0) {
             frame.add(
                     new Text(eid + "__value", description,
-                            xx + (float)size.getWidth()/2.0f - ((float)description.length())/2.0f,
-                            yy + (float)VerticalMargin,
-                            textColor, 2*depth+1));
+                            xx + (float) size.getWidth() / 2.0f - ((float) description.length()) / 2.0f,
+                            yy + (float) VerticalMargin,
+                            textColor, 2 * depth + 1));
         }
         int connectorNum = 0;
-        for (Connector connector: e.getConnections()) {
-            renderInto (connector, connectorNum, frame);
+        for (Connector connector : e.getConnections()) {
+            renderInto(connector, connectorNum, frame);
             ++connectorNum;
         }
     }
 
     /**
      * Render this connector in a frame
-     * @param eid  ID of the entity to be rendered
-     * @param frame  the frame into which the entity should be rendered
+     * 
+     * @param eid   ID of the entity to be rendered
+     * @param frame the frame into which the entity should be rendered
      */
     private void renderInto(Connector connector, int connectorNum, Frame frame) {
         EntityIdentifier destination = connector.getDestination();
         EntityIdentifier source = connector.getSource();
-        
+
         int componentNum = connector.getComponentIndex();
         if (componentNum >= 0 && !destination.equals(EntityIdentifier.nullID())) {
             // This pointer is actually for an internal component of the destination object.
@@ -904,11 +880,11 @@ public class Layout  {
                 destination = destComponents.get(componentNum);
             }
         }
-        
+
         LocationInfo sourceInfo = locations.get(source);
         Location sourceCenterLoc = new RelativePoint(0.0, 0.0, Connections.CC, sourceInfo);
         Point2D sourceCenter = sourceCenterLoc.getCoordinates();
-        
+
         String value = connector.getValue();
         if (value == null)
             value = "";
@@ -917,7 +893,7 @@ public class Layout  {
             label = "";
         Color color = connector.getColor().toAWTColor();
         String id = source + "[" + connectorNum + "]=>";
-        
+
         double minA = connector.getMinAngle();
         double maxA = connector.getMaxAngle();
         if (minA > maxA)
@@ -928,40 +904,40 @@ public class Layout  {
             Location sourceExitLoc = new PerimeterPoint(angle, sourceInfo);
             Point2D exitPoint = sourceExitLoc.getCoordinates();
             if ((maxA - minA <= 45.0))
-                frame.add (new Arrow(id, true,
+                frame.add(new Arrow(id, true,
                         exitPoint, null, color, 0));
             if (label.length() > 0 || value.length() > 0) {
                 String description = label + ": " + value;
                 Point2D pLabel = getLabelLoc(exitPoint, null, sourceCenter);
                 frame.add(new Text(id + "*label", description,
-                        (float)pLabel.getX(), (float)pLabel.getY(),
+                        (float) pLabel.getX(), (float) pLabel.getY(),
                         Color.black, 0));
             }
         } else if (destination != source) {
             LocationInfo destInfo = locations.get(destination);
-            
+
             Location destCenterLoc = new RelativePoint(0.0, 0.0, Connections.CC, destInfo);
 
             Location sourceExitLoc = new ClosestPointOnPerimeter(sourceInfo, destCenterLoc,
-                        connector.getMinAngle(), connector.getMaxAngle());
+                    connector.getMinAngle(), connector.getMaxAngle());
             Location destEntryLoc = new ClosestPointOnPerimeter(destInfo, sourceCenterLoc,
-                        0.0, 360.0);
+                    0.0, 360.0);
 
             Point2D exitPoint = sourceExitLoc.getCoordinates();
             Point2D entryPoint = destEntryLoc.getCoordinates();
 
-            frame.add (new Arrow(id, (maxA - minA <= 45.0),
+            frame.add(new Arrow(id, (maxA - minA <= 45.0),
                     exitPoint, entryPoint, color, 0));
             if (label.length() > 0) {
                 Point2D pLabel = getLabelLoc(exitPoint, entryPoint, sourceCenter);
                 frame.add(new Text(id + "*label", label + ":",
-                        (float)pLabel.getX(), (float)pLabel.getY(),
+                        (float) pLabel.getX(), (float) pLabel.getY(),
                         Color.black, 0));
             }
             if (value.length() > 0) {
                 Point2D pValue = getValueLoc(exitPoint, entryPoint, sourceCenter);
                 frame.add(new Text(id + "*value", value,
-                        (float)pValue.getX(), (float)pValue.getY(),
+                        (float) pValue.getX(), (float) pValue.getY(),
                         Color.black, 0));
             }
         } else {
@@ -976,13 +952,13 @@ public class Layout  {
                 sense = 3;
             else if (exitPoint.getY() >= sourceBox.getMaxY())
                 sense = 2;
-            frame.add (new ArrowToSelf(id, (maxA - minA <= 45.0),
-                        exitPoint, sense, color, 0));
+            frame.add(new ArrowToSelf(id, (maxA - minA <= 45.0),
+                    exitPoint, sense, color, 0));
             if (label.length() > 0 || value.length() > 0) {
                 String description = label + ": " + value;
                 Point2D pLabel = getLabelLoc(exitPoint, exitPoint, sourceCenter);
                 frame.add(new Text(id + "*label", description,
-                        (float)pLabel.getX(), (float)pLabel.getY(),
+                        (float) pLabel.getX(), (float) pLabel.getY(),
                         Color.black, 0));
             }
         }
@@ -995,7 +971,7 @@ public class Layout  {
             dx = -dx;
         if (exitPoint.getY() < sourceCenter.getY() + 0.1)
             dy = -dy;
-        return new Point2D.Double (exitPoint.getX() + dx, exitPoint.getY() + dy);
+        return new Point2D.Double(exitPoint.getX() + dx, exitPoint.getY() + dy);
     }
 
     private Point2D getValueLoc(Point2D exitPoint, Point2D entryPoint, Point2D sourceCenter) {
@@ -1005,21 +981,24 @@ public class Layout  {
         else {
             double x = exitPoint.getX() + frac * (entryPoint.getX() - exitPoint.getX());
             double y = exitPoint.getY() + frac * (entryPoint.getY() - exitPoint.getY());
-            return new Point2D.Double (x, y);
+            return new Point2D.Double(x, y);
         }
     }
 
-
     /**
-     * Provided for testing purposes (and therefore restricted to package visibility)
+     * Provided for testing purposes (and therefore restricted to package
+     * visibility)
+     * 
      * @return the entities
      */
-    HashMap<EntityIdentifier, Entity > getEntities() {
+    HashMap<EntityIdentifier, Entity> getEntities() {
         return entities;
     }
 
     /**
-     * Provided for testing purposes (and therefore restricted to package visibility)
+     * Provided for testing purposes (and therefore restricted to package
+     * visibility)
+     * 
      * @return the entities
      */
     Dimension2DDouble getSizeOf(EntityIdentifier eid) {
@@ -1027,6 +1006,4 @@ public class Layout  {
         return loc.getSize();
     }
 
-    
-    
 }
