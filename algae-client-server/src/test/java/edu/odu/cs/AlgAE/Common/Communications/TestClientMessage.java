@@ -48,8 +48,8 @@ public class TestClientMessage {
 	
 	@Test
 	public void testCapturedOutputXML() {
-		String outp = "foobar";
-		writeReadTest (new CapturedOutputMessage(outp), outp);
+		String outP = "foobar";
+		writeReadTest (new CapturedOutputMessage(outP), outP);
 	}
 
 	@Test
@@ -76,7 +76,7 @@ public class TestClientMessage {
 	}
 
 	@Test
-	public void testpromptXML() {
+	public void testPromptXML() {
 		String prompt1 = "Enter a number:";
 		String prompt2 = "Enter a name:";
 		String pattern1 = "[0-9][0-9]*";
@@ -123,7 +123,7 @@ public class TestClientMessage {
 	public void setup()
 	{
 		Identifier id1 = new Identifier(1);
-		entity1a = new Entity(id1);
+		entity1a = new Entity(id1, "");
 		Identifier id2 = new Identifier(2);
 		entity2 = new Entity(id2, "label2");
 		entity1b = new Entity(id1, entity2, "component1");

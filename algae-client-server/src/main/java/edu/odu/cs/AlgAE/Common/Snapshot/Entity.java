@@ -30,30 +30,12 @@ public class Entity implements Serializable {
     private String label;
     private String value;
     private Color color;
-    private int maxComponentsPerRow;
     private Directions direction;
     private int spacing;
     private boolean closedOnConnections;
     
 
 
-    /**
-     * Create an entity representing a "standalone" object
-     * that is not a component of some larger entity
-     * @param id    object to be represented by this new entity
-     */
-    public Entity (Identifier id) {
-        components = new LinkedList<EntityIdentifier>();
-        connections = new LinkedList<Connector>();
-        this.entityIdentifier = new EntityIdentifier(id);
-        label = "";
-        value = "";
-        color = Color.lightGray;
-        maxComponentsPerRow = 1;
-        direction = Directions.Vertical;
-        spacing = 1;
-        closedOnConnections = false;
-    }
     
     /**
      * Create an entity representing a named "standalone" object
@@ -68,7 +50,6 @@ public class Entity implements Serializable {
         this.label = label;
         value = "";
         color = Color.lightGray;
-        maxComponentsPerRow = 1;
         direction = Directions.Vertical;
         spacing = 1;
         closedOnConnections = false;
@@ -90,7 +71,6 @@ public class Entity implements Serializable {
         label = componentLabel;
         value = "";
         color = Color.lightGray;
-        maxComponentsPerRow = 1;
         direction = Directions.Vertical;
         spacing = 1;
         closedOnConnections = false;
@@ -112,29 +92,12 @@ public class Entity implements Serializable {
         label = componentLabel;
         value = "";
         color = Color.lightGray;
-        maxComponentsPerRow = 1;
         direction = Directions.Vertical;
         spacing = 1;
         closedOnConnections = false;
     }
     
 
-    /**
-     * Create an entity that can be rebuilt via XML decoding
-     * @param entityIdentifier    object to be represented by this new entity
-     */
-    public Entity () {
-        components = new LinkedList<EntityIdentifier>();
-        connections = new LinkedList<Connector>();
-        this.entityIdentifier = new EntityIdentifier();
-        label = "";
-        value = "";
-        color = null;
-        maxComponentsPerRow = 1;
-        direction = Directions.Vertical;
-        spacing = 1;
-        closedOnConnections = false;
-    }
 
     
     public String getDescription()
@@ -186,7 +149,9 @@ public class Entity implements Serializable {
                     && e.label.equals(label)
                     && e.value.equals(value)
                     && e.color.equals(color)
-                    && e.maxComponentsPerRow == maxComponentsPerRow
+                    && e.direction == direction
+                    && e.spacing == spacing
+                    && e.closedOnConnections == closedOnConnections
                     && e.components.equals(components)
                     && e.connections.equals(connections);
             
@@ -259,12 +224,6 @@ public class Entity implements Serializable {
         this.color = new Color(color);
     }
 
-    /**
-     * @return the maxComponentsPerRow
-     */
-    public int getMaxComponentsPerRow() {
-        return maxComponentsPerRow;
-    }
 
     /**
      * @return the components

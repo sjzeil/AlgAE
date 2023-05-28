@@ -34,7 +34,7 @@ public class TestLayout {
     	s.setDescriptor("first snapshot");
     	s.setBreakpointLocation(new SourceLocation("foo.java", 1));
 
-    	Entity stack = new Entity(new Identifier(stackID));
+    	Entity stack = new Entity(new Identifier(stackID), "");
     	stack.setColor(Color.lightGray);
     	stack.setDirection(Entity.Directions.Vertical);
     	s.add(stack);
@@ -53,13 +53,13 @@ public class TestLayout {
     	s.add(fooAct);
     	stack.getComponents().add(fooAct.getEntityIdentifier());
     	
-    	Entity a = new Entity(new Identifier(aID));
+    	Entity a = new Entity(new Identifier(aID), "");
     	a.setLabel("A");
     	a.setValue("42");
     	s.add(a);
     	s.setGlobal(a.getEntityIdentifier(), true);
 
-    	Entity b = new Entity(new Identifier(bID));
+    	Entity b = new Entity(new Identifier(bID), "");
     	b.setLabel("B");
     	b.setValue("12");
     	s.add(b);
@@ -75,9 +75,9 @@ public class TestLayout {
     	return s;
     }
 
-	private static void checkvar (Map<EntityIdentifier, Entity> entities, int objID, 
+	private static void checkVar (Map<EntityIdentifier, Entity> entities, int objID, 
 			int cnt, String label, String value) {
-		assertEquals (cnt, countvar(entities, objID));
+		assertEquals (cnt, countVar(entities, objID));
 		Identifier oid = new Identifier(objID);
 		EntityIdentifier eid;
 		eid = new EntityIdentifier(oid, label);
@@ -89,7 +89,7 @@ public class TestLayout {
 			assertEquals(value, e.getValue());	
 	}
 
-	private static int countvar (Map<EntityIdentifier, Entity> entities, int objID) {
+	private static int countVar (Map<EntityIdentifier, Entity> entities, int objID) {
 		Identifier id = new Identifier (objID);
 		int count = 0;
 		for (EntityIdentifier eid: entities.keySet()) {
@@ -101,15 +101,15 @@ public class TestLayout {
 	}
 	
 	
-	private static void checksize (Layout scene, EntityIdentifier eid, String label, 
-			double minx, double maxx, double miny, double maxy) {
+	private static void checkSize (Layout scene, EntityIdentifier eid, String label, 
+			double minX, double maxX, double minY, double maxY) {
 		Dimension2DDouble sz = scene.getSizeOf(eid);
 		double w = sz.getWidth();
 		double h = sz.getHeight();
-		assertTrue (w >= minx);
-		assertTrue (w <= maxx);
-		assertTrue (h >= miny);
-		assertTrue (h <= maxy);
+		assertTrue (w >= minX);
+		assertTrue (w <= maxX);
+		assertTrue (h >= minY);
+		assertTrue (h <= maxY);
 	}
 
     @Test
@@ -128,9 +128,9 @@ public class TestLayout {
 		Layout scene = new Layout(snap, null, anchors);
 		Map<EntityIdentifier, Entity> entities =  scene.getEntities();
 		assertEquals (5, entities.keySet().size());
-		checkvar (entities, stackID, 1, null, null);
-		checkvar (entities, aID, 1, null, "42");
-		checksize (scene, new EntityIdentifier(new Identifier(aID)), "A", 6, 9, 1, 2);
+		checkVar (entities, stackID, 1, null, null);
+		checkVar (entities, aID, 1, null, "42");
+		checkSize (scene, new EntityIdentifier(new Identifier(aID)), "A", 6, 9, 1, 2);
 	}
 
     @Test
@@ -142,9 +142,9 @@ public class TestLayout {
 		Layout scene = new Layout(snap2, scene0, anchors);
 		Map<EntityIdentifier, Entity> entities =  scene.getEntities();
 		assertEquals (5, entities.keySet().size());
-		checkvar (entities, stackID, 1, null, null);
-		checkvar (entities, aID, 1, null, "42");
-		checksize (scene, new EntityIdentifier(new Identifier(aID)), "A", 6, 9, 1, 2);
+		checkVar (entities, stackID, 1, null, null);
+		checkVar (entities, aID, 1, null, "42");
+		checkSize (scene, new EntityIdentifier(new Identifier(aID)), "A", 6, 9, 1, 2);
 	}
 
 

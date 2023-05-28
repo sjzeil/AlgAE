@@ -73,8 +73,8 @@ public class DemoClientVisually  implements ServerCommunications {
 
 
 	private Snapshot generateSnapshot1(int k) {
-		Entity stk = new Entity(new Identifier(1));
-		Entity global = new Entity(new Identifier(2));
+		Entity stk = new Entity(new Identifier(1), "");
+		Entity global = new Entity(new Identifier(2), "");
 		stk.setColor(Color.magenta);
 		stk.setValue("stack");
 		global.setLabel("g");
@@ -93,9 +93,9 @@ public class DemoClientVisually  implements ServerCommunications {
 
 	
 	private Snapshot generateSnapshot2(int k) {
-		Entity stk = new Entity(new Identifier(1));
-		Entity global = new Entity(new Identifier(2));
-		Entity heapObj = new Entity(new Identifier(3));
+		Entity stk = new Entity(new Identifier(1), "");
+		Entity global = new Entity(new Identifier(2), "");
+		Entity heapObj = new Entity(new Identifier(3), "");
 		Entity component = new Entity(new Identifier(4), heapObj, "component");
 		stk.setColor(Color.magenta);
 		stk.setValue("activation stack");
@@ -159,12 +159,12 @@ public class DemoClientVisually  implements ServerCommunications {
 				script.add (msg);
 				lastSnap = snap;
 			}
-			PromptForInputMessage pmsg = new PromptForInputMessage("Enter a number", "-?[0-9]+");
-			script.add(pmsg);
+			PromptForInputMessage pMsg = new PromptForInputMessage("Enter a number", "-?[0-9]+");
+			script.add(pMsg);
 		} else if (kind.equals(ServerMessageTypes.InputSupplied.toString())) {
 			if (message.getDetail().startsWith("-")) {
-				ForceShutDownMessage sdmsg = new ForceShutDownMessage("I didn't like that number!");
-				script.add (sdmsg);
+				ForceShutDownMessage shutdownMsg = new ForceShutDownMessage("I didn't like that number!");
+				script.add (shutdownMsg);
 			} else {
 				for (int i = 6; i < 10; ++i) {
 					Snapshot snap = generateSnapshot1(2*i);
@@ -178,8 +178,8 @@ public class DemoClientVisually  implements ServerCommunications {
 					script.add (msg);
 					lastSnap = snap;
 				}
-				CapturedOutputMessage cmsg = new CapturedOutputMessage("Completed " + algorithm + "\n");
-				script.add (cmsg);
+				CapturedOutputMessage capturedMsg = new CapturedOutputMessage("Completed " + algorithm + "\n");
+				script.add (capturedMsg);
 			}
 		} else if (kind.equals(ServerMessageTypes.ShutDown.toString())) {
 			System.err.println ("Shutdown received.");

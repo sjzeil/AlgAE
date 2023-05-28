@@ -25,12 +25,12 @@ public class TestSnapshot {
 	
 	void xmlTest (Object x, String mustContain1, String mustContain2)
 	{
-		ByteArrayOutputStream byout = new ByteArrayOutputStream();
-		XMLEncoder out = new XMLEncoder(new BufferedOutputStream(byout));
+		ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+		XMLEncoder out = new XMLEncoder(new BufferedOutputStream(bytesOut));
 		out.setPersistenceDelegate(Snapshot.class, new Snapshot.SnapshotPersistenceDelegate());
 		out.writeObject(x);
 		out.close();
-		String xmlStr = byout.toString();
+		String xmlStr = bytesOut.toString();
 		assertTrue (xmlStr.contains(x.getClass().getSimpleName()));
 		if (mustContain1.length() > 0)
 			assertTrue (xmlStr.contains(mustContain1));
@@ -56,7 +56,7 @@ public class TestSnapshot {
 	public void setup()
 	{
 		Identifier id1 = new Identifier(1);
-		entity1a = new Entity(id1);
+		entity1a = new Entity(id1, "");
 		Identifier id2 = new Identifier(2);
 		entity2 = new Entity(id2, "label2");
 		entity1b = new Entity(id1, entity2, "component1");

@@ -178,10 +178,13 @@ public class Layout {
     }
 
     /**
-     * Create a new layout.
-     * 
-     * @param description
-     * @param loc
+     * Create a new layout, similar to basedOn but reflecting any
+     * anchorAt calls since the former layout was created.
+     *
+     * @param Snapshot the memory snapshot for which a layout is being created
+     * @param previous an existing layout
+     * @param anchors entities that have been assigned a fixed position on
+     *                the screen.
      */
     public Layout(Snapshot current, Layout previous, Anchors anchors) {
         this.anchors = anchors;
@@ -207,26 +210,6 @@ public class Layout {
         }
     }
 
-    /**
-     * Create a new layout, similar to basedOn but reflecting any
-     * anchorAt calls since the former layout was created.
-     *
-     * @param basedOn an existing layout
-     */
-    public Layout(Layout basedOn, Anchors anchors) {
-        this.anchors = anchors;
-        entities = basedOn.entities;
-        locations = new HashMap<EntityIdentifier, LocationInfo>();
-        baseObjectIDs = basedOn.baseObjectIDs;
-        movable = new LinkedList<LocationInfo>();
-        descriptor = basedOn.descriptor;
-        sourceLoc = basedOn.sourceLoc;
-
-        loadEntities(basedOn);
-        positionComponents();
-        positionOldEntities(basedOn);
-        repositionAllEntities();
-    }
 
     /**
      * Load entities from the snapshot into this scene, with
@@ -621,9 +604,6 @@ public class Layout {
         // Apportion the components to different rows.
         // Arranges a list of components to pack a rectangular space.
         int numRows = 0;
-        rows.add(new LinkedList<EntityIdentifier>());
-        rowHeights.add(0.0);
-        rowWidths.add(0.0);
         for (EntityIdentifier eid : container.getComponents()) {
             double totalRowHeight = sum(rowHeights);
             double maxRowWidth = max(rowWidths);
@@ -634,7 +614,7 @@ public class Layout {
             double h = totalRowHeight + sz.getHeight();
             double w = Math.max(maxRowWidth, sz.getWidth());
 
-            double bestAreaSoFar = h*w;
+            double bestDiffSoFar = Math.abs(h - w);
             double minHeightSoFar = h; 
             int bestRowSoFar = numRows;
 
@@ -643,9 +623,9 @@ public class Layout {
                 double h0 = Math.max(rowHeights.get(r), sz.getHeight());
                 double w0 = Math.max(maxRowWidth, 
                     rowWidths.get(r)+sz.getWidth());
-                double newArea = h0 * w0;
-                if (newArea < bestAreaSoFar || (newArea == bestAreaSoFar && h0 < minHeightSoFar)) {
-                    bestAreaSoFar = newArea;
+                double newDiff = Math.abs(h0 - w0);
+                if (newDiff < bestDiffSoFar || (newDiff == bestDiffSoFar && h0 < minHeightSoFar)) {
+                    bestDiffSoFar = newDiff;
                     minHeightSoFar = h0;
                     bestRowSoFar = r;
                 }
@@ -662,6 +642,16 @@ public class Layout {
                 w1 += sz.getWidth() + rowWidths.get(bestRowSoFar);
                 rowWidths.set(bestRowSoFar, w1);
                 loc.setLoc(new RelativePoint(w1 + xOffset, h1 + yOffset, Connections.LU, relativeTo));
+            } else {
+                // Add this to a new row
+                rows.add(new LinkedList<EntityIdentifier>());
+                rowHeights.add(h + container.getSpacing());
+                rowWidths.add(w);
+                rows.get(numRows).add(eid);
+                double x = HorizontalMargin;
+                double y = totalRowHeight + container.getSpacing();
+                loc.setLoc(new RelativePoint(x, y, Connections.LU, relativeTo));
+                ++numRows;
             }
         }
         double totalRowHeight = sum(rowHeights) + VerticalMargin;
@@ -669,7 +659,11 @@ public class Layout {
         return new Dimension2DDouble(maxRowWidth, totalRowHeight);
     }
 
+
     private double max(ArrayList<Double> values) {
+        if (values.size() == 0) {
+            return 0.0;
+        }
         double theMax = values.get(0);
         for (double d: values) {
             theMax = Math.max(theMax, d);
