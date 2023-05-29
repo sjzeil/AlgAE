@@ -30,7 +30,6 @@ import edu.odu.cs.AlgAE.Common.Communications.SnapshotMessage;
 import edu.odu.cs.AlgAE.Common.Communications.SourceCodeMessage;
 import edu.odu.cs.AlgAE.Common.Communications.StreamedClientCommunications;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
-import edu.odu.cs.AlgAE.Common.Snapshot.SnapshotDiff;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
@@ -334,18 +333,11 @@ public abstract class JavaStandAloneServer extends Server
         }
     }
 
-    /**
-     * Last snapshot sent - used as the basis for the next snapshot diff.
-     */
-    private Snapshot lastSnapshot = null;
-
     @Override
     public final void sendToClient(
             final Snapshot snap,
             final boolean completed) {
-        final SnapshotDiff diff = new SnapshotDiff(lastSnapshot, snap);
-        lastSnapshot = snap;
-        final SnapshotMessage msg = new SnapshotMessage(diff, completed);
+        final SnapshotMessage msg = new SnapshotMessage(snap, completed);
         sendToClient(msg);
     }
 

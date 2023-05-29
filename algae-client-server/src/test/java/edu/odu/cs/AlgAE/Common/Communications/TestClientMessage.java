@@ -16,7 +16,6 @@ import edu.odu.cs.AlgAE.Common.Snapshot.Connector;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
 import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
-import edu.odu.cs.AlgAE.Common.Snapshot.SnapshotDiff;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
 
 /**
@@ -151,9 +150,8 @@ public class TestClientMessage {
 
 	@Test
 	public void testSnapshotXML() {
-		SnapshotDiff sd = new SnapshotDiff(null, snap1);
-		writeReadTest (new SnapshotMessage(sd, true), "component1");
-		writeReadTest (new SnapshotMessage(sd, false), "link");
+		writeReadTest (new SnapshotMessage(snap1, true), "component1");
+		writeReadTest (new SnapshotMessage(snap1, false), "link");
 	}
 
 	

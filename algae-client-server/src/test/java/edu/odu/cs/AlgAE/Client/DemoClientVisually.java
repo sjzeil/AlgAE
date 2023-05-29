@@ -21,7 +21,6 @@ import edu.odu.cs.AlgAE.Common.Snapshot.Connector;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
 import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
-import edu.odu.cs.AlgAE.Common.Snapshot.SnapshotDiff;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
 
 /**
@@ -34,14 +33,12 @@ public class DemoClientVisually  implements ServerCommunications {
 	
 	private GUIClient client;
 	private ArrayBlockingQueue<ClientMessage> script;
-	private Snapshot lastSnap;
-
+	
 	
 	
 
 	public DemoClientVisually() {
 		script = new ArrayBlockingQueue<ClientMessage>(40);
-		lastSnap = null;
 	}
 
 
@@ -140,24 +137,18 @@ public class DemoClientVisually  implements ServerCommunications {
 						"public static void main (String[] args) {\n"
 								+ "  new TestClientVisually().runAsMain();\n}");
 			script.add(msg2);
-			Snapshot snap = new Snapshot();;
-			SnapshotDiff sd = new SnapshotDiff(null, snap);
-			SnapshotMessage msg3 = new SnapshotMessage(sd, true);
+			Snapshot snap = new Snapshot();
+			SnapshotMessage msg3 = new SnapshotMessage(snap, true);
 			script.add (msg3);
-			lastSnap = snap;
 		} else if (kind.equals(ServerMessageTypes.MenuItemSelected.toString())) {
 			algorithm = message.getDetail();
 			for (int i = 0; i < 5; ++i) {
 				Snapshot snap = generateSnapshot1(2*i);
-				SnapshotDiff sd = new SnapshotDiff(lastSnap, snap);
-				SnapshotMessage msg = new SnapshotMessage(sd, false);
+				SnapshotMessage msg = new SnapshotMessage(snap, false);
 				script.add (msg);
-				lastSnap = snap;
 				snap = generateSnapshot2(2*i+1);
-				sd = new SnapshotDiff(lastSnap, snap);
-				msg = new SnapshotMessage(sd, false);
+				msg = new SnapshotMessage(snap, false);
 				script.add (msg);
-				lastSnap = snap;
 			}
 			PromptForInputMessage pMsg = new PromptForInputMessage("Enter a number", "-?[0-9]+");
 			script.add(pMsg);
@@ -168,15 +159,11 @@ public class DemoClientVisually  implements ServerCommunications {
 			} else {
 				for (int i = 6; i < 10; ++i) {
 					Snapshot snap = generateSnapshot1(2*i);
-					SnapshotDiff sd = new SnapshotDiff(lastSnap, snap);
-					SnapshotMessage msg = new SnapshotMessage(sd, false);
+					SnapshotMessage msg = new SnapshotMessage(snap, false);
 					script.add (msg);
-					lastSnap = snap;
 					snap = generateSnapshot2(2*i+1);
-					sd = new SnapshotDiff(lastSnap, snap);
-					msg = new SnapshotMessage(sd, i < 4);
+					msg = new SnapshotMessage(snap, i < 4);
 					script.add (msg);
-					lastSnap = snap;
 				}
 				CapturedOutputMessage capturedMsg = new CapturedOutputMessage("Completed " + algorithm + "\n");
 				script.add (capturedMsg);

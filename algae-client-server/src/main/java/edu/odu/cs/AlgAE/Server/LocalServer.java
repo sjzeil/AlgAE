@@ -30,7 +30,6 @@ import edu.odu.cs.AlgAE.Common.Communications.ServerMessage.ServerMessageTypes;
 import edu.odu.cs.AlgAE.Common.Communications.SnapshotMessage;
 import edu.odu.cs.AlgAE.Common.Communications.SourceCodeMessage;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
-import edu.odu.cs.AlgAE.Common.Snapshot.SnapshotDiff;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
@@ -418,16 +417,13 @@ public class LocalServer extends Server implements AnimationContext, ContextAwar
     }
 
 
-    private Snapshot lastSnapshot = null;
 
     /**
      * Send a snapshot via the communications established for this animation
      */
     public void sendToClient (Snapshot snap, boolean completed)
     {
-        SnapshotDiff diff = new SnapshotDiff(lastSnapshot, snap);
-        lastSnapshot = snap;
-        SnapshotMessage msg = new SnapshotMessage(diff, completed);
+        SnapshotMessage msg = new SnapshotMessage(snap, completed);
         sendToClient(msg);
     }
 

@@ -3,7 +3,7 @@
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
-import edu.odu.cs.AlgAE.Common.Snapshot.SnapshotDiff;
+import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 
 /**
  * Indicates that the animation has reached a breakpoint and has prepared a snapshot
@@ -15,13 +15,13 @@ import edu.odu.cs.AlgAE.Common.Snapshot.SnapshotDiff;
 public class SnapshotMessage extends ClientMessage {
 
     
-    private SnapshotDiff snapshot;
+    private Snapshot snapshot;
     private boolean menuItemCompleted;
     
     /**
      * Create a snapshot message
      */
-    public SnapshotMessage(SnapshotDiff snap, boolean menuItemCompleted) {
+    public SnapshotMessage(Snapshot snap, boolean menuItemCompleted) {
         super("Snapshot");
         snapshot = snap;
         this.menuItemCompleted = menuItemCompleted;
@@ -39,14 +39,14 @@ public class SnapshotMessage extends ClientMessage {
     /**
      * @return the snapshot
      */
-    public SnapshotDiff getSnapshot() {
+    public Snapshot getSnapshot() {
         return snapshot;
     }
 
     /**
      * @param snapshot the snapshot to set
      */
-    public void setSnapshot(SnapshotDiff snapshot) {
+    public void setSnapshot(Snapshot snapshot) {
         this.snapshot = snapshot;
     }
 

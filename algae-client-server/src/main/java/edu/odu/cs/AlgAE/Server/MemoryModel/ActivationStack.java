@@ -44,8 +44,6 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
     private ArrayList<ActivationRecord> stack;
     
     
-    private CallStackRendering callStackRenderer;
-    
     private MemoryModel memory;
 
     
@@ -56,8 +54,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
         stack = new ArrayList<ActivationRecord>();
         stack.renderHorizontally(false);
         stack.setColor(Color.lightGray.darker());
-        callStackRenderer = new CallStackRendering();
-        render (ActivationStack.class, new CallStackRendering());
+        //render (ActivationStack.class, new CallStackRendering());
     }
     
     /**
@@ -316,77 +313,6 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
         while (stack.size() > 0 && stack.get(stack.size() - 1) != aRec) {
             stack.remove (stack.size() - 1);
         }
-    }
-
-    
-    
-    private class CallStackRendering implements Renderer<CallStackRendering>, CanBeRendered<CallStackRendering> {
-
-
-        /* (non-Javadoc)
-         * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getColor(java.lang.Object)
-         */
-        @Override
-        public Color getColor(CallStackRendering obj) {
-            return (stack.size() > 1) ? Color.DARK_GRAY : new Color(0.0f, 0.0f, 0.0f, 0.0f);
-        }
-
-        /* (non-Javadoc)
-         * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getComponents(java.lang.Object)
-         */
-        @Override
-        public List<Component> getComponents(CallStackRendering obj) {
-            LinkedList<Component> components = new LinkedList<Component>();
-            for (int i = 0; i < stack.size() - 1; ++i) {
-                components.add (new Component(stack.get(i+1)));
-            }
-            if (stack.size() == 1) {
-                ActivationRecord mainAR = stack.get(0);
-                return mainAR.getLocals();
-            }
-            return components;
-        }
-
-        /* (non-Javadoc)
-         * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getConnections(java.lang.Object)
-         */
-        @Override
-        public List<Connection> getConnections(CallStackRendering obj) {
-            return new LinkedList<Connection>();
-        }
-
-        /* (non-Javadoc)
-         * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getValue(java.lang.Object)
-         */
-        @Override
-        public String getValue(CallStackRendering obj) {
-            return "";
-        }
-
-        @Override
-        public Renderer<CallStackRendering> getRenderer() {
-            return this;
-        }
-
-        @Override
-        public Directions getDirection() {
-            if (stack.size() > 1) {
-                return Directions.Vertical;
-            } else {
-                return Directions.Square;
-            }
-        }
-
-        @Override
-        public Double getSpacing() {
-            return Renderer.DefaultSpacing;
-        }
-
-        @Override
-        public Boolean getClosedOnConnections() {
-            return false;
-        }
-
     }
 
 

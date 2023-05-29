@@ -51,7 +51,6 @@ import edu.odu.cs.AlgAE.Common.Communications.ServerMessage.ServerMessageTypes;
 import edu.odu.cs.AlgAE.Common.Communications.SnapshotMessage;
 import edu.odu.cs.AlgAE.Common.Communications.SourceCodeMessage;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
-import edu.odu.cs.AlgAE.Common.Snapshot.SnapshotDiff;
 
 /**
  * The "normal" Animator for AlgAE animations, this portrays a series of
@@ -82,7 +81,7 @@ public class GUIClient extends Client {
     private final List<JMenuItem> algorithmItems;
 
     /**
-     * The menu of algorithm itmes.
+     * The menu of algorithm items.
      */
     private JMenu algorithmMenu;
     
@@ -100,7 +99,7 @@ public class GUIClient extends Client {
     
     /**
      * A panel for displaying synchronized views of the
-     * source code of the naimated functions.
+     * source code of the animated functions.
      */
     private SourcePane sourcePane;
 
@@ -448,11 +447,6 @@ public class GUIClient extends Client {
         private final HashMap<String, MessageAction> msgActions;
 
         /**
-         * Last snapshot received. Used to reverse incoming snapshot diffs.
-         */
-        private Snapshot lastSnap;
-
-        /**
          * Action for Ack messages.
          */
         private final MessageAction ackMessageReceived = new MessageAction() {
@@ -534,10 +528,8 @@ public class GUIClient extends Client {
             @Override
             public void doIt(final ClientMessage msg) {
                 final SnapshotMessage m = (SnapshotMessage) msg;
-                final SnapshotDiff diff = m.getSnapshot();
                 final boolean completed = m.isMenuItemCompleted();
-                final Snapshot snapshot = diff.reconstruct(lastSnap);
-                lastSnap = snapshot;
+                final Snapshot snapshot = m.getSnapshot();
                 try {
                     animator.add(snapshot);
                 } catch (final InterruptedException e) {
@@ -569,7 +561,6 @@ public class GUIClient extends Client {
         public ClientThread(final GUIClient theClient) {
             super("ClientThread");
             this.client = theClient;
-            lastSnap = new Snapshot();
             msgActions = new HashMap<String, MessageAction>();
             msgActions.put (AckMessage.class.getSimpleName(), 
                             ackMessageReceived);
