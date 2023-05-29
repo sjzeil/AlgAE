@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
@@ -60,12 +61,6 @@ public class TransitionDemo extends LocalJavaAnimation {
 			return links;
 		}
 
-		@Override
-		public int getMaxComponentsPerRow(Node obj) {
-			return 3;
-		}
-
-		
 		public Node (String data, Node lft, Node rt)
 		{
 			this.data = data;
@@ -92,6 +87,21 @@ public class TransitionDemo extends LocalJavaAnimation {
 		@Override
 		public String getValue(Node obj) {
 			return data;
+		}
+
+		@Override
+		public Directions getDirection() {
+			return Directions.Square;
+		}
+
+		@Override
+		public Double getSpacing() {
+			return 4.0 * Renderer.DefaultSpacing;
+		}
+
+		@Override
+		public Boolean getClosedOnConnections() {
+			return true;
 		}
 		
 	}

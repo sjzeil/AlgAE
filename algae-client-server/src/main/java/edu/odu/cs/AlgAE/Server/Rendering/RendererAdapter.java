@@ -6,6 +6,7 @@ package edu.odu.cs.AlgAE.Server.Rendering;
 import java.awt.Color;
 import java.util.List;
 
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 
@@ -42,19 +43,27 @@ public abstract class RendererAdapter<T> implements Renderer<T> {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getMaxComponentsPerRow(java.lang.Object)
-     */
-    @Override
-    public int getMaxComponentsPerRow(T obj) {
-        return -1;
-    }
 
     /* (non-Javadoc)
-     * @see eedu.odu.cs.AlgAE.Server.Rendering.Renderer#getValue(java.lang.Object)
+     * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getValue(java.lang.Object)
      */
     @Override
     public String getValue(T obj) {
+        return null;
+    }
+
+    @Override
+    public Directions getDirection() {
+        return null;
+    }
+
+    @Override
+    public Double getSpacing() {
+        return null;
+    }
+
+    @Override
+    public Boolean getClosedOnConnections() {
         return null;
     }
 

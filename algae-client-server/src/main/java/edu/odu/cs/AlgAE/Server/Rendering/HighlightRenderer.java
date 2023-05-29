@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.util.List;
 
 import edu.odu.cs.AlgAE.Animations.AnimationContext;
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 
@@ -24,9 +25,9 @@ public class HighlightRenderer<T> implements ObjectRenderer<T> {
     /**
      *
      */
-    public HighlightRenderer(T objToHighlight, AnimationContext contxt) {
+    public HighlightRenderer(T objToHighlight, AnimationContext theContext) {
         toRender = objToHighlight;
-        context = contxt;
+        context = theContext;
         passThru = false;
         color = null;
     }
@@ -34,9 +35,9 @@ public class HighlightRenderer<T> implements ObjectRenderer<T> {
     /**
      *
      */
-    public HighlightRenderer(T objToHighlight, Color newColor, AnimationContext contxt) {
+    public HighlightRenderer(T objToHighlight, Color newColor, AnimationContext theContext) {
         toRender = objToHighlight;
-        context = contxt;
+        context = theContext;
         passThru = false;
         color = newColor;
     }
@@ -82,12 +83,22 @@ public class HighlightRenderer<T> implements ObjectRenderer<T> {
     }
 
     @Override
-    public int getMaxComponentsPerRow(T obj) {
-        return -1;
+    public String getValue(T obj) {
+        return null;
     }
 
     @Override
-    public String getValue(T obj) {
+    public Directions getDirection() {
+        return null;
+    }
+
+    @Override
+    public Double getSpacing() {
+        return null;
+    }
+
+    @Override
+    public Boolean getClosedOnConnections() {
         return null;
     }
 

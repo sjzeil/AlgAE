@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
@@ -48,8 +49,8 @@ public class HubDemo extends LocalJavaAnimation {
 			edges.add (h);
 			lengths.add (len);
 			angles.add (angle);
-			ActivationRecord arec = LocalServer.activate(center);
-			arec.refParam("h", h).breakHere("added");
+			ActivationRecord aRec = LocalServer.activate(center);
+			aRec.refParam("h", h).breakHere("added");
 		}
 		
 		public void clear ()
@@ -57,8 +58,8 @@ public class HubDemo extends LocalJavaAnimation {
 			edges.clear();
 			lengths.clear();
 			angles.clear();
-			ActivationRecord arec = LocalServer.activate(this);
-			arec.breakHere("cleared");
+			ActivationRecord aRec = LocalServer.activate(this);
+			aRec.breakHere("cleared");
 		}
 
 		@Override
@@ -83,11 +84,6 @@ public class HubDemo extends LocalJavaAnimation {
 		}
 
 		@Override
-		public int getMaxComponentsPerRow(Hub obj) {
-			return 1;
-		}
-
-		@Override
 		public String getValue(Hub obj) {
 			return "" + c;
 		}
@@ -101,6 +97,24 @@ public class HubDemo extends LocalJavaAnimation {
 		@Override
 		public Renderer<Hub> getRenderer() {
 			return this;
+		}
+
+
+		@Override
+		public Directions getDirection() {
+			return Directions.Vertical;
+		}
+
+
+		@Override
+		public Double getSpacing() {
+			return Renderer.DefaultSpacing;
+		}
+
+
+		@Override
+		public Boolean getClosedOnConnections() {
+			return false;
 		}
 		
 	}
@@ -128,10 +142,10 @@ public class HubDemo extends LocalJavaAnimation {
 		register ("add1", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord arec = LocalServer.activate(center);
-				arec.breakHere("Add 1");
+				ActivationRecord aRec = LocalServer.activate(center);
+				aRec.breakHere("Add 1");
 				center.add(new Hub('b'), 2, 5.0);
-				arec.breakHere("done");
+				aRec.breakHere("done");
 			}
 		});
 
@@ -139,13 +153,13 @@ public class HubDemo extends LocalJavaAnimation {
 		register ("add4", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord arec = LocalServer.activate(center);
-				arec.breakHere("Add 4");
+				ActivationRecord aRec = LocalServer.activate(center);
+				aRec.breakHere("Add 4");
 				center.add(new Hub('b'), 2, 5.0);
 				center.add(new Hub('c'), 4, 95.0);
 				center.add(new Hub('d'), 8, 185.0);
 				center.add(new Hub('e'), 12, 275.0);
-				arec.breakHere("done");
+				aRec.breakHere("done");
 			}
 		});
 

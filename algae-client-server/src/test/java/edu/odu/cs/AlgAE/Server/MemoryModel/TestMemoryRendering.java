@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
@@ -58,7 +59,7 @@ public class TestMemoryRendering {
     }
     
     
-	private void checkvar (Map<Identifier, LinkedList<Entity> > entities, Object obj, int len, String label, String value) {
+	private void checkVar (Map<Identifier, LinkedList<Entity> > entities, Object obj, int len, String label, String value) {
 		LinkedList<Entity> list = entities.get(new Identifier(obj));
 		assertNotNull(list);
 		assertEquals (len, list.size());
@@ -77,7 +78,7 @@ public class TestMemoryRendering {
 		Snapshot snap = memory.renderInto("description", new SourceLocation("foo.java", 23));
 		Map<Identifier, LinkedList<Entity> > entities =  snap.getEntities();
 		assertEquals (2, entities.keySet().size());
-		checkvar (entities, memory.getActivationStack(), 1, null, null);
+		checkVar (entities, memory.getActivationStack(), 1, null, null);
 	}
 
     @Test
@@ -89,8 +90,8 @@ public class TestMemoryRendering {
 		Snapshot snap = memory.renderInto("description", new SourceLocation("foo.java", 23));
 		Map<Identifier, LinkedList<Entity> > entities =  snap.getEntities();
 		assertEquals (3, entities.keySet().size());
-		checkvar (entities, callStack, 1, null, null);
-		checkvar (entities, fortyTwo, 1, "foo", "42");
+		checkVar (entities, callStack, 1, null, null);
+		checkVar (entities, fortyTwo, 1, "foo", "42");
 	}
 
 	private static class String2 implements Renderer<String2>, CanBeRendered<String2> {
@@ -129,8 +130,18 @@ public class TestMemoryRendering {
 		}
 
 		@Override
-		public int getMaxComponentsPerRow(String2 obj) {
-			return 1;
+		public Directions getDirection() {
+			return Directions.Vertical;
+		}
+
+		@Override
+		public Double getSpacing() {
+			return Renderer.DefaultSpacing;
+		}
+
+		@Override
+		public Boolean getClosedOnConnections() {
+			return false;
 		}
 		
 	}
@@ -147,10 +158,10 @@ public class TestMemoryRendering {
 		Snapshot snap = memory.renderInto("description", new SourceLocation("foo.java", 23));
 		Map<Identifier, LinkedList<Entity> > entities =  snap.getEntities();
 		assertEquals (5, entities.keySet().size());
-		checkvar (entities, callStack, 1, null, null);
-		checkvar (entities, fortyTwo, 1, "foo", "42");
-		checkvar (entities, dozen, 1, "dozen", "12");
-		checkvar (entities, twelve, 1, "comp", "12");
+		checkVar (entities, callStack, 1, null, null);
+		checkVar (entities, fortyTwo, 1, "foo", "42");
+		checkVar (entities, dozen, 1, "dozen", "12");
+		checkVar (entities, twelve, 1, "comp", "12");
 	}
 
 	@Test
@@ -165,10 +176,10 @@ public class TestMemoryRendering {
 		Snapshot snap = memory.renderInto("description", new SourceLocation("foo.java", 23));
 		Map<Identifier, LinkedList<Entity> > entities =  snap.getEntities();
 		assertEquals (6, entities.keySet().size());
-		checkvar (entities, callStack, 1, null, null);
-		checkvar (entities, fortyTwo, 1, "foo", "42");
-		checkvar (entities, dozen, 1, null, "12");
-		checkvar (entities, twelve, 1, "comp", "12");
+		checkVar (entities, callStack, 1, null, null);
+		checkVar (entities, fortyTwo, 1, "foo", "42");
+		checkVar (entities, dozen, 1, null, "12");
+		checkVar (entities, twelve, 1, "comp", "12");
 	}
 
 	@Test
@@ -182,8 +193,8 @@ public class TestMemoryRendering {
 		Snapshot snap = memory.renderInto("description", new SourceLocation("foo.java", 23));
 		Map<Identifier, LinkedList<Entity> > entities =  snap.getEntities();
 		assertEquals (4, entities.keySet().size());
-		checkvar (entities, callStack, 1, null, null);
-		checkvar (entities, fortyTwo, 2, "foo", "42");
-		checkvar (entities, dozen, 1, "dozen", "42");
+		checkVar (entities, callStack, 1, null, null);
+		checkVar (entities, fortyTwo, 2, "foo", "42");
+		checkVar (entities, dozen, 1, "dozen", "42");
 	}
 }

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
@@ -27,8 +28,8 @@ public class LinkedList<T>
     private LLNode last;
     private int theSize;
     
-    private RenderedReference<LLNode> firstref; 
-    private RenderedReference<LLNode> lastref; 
+    private RenderedReference<LLNode> firstRef; 
+    private RenderedReference<LLNode> lastRef; 
     private boolean showingBackLinks;
     private boolean showingFirstLast;
     
@@ -82,13 +83,23 @@ public class LinkedList<T>
         }
 
         @Override
-        public int getMaxComponentsPerRow(LLNode obj) {
-            return 1;
+        public Renderer<LLNode> getRenderer() {
+            return this;
         }
 
         @Override
-        public Renderer<LLNode> getRenderer() {
-            return this;
+        public Directions getDirection() {
+            return Directions.Vertical;
+        }
+
+        @Override
+        public Double getSpacing() {
+            return Renderer.DefaultSpacing;
+        }
+
+        @Override
+        public Boolean getClosedOnConnections() {
+            return false;
         }
         
     }
@@ -98,8 +109,8 @@ public class LinkedList<T>
         
         LLNode current;
         
-        RenderedReference<LinkedList<T>> theListref;
-        RenderedReference<LLNode> currentref;
+        RenderedReference<LinkedList<T>> theListRef;
+        RenderedReference<LLNode> currentRef;
 
         public LLIterator(LinkedList<T> inList, int index) {
             if (index >= inList.theSize-1) {
@@ -124,8 +135,8 @@ public class LinkedList<T>
                     throw new IndexOutOfBoundsException(index);
                 }
             }
-            theListref = new RenderedReference<LinkedList<T>>(inList);
-            currentref = new RenderedReference<LinkedList<T>.LLNode>(current);
+            theListRef = new RenderedReference<LinkedList<T>>(inList);
+            currentRef = new RenderedReference<LinkedList<T>.LLNode>(current);
         }
 
         @Override
@@ -277,9 +288,9 @@ public class LinkedList<T>
         @Override
         public List<Component> getComponents(LLIterator obj) {
             ArrayList<Component> components = new ArrayList<>();
-            components.add(new Component(theListref, "list"));
-            currentref.set(current);
-            components.add(new Component(currentref, "current"));
+            components.add(new Component(theListRef, "list"));
+            currentRef.set(current);
+            components.add(new Component(currentRef, "current"));
             return components;
         }
 
@@ -290,13 +301,23 @@ public class LinkedList<T>
         }
 
         @Override
-        public int getMaxComponentsPerRow(LLIterator obj) {
-            return 1;
+        public Renderer<LLIterator> getRenderer() {
+            return this;
         }
 
         @Override
-        public Renderer<LLIterator> getRenderer() {
-            return this;
+        public Directions getDirection() {
+            return Directions.Vertical;
+        }
+
+        @Override
+        public Double getSpacing() {
+            return Renderer.DefaultSpacing;
+        }
+
+        @Override
+        public Boolean getClosedOnConnections() {
+            return false;
         }
 
     }
@@ -311,8 +332,8 @@ public class LinkedList<T>
         super();
         first = last = null; 
         theSize = 0;
-        firstref = new RenderedReference<LLNode>(first, 80, 100);
-        lastref = new RenderedReference<LLNode>(last, 80, 100);
+        firstRef = new RenderedReference<LLNode>(first, 80, 100);
+        lastRef = new RenderedReference<LLNode>(last, 80, 100);
         showingBackLinks = true;
         showingFirstLast = true;
     }
@@ -328,8 +349,8 @@ public class LinkedList<T>
         for (T data: c) {
             add(data);
         }
-        firstref = new RenderedReference<>(first);
-        lastref = new RenderedReference<>(last);
+        firstRef = new RenderedReference<>(first);
+        lastRef = new RenderedReference<>(last);
         showingBackLinks = true;
         showingFirstLast = true;
     }
@@ -402,10 +423,10 @@ public class LinkedList<T>
     public List<Component> getComponents(LinkedList<T> obj) {
         java.util.LinkedList<Component> components = new java.util.LinkedList<>();
         if (showingFirstLast) {
-            firstref.set(first);
-            lastref.set(last);
-            components.add(new Component(firstref, "first"));
-            components.add(new Component(lastref, "last"));
+            firstRef.set(first);
+            lastRef.set(last);
+            components.add(new Component(firstRef, "first"));
+            components.add(new Component(lastRef, "last"));
         }
         return components;
     }
@@ -419,11 +440,7 @@ public class LinkedList<T>
         return connections;
     }
 
-    @Override
-    public int getMaxComponentsPerRow(LinkedList<T> obj) {
-        return 1;
-    }
-
+    
     @Override
     public Renderer<LinkedList<T>> getRenderer() {
         return this;
@@ -436,6 +453,31 @@ public class LinkedList<T>
 
     public void showFirstLast(boolean b) {
         showingFirstLast = b;
+    }
+
+
+    @Override
+    public boolean addAll(Collection<? extends T> arg0) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addAll'");
+    }
+
+
+    @Override
+    public Directions getDirection() {
+        return Directions.Vertical;
+    }
+
+
+    @Override
+    public Double getSpacing() {
+        return Renderer.DefaultSpacing;
+    }
+
+
+    @Override
+    public Boolean getClosedOnConnections() {
+        return false;
     }
 
 

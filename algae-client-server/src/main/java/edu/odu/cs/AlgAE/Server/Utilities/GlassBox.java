@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
@@ -63,13 +64,6 @@ public class GlassBox implements CanBeRendered<GlassBox>, Renderer<GlassBox> {
         return new LinkedList<Connection>();
     }
 
-    /* Use space-packing layout
-     * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getMaxComponentsPerRow(java.lang.Object)
-     */
-    @Override
-    public int getMaxComponentsPerRow(GlassBox obj) {
-        return 0;
-    }
 
     /* (non-Javadoc)
      * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getValue(java.lang.Object)
@@ -93,6 +87,21 @@ public class GlassBox implements CanBeRendered<GlassBox>, Renderer<GlassBox> {
     public void setComponents(List<Component> components) {
         this.components.clear();
         this.components.addAll(components);
+    }
+
+    @Override
+    public Directions getDirection() {
+        return Directions.Square;
+    }
+
+    @Override
+    public Double getSpacing() {
+        return 0.5;
+    }
+
+    @Override
+    public Boolean getClosedOnConnections() {
+        return false;
     }
 
     

@@ -6,6 +6,7 @@ package edu.odu.cs.AlgAE.Server.Rendering;
 import java.awt.Color;
 import java.util.List;
 
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 
@@ -16,12 +17,16 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 public class HorizontalRenderer<T> implements ObjectRenderer<T> {
 
     private T toRender;
+    private double spacing;
+    private boolean closed;
     
     /**
      *
      */
     public HorizontalRenderer(T objToHighlight) {
         toRender = objToHighlight;
+        spacing = Renderer.DefaultSpacing;
+        closed = false;
     }
 
     /**
@@ -29,6 +34,8 @@ public class HorizontalRenderer<T> implements ObjectRenderer<T> {
      */
     public HorizontalRenderer() {
         toRender = null;
+        spacing = Renderer.DefaultSpacing;
+        closed = false;
     }
 
     /* (non-Javadoc)
@@ -56,13 +63,23 @@ public class HorizontalRenderer<T> implements ObjectRenderer<T> {
     }
 
     @Override
-    public int getMaxComponentsPerRow(T obj) {
-        return 100;
+    public String getValue(T obj) {
+        return null;
     }
 
     @Override
-    public String getValue(T obj) {
-        return null;
+    public Directions getDirection() {
+        return Directions.Horizontal;
+    }
+
+    @Override
+    public Double getSpacing() {
+        return spacing;
+    }
+
+    @Override
+    public Boolean getClosedOnConnections() {
+        return closed;
     }
 
 }

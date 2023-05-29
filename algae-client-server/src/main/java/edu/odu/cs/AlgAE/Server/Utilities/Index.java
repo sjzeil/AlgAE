@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
@@ -145,20 +146,6 @@ public class Index implements CanBeRendered<Index>, Renderer<Index> {
         return conn;
     }
 
-    /**
-     * Indicates how components will be laid out within the box
-     * representing this object.  A return value of 1 will force all
-     * components to be laid out in a single vertical column. Larger
-     * return values will permit a more horizontal layout.
-     *
-     * @param obj
-     * @return max #components per row or a non-positive value to yield to other renderers
-     */
-            
-    public int getMaxComponentsPerRow(Index obj)
-    {
-        return 1;
-    }
     
 
     public void setColor(Color color) {
@@ -183,6 +170,21 @@ public class Index implements CanBeRendered<Index>, Renderer<Index> {
 
     public double getMinAngle() {
         return minAngle;
+    }
+
+    @Override
+    public Directions getDirection() {
+        return Directions.Vertical;
+    }
+
+    @Override
+    public Double getSpacing() {
+        return Renderer.DefaultSpacing;
+    }
+
+    @Override
+    public Boolean getClosedOnConnections() {
+        return false;  // Should this inherit from container?
     }
 
 }

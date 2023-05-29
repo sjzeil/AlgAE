@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
@@ -53,13 +54,23 @@ public class MinimalDemo extends LocalJavaAnimation {
 			}
 
 			@Override
-			public int getMaxComponentsPerRow(LLNode obj) {
-				return 1;
+			public String getValue(LLNode obj) {
+				return data;
 			}
 
 			@Override
-			public String getValue(LLNode obj) {
-				return data;
+			public Directions getDirection() {
+				return Directions.Vertical;
+			}
+
+			@Override
+			public Double getSpacing() {
+				return Renderer.DefaultSpacing;
+			}
+
+			@Override
+			public Boolean getClosedOnConnections() {
+				return false;
 			}
 
 		}
@@ -119,13 +130,23 @@ public class MinimalDemo extends LocalJavaAnimation {
 			}
 
 			@Override
-			public int getMaxComponentsPerRow(LList obj) {
-				return 1;
+			public String getValue(LList obj) {
+				return "";
 			}
 
 			@Override
-			public String getValue(LList obj) {
-				return "";
+			public Directions getDirection() {
+				return Directions.Vertical;
+			}
+
+			@Override
+			public Double getSpacing() {
+				return Renderer.DefaultSpacing;
+			}
+
+			@Override
+			public Boolean getClosedOnConnections() {
+				return false;
 			}
 
 		}
@@ -261,20 +282,20 @@ public class MinimalDemo extends LocalJavaAnimation {
 		register ("lots of locals", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord arec = LocalServer.activate(list);
-				//arec.breakHere("lots of locals").refVar("list", list);
-				//arec.breakHere("lots of locals").refVar("list", list).var("j", 1);
+				ActivationRecord aRec = LocalServer.activate(list);
+				//aRec.breakHere("lots of locals").refVar("list", list);
+				//aRec.breakHere("lots of locals").refVar("list", list).var("j", 1);
 				int[] array = new int[5];
 				for (int n = 0; n < 5; ++n)
 					array[n] = n;
-				//arec.breakHere("lots of locals").refVar("list", list).var("j", 1).var("array", array);
+				//aRec.breakHere("lots of locals").refVar("list", list).var("j", 1).var("array", array);
 				Index i = new Index(1, array);
-				//arec.breakHere("lots of locals").refVar("list", list).var("j", 1).var("array", array).var("i", i);
-				//arec.breakHere("lots of locals").refVar("list", list).var("j", 1).var("array", array).var("i", i).var("k", 4);
-				arec.refVar("list", list).var("j", 1).var("array", array).var("i", i).var("k", 4).breakHere("lots of locals");
+				//aRec.breakHere("lots of locals").refVar("list", list).var("j", 1).var("array", array).var("i", i);
+				//aRec.breakHere("lots of locals").refVar("list", list).var("j", 1).var("array", array).var("i", i).var("k", 4);
+				aRec.refVar("list", list).var("j", 1).var("array", array).var("i", i).var("k", 4).breakHere("lots of locals");
 				for (int n = 0; n < 5; ++n)
-					arec.var("array[" + n + "]", array[n]);
-				arec.breakHere("local expressions");
+					aRec.var("array[" + n + "]", array[n]);
+				aRec.breakHere("local expressions");
 			}
 		});
 		

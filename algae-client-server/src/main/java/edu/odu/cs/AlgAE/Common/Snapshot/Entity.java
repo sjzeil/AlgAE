@@ -31,7 +31,7 @@ public class Entity implements Serializable {
     private String value;
     private Color color;
     private Directions direction;
-    private int spacing;
+    private double spacing;
     private boolean closedOnConnections;
     
 
@@ -276,7 +276,7 @@ public class Entity implements Serializable {
      * 
      * @return the spacing
      */
-    public int getSpacing() {
+    public double getSpacing() {
         return spacing;
     }
 
@@ -285,7 +285,7 @@ public class Entity implements Serializable {
      * 
      * @param spacing the spacing to set
      */
-    public void setSpacing(int spacing) {
+    public void setSpacing(double spacing) {
         this.spacing = spacing;
     }
 

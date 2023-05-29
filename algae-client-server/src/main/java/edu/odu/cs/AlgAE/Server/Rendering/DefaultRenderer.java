@@ -5,6 +5,7 @@ import java.lang.reflect.Array;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 
@@ -61,19 +62,6 @@ public class DefaultRenderer<T> implements Renderer<T> {
         return new LinkedList<Connection>();
     }
 
-    @Override
-    public int getMaxComponentsPerRow(T obj) {
-        String className = obj.getClass().getName();
-        if (className.startsWith("[")) {
-            // This is an array
-            int cnt = 0;
-            while (cnt < className.length() && className.charAt(cnt) == '[')
-                ++cnt;
-            return (cnt % 2 == 0) ? 1 : 100;
-        } else {
-            return 1;
-        }
-    }
 
     @Override
     public String getValue(T obj) {
@@ -85,6 +73,24 @@ public class DefaultRenderer<T> implements Renderer<T> {
         } else {
             return obj.toString();
         }
+    }
+
+
+    @Override
+    public Directions getDirection() {
+        return Directions.Horizontal;
+    }
+
+
+    @Override
+    public Double getSpacing() {
+        return Renderer.DefaultSpacing;
+    }
+
+
+    @Override
+    public Boolean getClosedOnConnections() {
+        return false;
     }
 
 }

@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import edu.odu.cs.AlgAE.Animations.AnimationContext;
 import edu.odu.cs.AlgAE.Animations.ContextAware;
 import edu.odu.cs.AlgAE.Animations.SimulatedPrintStream;
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
 import edu.odu.cs.AlgAE.Server.LocalServer;
@@ -127,7 +128,7 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
      *
      * @param <T> data type being highlighted
      * @param dataValue a data value to be highlighted
-     * @return the activatio0n record to which this was applied
+     * @return the activation record to which this was applied
      */
     public final <T> ActivationRecord highlight (final T dataValue) {
         return render (new HighlightRenderer<T>(dataValue, context()));
@@ -140,7 +141,7 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
      * @param <T> data type being highlighted
      * @param dataValue a data value to be highlighted
      * @param c color to use in highlighting
-     * @return the activatio0n record to which this was applied
+     * @return the activation record to which this was applied
      */
     public final <T> ActivationRecord highlight (final T dataValue,
             final Color c) {
@@ -203,13 +204,13 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
     @SuppressWarnings("unchecked")
     public final
     <T> List<ObjectRenderer<T>> getObjectRenderers (final T obj) {
-        final LinkedList<ObjectRenderer<T>> rlist = new LinkedList<>();
+        final LinkedList<ObjectRenderer<T>> rList = new LinkedList<>();
         for (final ObjectRenderer<?> r: objectRenderers) {
             if (r.appliesTo() == obj) {
-                rlist.addLast((ObjectRenderer<T>) r);
+                rList.addLast((ObjectRenderer<T>) r);
             }
         }
-        return rlist;
+        return rList;
     }
 
 
@@ -319,13 +320,6 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
     }
 
     /**
-     * Default maximum number of components to show in a single row
-     * during horizontal rendering.
-     */
-    private static final int DEFAULT_MAX_COMPONENTS_PER_ROW = 12;
-
-
-    /**
      * A rendering class for activation records.
      *
      * @author zeil
@@ -362,9 +356,9 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
         @Override
         public List<Component> getComponents(final ActivationRecord obj) {
             List<Component> components = new LinkedList<Component>();
-            if (obj != getStack().topOfStack()) {
-                components = getComponents(false);
-            } else {
+            //if (obj != getStack().topOfStack()) {
+                //components = getComponents(false);
+            //} else {
                 final Component header = new Component(functionHeader);
                 components.add (header);
                 if (getLocals().size() > 0) {
@@ -372,7 +366,7 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
                     final Component localsComp = new Component(locals);
                     components.add (localsComp);
                 }
-            }
+            //}
             return components;
         }
 
@@ -409,15 +403,6 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
         @Override
         public List<Connection> getConnections(final ActivationRecord obj) {
             return new LinkedList<Connection>();
-        }
-
-        @Override
-        public int getMaxComponentsPerRow(final ActivationRecord obj) {
-            if (obj != getStack().topOfStack()) {
-                return DEFAULT_MAX_COMPONENTS_PER_ROW;
-            } else {
-                return 1;
-            }
         }
 
         @Override
@@ -464,17 +449,43 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
                 return new LinkedList<Connection>();
             }
 
-
-            @Override
-            public int getMaxComponentsPerRow(final FunctionHeader obj) {
-                return DEFAULT_MAX_COMPONENTS_PER_ROW;
-            }
-
             @Override
             public Renderer<FunctionHeader> getRenderer() {
                 return this;
             }
 
+            @Override
+            public Directions getDirection() {
+                return Directions.Horizontal;
+            }
+
+            @Override
+            public Double getSpacing() {
+                return Renderer.DefaultSpacing;
+            }
+
+            @Override
+            public Boolean getClosedOnConnections() {
+                return false;
+            }
+
+        }
+
+
+
+        @Override
+        public Directions getDirection() {
+            return Directions.Vertical;
+        }
+
+        @Override
+        public Double getSpacing() {
+            return Renderer.DefaultSpacing;
+        }
+
+        @Override
+        public Boolean getClosedOnConnections() {
+            return false;
         }
 
     }
@@ -513,7 +524,9 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
 
         @Override
         public final List<Component> getComponents(final FunctionLocals obj) {
-            return locals;
+            java.util.ArrayList<Component> components = new java.util.ArrayList<>();
+            components.addAll(locals);
+            return components;
         }
 
         @Override
@@ -523,13 +536,23 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
         }
 
         @Override
-        public final int getMaxComponentsPerRow(final FunctionLocals obj) {
-            return 0;
+        public final Renderer<FunctionLocals> getRenderer() {
+            return this;
         }
 
         @Override
-        public final Renderer<FunctionLocals> getRenderer() {
-            return this;
+        public Directions getDirection() {
+            return Directions.Square;
+        }
+
+        @Override
+        public Double getSpacing() {
+            return 2.0 * Renderer.DefaultSpacing;
+        }
+
+        @Override
+        public Boolean getClosedOnConnections() {
+            return false;
         }
 
     }
@@ -599,7 +622,7 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
             final String label,
             final Object value) {
         boolean found = false;
-        final Component newparam = new Component(value, label);
+        final Component newParam = new Component(value, label);
         for (int i = 0; i < scopes.size(); ++i) {
             final List<Component> scopeParams = scopes.get(i).getParams();
             for (final ListIterator<Component> p = scopeParams.listIterator();
@@ -607,12 +630,12 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
                 final Component param = p.next();
                 if (label.equals(param.getLabel())) {
                     found = true;
-                    p.set(newparam);
+                    p.set(newParam);
                 }
             }
         }
         if (!found) {
-            scopes.peek().getParams().add(newparam);
+            scopes.peek().getParams().add(newParam);
         }
         return this;
     }

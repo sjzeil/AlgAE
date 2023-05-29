@@ -1,13 +1,13 @@
 package edu.odu.cs.AlgAE.Server.MemoryModel;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 import edu.odu.cs.AlgAE.Animations.AnimationContext;
 import edu.odu.cs.AlgAE.Animations.ContextAware;
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
@@ -17,6 +17,7 @@ import edu.odu.cs.AlgAE.Server.Rendering.ObjectRenderer;
 import edu.odu.cs.AlgAE.Server.Rendering.Renderer;
 import edu.odu.cs.AlgAE.Server.Utilities.Index;
 import edu.odu.cs.AlgAE.Server.Utilities.SimpleReference;
+import edu.odu.cs.AlgAE.Server.Utilities.ArrayList;
 
 
 /**
@@ -40,7 +41,8 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 
 
     private HashMap<String, Renderer<?>> typeRenderers;
-    private List<ActivationRecord> stack;
+    private ArrayList<ActivationRecord> stack;
+    
     
     private CallStackRendering callStackRenderer;
     
@@ -52,6 +54,8 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
         memory = context;
         typeRenderers  = new HashMap<String, Renderer<?>>();
         stack = new ArrayList<ActivationRecord>();
+        stack.renderHorizontally(false);
+        stack.setColor(Color.lightGray.darker());
         callStackRenderer = new CallStackRendering();
         render (ActivationStack.class, new CallStackRendering());
     }
@@ -186,15 +190,15 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
     /**
      * Establish a rendering for all objects of the indicated class.
      * Note that there are several ways to establish renderings, and that
-     * these are resolved as describedi getRenderer(), above.
+     * these are resolved as described in getRenderer(), above.
      *
      * If a prior rendering has been established for this class, it is replaced by this call.
      * Unlike object renderings, class renderings are "global" and do not lose effect when
      * we return from an activation.
      *
      */
-    public <T> ActivationStack render(Class<?> aclass, Renderer<T> newRendering) {
-        typeRenderers.put (aclass.getName(), newRendering);
+    public <T> ActivationStack render(Class<?> aClass, Renderer<T> newRendering) {
+        typeRenderers.put (aClass.getName(), newRendering);
         return this;
     }
 
@@ -278,8 +282,8 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
     <T> void addObjectRenderers(CompoundRenderer<T> r, Identifier id,
             T obj) {
         if (stack.size() > 0) {
-            List<ObjectRenderer<T>> orlist = stack.get(stack.size() - 1).getObjectRenderers(obj);
-            for (ObjectRenderer<T> or: orlist) {
+            List<ObjectRenderer<T>> orList = stack.get(stack.size() - 1).getObjectRenderers(obj);
+            for (ObjectRenderer<T> or: orList) {
                 r.add (or);
             }
         }
@@ -287,16 +291,16 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 
     private <T> void addTypeRenderers(CompoundRenderer<T> compound, T obj) {
         Class<?> c = obj.getClass();
-        LinkedList<Renderer<T>> rlist = new LinkedList<Renderer<T>>();
+        LinkedList<Renderer<T>> rList = new LinkedList<Renderer<T>>();
         while (c != null) {
             String className = c.getName();
             @SuppressWarnings("unchecked")
             Renderer<T> r = (Renderer<T>)typeRenderers.get(className);
             if (r != null)
-                rlist.addFirst (r);
+                rList.addFirst (r);
             c = c.getSuperclass();
         }
-        for (Renderer<T> r: rlist) {
+        for (Renderer<T> r: rList) {
             compound.add(r);
         }
     }
@@ -308,8 +312,8 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 
 
 
-    public void popDownTo(ActivationRecord arec) {
-        while (stack.size() > 0 && stack.get(stack.size() - 1) != arec) {
+    public void popDownTo(ActivationRecord aRec) {
+        while (stack.size() > 0 && stack.get(stack.size() - 1) != aRec) {
             stack.remove (stack.size() - 1);
         }
     }
@@ -352,19 +356,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
         }
 
         /* (non-Javadoc)
-         * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getMaxComponentsPerRow(java.lang.Object)
-         */
-        @Override
-        public int getMaxComponentsPerRow(CallStackRendering obj) {
-            if (stack.size() > 1) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }
-
-        /* (non-Javadoc)
-         * @see eedu.odu.cs.AlgAE.Server.Rendering.Renderer#getValue(java.lang.Object)
+         * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getValue(java.lang.Object)
          */
         @Override
         public String getValue(CallStackRendering obj) {
@@ -374,6 +366,25 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
         @Override
         public Renderer<CallStackRendering> getRenderer() {
             return this;
+        }
+
+        @Override
+        public Directions getDirection() {
+            if (stack.size() > 1) {
+                return Directions.Vertical;
+            } else {
+                return Directions.Square;
+            }
+        }
+
+        @Override
+        public Double getSpacing() {
+            return Renderer.DefaultSpacing;
+        }
+
+        @Override
+        public Boolean getClosedOnConnections() {
+            return false;
         }
 
     }
@@ -393,8 +404,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
     @Override
     public List<Component> getComponents(ActivationStack obj) {
         LinkedList<Component> components = new LinkedList<Component>();
-        //components.add (new Component(getGlobals()));
-        components.add (new Component(callStackRenderer));
+        components.add (new Component(stack));
         return components;
     }
 
@@ -403,10 +413,12 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
         return new LinkedList<Connection>();
     }
 
+    /*    Why 2?
     @Override
     public int getMaxComponentsPerRow(ActivationStack obj) {
         return 2;
     }
+    */
 
     @Override
     public String getValue(ActivationStack obj) {
@@ -421,6 +433,21 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 
     public MemoryModel getMemoryModel() {
         return memory;
+    }
+
+    @Override
+    public Directions getDirection() {
+        return Directions.Horizontal;
+    }
+
+    @Override
+    public Double getSpacing() {
+        return Renderer.DefaultSpacing;
+    }
+
+    @Override
+    public Boolean getClosedOnConnections() {
+        return false;
     }
 
 

@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.util.Collection;
 import java.util.List;
 
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
@@ -41,9 +42,9 @@ public class ArrayList<T>
         
         private String label;
         
-        public Label  (String theLable)
+        public Label  (String theLabel)
         {
-            label = theLable;
+            label = theLabel;
         }
 
         @Override
@@ -67,13 +68,23 @@ public class ArrayList<T>
         }
 
         @Override
-        public int getMaxComponentsPerRow(Label obj) {
-            return 1;
+        public Renderer<Label> getRenderer() {
+            return this;
         }
 
         @Override
-        public Renderer<Label> getRenderer() {
-            return this;
+        public Directions getDirection() {
+            return Directions.Vertical;
+        }
+
+        @Override
+        public Double getSpacing() {
+            return Renderer.DefaultSpacing;
+        }
+
+        @Override
+        public Boolean getClosedOnConnections() {
+            return false;
         }
         
     }
@@ -121,23 +132,34 @@ public class ArrayList<T>
         }
 
         @Override
-        public int getMaxComponentsPerRow(Cell<T> obj) {
-            if (inList.getMaxComponentsPerRow(inList) > 1)
-                return 1;
-            else
-                return 8;
+        public Renderer<Cell<T>> getRenderer() {
+            return this;
         }
 
         @Override
-        public Renderer<Cell<T>> getRenderer() {
-            return this;
+        public Directions getDirection() {
+            if (inList.getDirection() == Directions.Vertical)
+                return Directions.Horizontal;
+            else
+                return Directions.Vertical;
+        }
+
+        @Override
+        public Double getSpacing() {
+            return Renderer.DefaultSpacing;
+        }
+
+        @Override
+        public Boolean getClosedOnConnections() {
+            return false;
         }
         
     }
     
     private java.util.ArrayList<T> data;
     private java.util.ArrayList<Cell<T>> cells;
-    private int componentsPerRow;
+    private Directions direction;
+    private Color color;
 
     /**
      * 
@@ -147,7 +169,8 @@ public class ArrayList<T>
         data = new java.util.ArrayList<T>();
         cells = new java.util.ArrayList<Cell<T>>();
         indexStack = new java.util.ArrayList<>();
-        componentsPerRow = 50;
+        direction = Directions.Horizontal;
+        color = null;
     }
 
     /**
@@ -158,7 +181,7 @@ public class ArrayList<T>
         data = new java.util.ArrayList<T>(initialCapacity);
         cells = new java.util.ArrayList<Cell<T>>(initialCapacity);
         indexStack = new java.util.ArrayList<>();
-        componentsPerRow = 50;
+        direction = Directions.Horizontal;
     }
 
     /**
@@ -172,7 +195,7 @@ public class ArrayList<T>
             cells.add(new Cell<T>(this, i));
         }
         indexStack = new java.util.ArrayList<>();
-        componentsPerRow = 50;
+        direction = Directions.Horizontal;
     }
 
     @Override
@@ -257,7 +280,7 @@ public class ArrayList<T>
 
     @Override
     public Color getColor(ArrayList<T> obj) {
-        return new Color(1.0f, 1.0f, 1.0f, 0.0f);
+        return color;
     }
 
     @Override
@@ -275,25 +298,48 @@ public class ArrayList<T>
     }
 
     @Override
-    public int getMaxComponentsPerRow(ArrayList<T> obj) {
-        return componentsPerRow;
-    }
-
-    @Override
     public Renderer<ArrayList<T>> getRenderer() {
         return this;
     }
 
     public void renderHorizontally(boolean horizontal) {
         if (horizontal)
-            componentsPerRow = 50;
+            direction = Directions.Horizontal;
         else
-            componentsPerRow = 1;
+            direction = Directions.Vertical;
     }
 
+    public void setDirection(Directions dir) {
+        direction = dir;
+    }
+
+    public void setColor(Color c) {
+        color = c;
+    }
     public void setIndexLabels (String prefix, String suffix) {
         labelPrefix = prefix;
         labelSuffix = suffix;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends T> arg0) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addAll'");
+    }
+
+    @Override
+    public Directions getDirection() {
+        return direction;
+    }
+
+    @Override
+    public Double getSpacing() {
+        return 0.0;
+    }
+
+    @Override
+    public Boolean getClosedOnConnections() {
+        return false;
     }
 
 

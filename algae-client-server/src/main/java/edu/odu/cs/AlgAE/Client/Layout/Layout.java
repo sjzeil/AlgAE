@@ -227,18 +227,6 @@ public class Layout {
         }
     }
 
-    /**
-     * Load entities from the snapshot into this scene, with
-     * placeholders for the location info.
-     *
-     * @param current
-     */
-    private void loadEntities(Layout snapshot) {
-        for (EntityIdentifier eid : snapshot.entities.keySet()) {
-            Entity e = snapshot.entities.get(eid);
-            locations.put(eid, new LocationInfo(e));
-        }
-    }
 
     /**
      * Set the locations of all entities that are components of larger
@@ -250,10 +238,9 @@ public class Layout {
         }
     }
 
-    private static final double VerticalMargin = 0.25;
-    private static final double VerticalSpacing = 0.25;
-    private static final double HorizontalMargin = 0.5;
-    private static final double HorizontalSpacing = 0.25;
+    private static final double VerticalMargin = 0.2;
+    private static final double VerticalSpacing = 0.1;
+    private static final double HorizontalMargin = 0.25;
 
     /**
      * Position all internal components of entity eid
@@ -560,7 +547,7 @@ public class Layout {
 
         // Arrange components into several rows, each with
         // maxComponentsPerRow columns.
-        double y = VerticalMargin;
+        double y = VerticalMargin + yOffset;
         double width = 0;
         boolean first = true;
         for (EntityIdentifier eid : container.getComponents()) {
@@ -608,6 +595,8 @@ public class Layout {
             double totalRowHeight = sum(rowHeights);
             double maxRowWidth = max(rowWidths);
 
+            double baseArea = totalRowHeight * maxRowWidth;
+
             // Suppose that we add a new row...
             LocationInfo loc = locations.get(eid);
             Dimension2DDouble sz = loc.getSize();
@@ -615,42 +604,48 @@ public class Layout {
             double w = Math.max(maxRowWidth, sz.getWidth());
 
             double bestDiffSoFar = Math.abs(h - w);
-            double minHeightSoFar = h; 
             int bestRowSoFar = numRows;
 
             for (int r = 0; r < numRows; ++r) {
                 // Suppose that we add this to row r
                 double h0 = Math.max(rowHeights.get(r), sz.getHeight());
                 double w0 = Math.max(maxRowWidth, 
-                    rowWidths.get(r)+sz.getWidth());
+                  rowWidths.get(r) + sz.getWidth());
                 double newDiff = Math.abs(h0 - w0);
-                if (newDiff < bestDiffSoFar || (newDiff == bestDiffSoFar && h0 < minHeightSoFar)) {
+                double deltaHeight = Math.max(h0,rowHeights.get(r))
+                  - rowHeights.get(r);
+                double newArea = (totalRowHeight + deltaHeight) * w0;
+                if ((newArea <= baseArea) || 
+                    (newDiff < bestDiffSoFar)) {
                     bestDiffSoFar = newDiff;
-                    minHeightSoFar = h0;
                     bestRowSoFar = r;
                 }
             }
 
             if (bestRowSoFar < numRows) {
                 // Add this to an existing row.
-                rows.get(bestRowSoFar).add(eid);
-                double h1 = (bestRowSoFar > 0) ? container.getSpacing() : VerticalMargin;
-                h1 += sz.getHeight();
+                double y = sum(rowHeights, bestRowSoFar) 
+                    + bestRowSoFar*container.getSpacing();
+                double h1 = sz.getHeight();
                 rowHeights.set(bestRowSoFar, 
                     Math.max(h1, rowHeights.get(bestRowSoFar)));
                 double w1 = (rowWidths.get(bestRowSoFar) > 0.0) ? container.getSpacing() : HorizontalMargin;
                 w1 += sz.getWidth() + rowWidths.get(bestRowSoFar);
                 rowWidths.set(bestRowSoFar, w1);
-                loc.setLoc(new RelativePoint(w1 + xOffset, h1 + yOffset, Connections.LU, relativeTo));
+                double x = rowWidths.get(bestRowSoFar) + (rowHeights.size() -1) * container.getSpacing();
+                loc.setLoc(new RelativePoint(x + xOffset, y + yOffset, Connections.LU, relativeTo));
+                rows.get(bestRowSoFar).add(eid);
             } else {
                 // Add this to a new row
+                double x = 0.0;
+                double y = sum(rowHeights) 
+                    + rows.size() * container.getSpacing();
                 rows.add(new LinkedList<EntityIdentifier>());
                 rowHeights.add(h + container.getSpacing());
                 rowWidths.add(w);
                 rows.get(numRows).add(eid);
-                double x = HorizontalMargin;
-                double y = totalRowHeight + container.getSpacing();
-                loc.setLoc(new RelativePoint(x, y, Connections.LU, relativeTo));
+                loc.setLoc(new RelativePoint(x + xOffset, 
+                    y + yOffset, Connections.LU, relativeTo));
                 ++numRows;
             }
         }
@@ -678,6 +673,15 @@ public class Layout {
         }
         return sum;
     }
+
+    private double sum(ArrayList<Double> values, int n) {
+        double sum = 0.0;
+        for (int i = 0; i < n; ++i) {
+            sum += values.get(i);
+        }
+        return sum;
+    }
+
 
     private double positionScore() {
         double obScore = 0.0;

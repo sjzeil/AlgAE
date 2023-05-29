@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 
@@ -74,18 +75,6 @@ public class CompoundRenderer<T> implements Renderer<T> {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getMaxComponentsPerRow(java.lang.Object)
-     */
-    @Override
-    public int getMaxComponentsPerRow(T obj) {
-        for (Renderer<T> r: renderers) {
-            int result = r.getMaxComponentsPerRow(obj);
-            if (result >= 0)
-                return result;
-        }
-        return 1;
-    }
 
     /* (non-Javadoc)
      * @see edu.odu.cs.AlgAE.Server.Rendering.Renderer#getValue(java.lang.Object)
@@ -98,6 +87,43 @@ public class CompoundRenderer<T> implements Renderer<T> {
                 return result;
         }
         return "";
+    }
+
+
+
+    @Override
+    public Directions getDirection() {
+        for (Renderer<T> r: renderers) {
+            Directions result = r.getDirection();
+            if (result != null)
+                return result;
+        }
+        return null;
+    }
+
+
+
+    @Override
+    public Double getSpacing() {
+        for (Renderer<T> r: renderers) {
+            Double result = r.getSpacing();
+            if (result != null)
+                return result;
+        }
+        return null;
+    }
+
+
+
+    @Override
+    public Boolean getClosedOnConnections() {
+        for (Renderer<T> r: renderers) {
+            Boolean result = r.getClosedOnConnections();
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
     }
 
 }

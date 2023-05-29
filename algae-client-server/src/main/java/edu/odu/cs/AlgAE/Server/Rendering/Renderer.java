@@ -3,6 +3,7 @@ package edu.odu.cs.AlgAE.Server.Rendering;
 import java.awt.Color;
 import java.util.List;
 
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 
@@ -22,6 +23,8 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
  *
  */
 public interface Renderer<T> {
+
+    public final double DefaultSpacing = 0.25;
     
     /**
      * What string will be used as the value of this object?
@@ -60,17 +63,21 @@ public interface Renderer<T> {
     
 
     /**
-     * Indicates how components will be laid out within the box
-     * representing this object.  A return value of 1 will force all
-     * components to be laid out in a single vertical column. Larger
-     * return values will permit a more horizontal layout.
-     *
-     * A zero value requests that components be laid out in a (more or less) minimal area.
-     *
-     * @param obj
-     * @return max #components per row or a negative value to yield to other renderers
+     * Indicate how components will be layed out.
+     * @return direction in which components wil be placed
      */
-            
-    public int getMaxComponentsPerRow(T obj);
+    public Directions getDirection();
+
+    /**
+     * How much space should be placed between components?
+     * @return amount of space
+     */
+    public Double getSpacing();
+
+    /**
+     * Should connected objects be layed out next to this one?
+     * @return true to include connected objects in the layout of this one.
+     */
+    public Boolean getClosedOnConnections();
     
 }
