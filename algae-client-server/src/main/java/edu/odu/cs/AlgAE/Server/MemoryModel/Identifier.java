@@ -1,8 +1,12 @@
-package edu.odu.cs.AlgAE.Common.Snapshot;
+package edu.odu.cs.AlgAE.Server.MemoryModel;
 
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ListIterator;
+
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
+import edu.odu.cs.AlgAE.Common.Snapshot.EntityIdentifier;
 
 /**
  * Unique identifiers for objects in memory, with support for the local Java server
@@ -36,6 +40,8 @@ public class Identifier {
     private String className;
     protected int id;
 
+    static HashMap<Identifier, WeakReference<Object>> objectsFor
+        = new HashMap<>();
 
     private int getPossibleID(Object obj) {
         if (obj == null) {
@@ -92,12 +98,21 @@ public class Identifier {
             id = getPossibleID(instance);
             if (id == 0) {
                 id = addID(instance);
+                objectsFor.put(this, new WeakReference<Object>(instance));
             }
         } else {
             if (keepClassNamesForDebugging) {
                 className = "null";
             }
             id = 0;
+        }
+    }
+
+    public Identifier (EntityIdentifier eid) {
+        className = eid.getLabel();
+        id = eid.getID();
+        if (!objectsFor.containsKey(this)) {
+            throw new IdentifierError("Constructed invalid Identifier from entity ID " + eid);
         }
     }
 
@@ -119,6 +134,25 @@ public class Identifier {
 
     public boolean isNull() {
         return id == 0;
+    }
+
+    public EntityIdentifier asEntityIdentifier() {
+        return new EntityIdentifier(className, id);
+    }
+
+    /**
+     * Return the object to which this identifier refers.
+     * 
+     * @return an object or null if the identifier is null or if
+     *    it refers to an object that has been garbage collected.
+     */
+    public Object getObject() {
+        if (isNull()) {
+            return null;
+        } else {
+            WeakReference<Object> ref = objectsFor.get(this);
+            return ref.get();
+        }
     }
 
 }

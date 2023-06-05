@@ -14,9 +14,9 @@ import org.junit.Test;
 
 import edu.odu.cs.AlgAE.Common.Snapshot.Connector;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
-import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
+import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
 
 /**
  * @author zeil
@@ -125,7 +125,7 @@ public class TestClientMessage {
 		entity1a = new Entity(id1, "");
 		Identifier id2 = new Identifier(2);
 		entity2 = new Entity(id2, "label2");
-		entity1b = new Entity(id1, entity2, "component1");
+		entity1b = new Entity(id1, entity2.getEntityIdentifier(), "component1");
 		Identifier id3 = new Identifier(3);
 		entity3 = new Entity(id3, "labeled");
 		entity2.getComponents().add(entity1b.getEntityIdentifier());
@@ -142,7 +142,7 @@ public class TestClientMessage {
 		snap.setGlobal(entity2.getEntityIdentifier(), true);
 		snap.add(entity1b);
 		snap.add(entity3);
-		snap.setActivationStack(entity3.getEntityIdentifier());
+		snap.setRootEntity(entity3.getEntityIdentifier());
 		snap.setDescriptor("a breakpoint");
 		snap.setBreakpointLocation(new SourceLocation("foo.java", 15));
 		return snap;

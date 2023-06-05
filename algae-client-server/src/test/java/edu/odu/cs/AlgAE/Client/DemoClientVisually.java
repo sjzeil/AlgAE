@@ -19,9 +19,9 @@ import edu.odu.cs.AlgAE.Common.Communications.SnapshotMessage;
 import edu.odu.cs.AlgAE.Common.Communications.SourceCodeMessage;
 import edu.odu.cs.AlgAE.Common.Snapshot.Connector;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
-import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
+import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
 
 /**
  * Test driver for the AlgAE client - provides a sample of each possible message from a server.
@@ -83,7 +83,7 @@ public class DemoClientVisually  implements ServerCommunications {
 		snap.setGlobal(global.getEntityIdentifier(), true);
 		snap.setDescriptor("heads");
 		snap.setBreakpointLocation(new SourceLocation("foo.java", k%5));
-		snap.setActivationStack(stk.getEntityIdentifier());
+		snap.setRootEntity(stk.getEntityIdentifier());
 		return snap;
 	}
 
@@ -93,7 +93,7 @@ public class DemoClientVisually  implements ServerCommunications {
 		Entity stk = new Entity(new Identifier(1), "");
 		Entity global = new Entity(new Identifier(2), "");
 		Entity heapObj = new Entity(new Identifier(3), "");
-		Entity component = new Entity(new Identifier(4), heapObj, "component");
+		Entity component = new Entity(new Identifier(4), heapObj.getEntityIdentifier(), "component");
 		stk.setColor(Color.magenta);
 		stk.setValue("activation stack");
 		global.setLabel("g");
@@ -118,7 +118,7 @@ public class DemoClientVisually  implements ServerCommunications {
 		snap.setGlobal(global.getEntityIdentifier(), true);
 		snap.setDescriptor("tails");
 		snap.setBreakpointLocation(new SourceLocation("bar.java", k%5));
-		snap.setActivationStack(stk.getEntityIdentifier());
+		snap.setRootEntity(stk.getEntityIdentifier());
 		return snap;
 	}
 

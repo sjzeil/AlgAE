@@ -183,8 +183,8 @@ public class Layout {
      *
      * @param Snapshot the memory snapshot for which a layout is being created
      * @param previous an existing layout
-     * @param anchors entities that have been assigned a fixed position on
-     *                the screen.
+     * @param anchors  entities that have been assigned a fixed position on
+     *                 the screen.
      */
     public Layout(Snapshot current, Layout previous, Anchors anchors) {
         this.anchors = anchors;
@@ -198,6 +198,7 @@ public class Layout {
         loadEntities(current);
         positionComponents();
         positionFixedEntities(current);
+        /*
         boolean anyNew = (previous == null);
         if (previous != null) {
             anyNew = positionOldEntities(previous);
@@ -208,8 +209,8 @@ public class Layout {
             positionNewEntities();
             repositionAllEntities();
         }
+        */
     }
-
 
     /**
      * Load entities from the snapshot into this scene, with
@@ -226,7 +227,6 @@ public class Layout {
                 baseObjectIDs.add(eid);
         }
     }
-
 
     /**
      * Set the locations of all entities that are components of larger
@@ -274,7 +274,7 @@ public class Layout {
     }
 
     private void positionFixedEntities(Snapshot snapshot) {
-        EntityIdentifier stack = snapshot.getActivationStack();
+        EntityIdentifier stack = snapshot.getRootEntity();
         LocationInfo sLoc = locations.get(stack);
         if (sLoc != null) {
             sLoc.setLoc(new Point(0.25, 0.0));
@@ -485,6 +485,10 @@ public class Layout {
                 return layoutComponentsHorizontally(container, relativeTo, xOffset, yOffset);
             case Square:
                 return layoutComponentsInSquare(container, relativeTo, xOffset, yOffset);
+            case HorizontalTree:
+                return layoutComponentsInSquare(container, relativeTo, xOffset, yOffset);
+            case VerticalTree:
+                return layoutComponentsInSquare(container, relativeTo, xOffset, yOffset);
             default:
                 return new Dimension2DDouble();
         }
@@ -583,8 +587,7 @@ public class Layout {
     private Dimension2DDouble layoutComponentsInSquare(Entity container, BoundedRegion relativeTo,
             double xOffset, double yOffset) {
 
-        ArrayList<LinkedList<EntityIdentifier>> rows 
-            = new ArrayList<LinkedList<EntityIdentifier>>();
+        ArrayList<LinkedList<EntityIdentifier>> rows = new ArrayList<LinkedList<EntityIdentifier>>();
         ArrayList<Double> rowHeights = new ArrayList<>();
         ArrayList<Double> rowWidths = new ArrayList<>();
 
@@ -609,14 +612,14 @@ public class Layout {
             for (int r = 0; r < numRows; ++r) {
                 // Suppose that we add this to row r
                 double h0 = Math.max(rowHeights.get(r), sz.getHeight());
-                double w0 = Math.max(maxRowWidth, 
-                  rowWidths.get(r) + sz.getWidth());
+                double w0 = Math.max(maxRowWidth,
+                        rowWidths.get(r) + sz.getWidth());
                 double newDiff = Math.abs(h0 - w0);
-                double deltaHeight = Math.max(h0,rowHeights.get(r))
-                  - rowHeights.get(r);
+                double deltaHeight = Math.max(h0, rowHeights.get(r))
+                        - rowHeights.get(r);
                 double newArea = (totalRowHeight + deltaHeight) * w0;
-                if ((newArea <= baseArea) || 
-                    (newDiff < bestDiffSoFar)) {
+                if ((newArea <= baseArea) ||
+                        (newDiff < bestDiffSoFar)) {
                     bestDiffSoFar = newDiff;
                     bestRowSoFar = r;
                 }
@@ -624,28 +627,28 @@ public class Layout {
 
             if (bestRowSoFar < numRows) {
                 // Add this to an existing row.
-                double y = sum(rowHeights, bestRowSoFar) 
-                    + bestRowSoFar*container.getSpacing();
+                double y = sum(rowHeights, bestRowSoFar)
+                        + bestRowSoFar * container.getSpacing();
                 double h1 = sz.getHeight();
-                rowHeights.set(bestRowSoFar, 
-                    Math.max(h1, rowHeights.get(bestRowSoFar)));
+                rowHeights.set(bestRowSoFar,
+                        Math.max(h1, rowHeights.get(bestRowSoFar)));
                 double w1 = (rowWidths.get(bestRowSoFar) > 0.0) ? container.getSpacing() : HorizontalMargin;
                 w1 += sz.getWidth() + rowWidths.get(bestRowSoFar);
                 rowWidths.set(bestRowSoFar, w1);
-                double x = rowWidths.get(bestRowSoFar) + (rowHeights.size() -1) * container.getSpacing();
+                double x = rowWidths.get(bestRowSoFar) + (rowHeights.size() - 1) * container.getSpacing();
                 loc.setLoc(new RelativePoint(x + xOffset, y + yOffset, Connections.LU, relativeTo));
                 rows.get(bestRowSoFar).add(eid);
             } else {
                 // Add this to a new row
                 double x = 0.0;
-                double y = sum(rowHeights) 
-                    + rows.size() * container.getSpacing();
+                double y = sum(rowHeights)
+                        + rows.size() * container.getSpacing();
                 rows.add(new LinkedList<EntityIdentifier>());
                 rowHeights.add(h + container.getSpacing());
                 rowWidths.add(w);
                 rows.get(numRows).add(eid);
-                loc.setLoc(new RelativePoint(x + xOffset, 
-                    y + yOffset, Connections.LU, relativeTo));
+                loc.setLoc(new RelativePoint(x + xOffset,
+                        y + yOffset, Connections.LU, relativeTo));
                 ++numRows;
             }
         }
@@ -654,13 +657,12 @@ public class Layout {
         return new Dimension2DDouble(maxRowWidth, totalRowHeight);
     }
 
-
     private double max(ArrayList<Double> values) {
         if (values.size() == 0) {
             return 0.0;
         }
         double theMax = values.get(0);
-        for (double d: values) {
+        for (double d : values) {
             theMax = Math.max(theMax, d);
         }
         return theMax;
@@ -668,7 +670,7 @@ public class Layout {
 
     private double sum(ArrayList<Double> values) {
         double sum = 0.0;
-        for (double d: values) {
+        for (double d : values) {
             sum += d;
         }
         return sum;
@@ -681,7 +683,6 @@ public class Layout {
         }
         return sum;
     }
-
 
     private double positionScore() {
         double obScore = 0.0;

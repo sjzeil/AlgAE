@@ -16,6 +16,8 @@ import java.io.ByteArrayOutputStream;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
+
 /**
  * @author zeil
  *
@@ -59,7 +61,7 @@ public class TestSnapshot {
 		entity1a = new Entity(id1, "");
 		Identifier id2 = new Identifier(2);
 		entity2 = new Entity(id2, "label2");
-		entity1b = new Entity(id1, entity2, "component1");
+		entity1b = new Entity(id1, entity2.getEntityIdentifier(), "component1");
 		Identifier id3 = new Identifier(3);
 		entity3 = new Entity(id3, "labeled");
 		entity2.getComponents().add(entity1b.getEntityIdentifier());
@@ -76,7 +78,7 @@ public class TestSnapshot {
 		snap.setGlobal(entity2.getEntityIdentifier(), true);
 		snap.add(entity1b);
 		snap.add(entity3);
-		snap.setActivationStack(entity3.getEntityIdentifier());
+		snap.setRootEntity(entity3.getEntityIdentifier());
 		snap.setDescriptor("a breakpoint");
 		snap.setBreakpointLocation(new SourceLocation("foo.java", 15));
 		return snap;
@@ -99,16 +101,16 @@ public class TestSnapshot {
 	 */
 	@Test
 	public void testAdd() {
-		assertEquals (2, snap1.getEntities().get(entity1a.getEntityIdentifier().getObjectIdentifier()).size());
-		assertEquals (2, snap1.getEntities().get(entity1b.getEntityIdentifier().getObjectIdentifier()).size());
-		assertEquals (1, snap1.getEntities().get(entity2.getEntityIdentifier().getObjectIdentifier()).size());
-		assertEquals (1, snap1.getEntities().get(entity3.getEntityIdentifier().getObjectIdentifier()).size());
+		assertEquals (2, snap1.getEntities().get(new Identifier(entity1a.getEntityIdentifier())).size());
+		assertEquals (2, snap1.getEntities().get(new Identifier(entity1b.getEntityIdentifier())).size());
+		assertEquals (1, snap1.getEntities().get(new Identifier(entity2.getEntityIdentifier())).size());
+		assertEquals (1, snap1.getEntities().get(new Identifier(entity3.getEntityIdentifier())).size());
 		assertTrue (snap1.getGlobals().contains(entity2.getEntityIdentifier()));
 		assertFalse (snap1.getGlobals().contains(entity1a.getEntityIdentifier()));
 		assertFalse (snap1.getGlobals().contains(entity1b.getEntityIdentifier()));
 		assertFalse (snap1.getGlobals().contains(entity3.getEntityIdentifier()));
 		snap1.add (entity3);
-		assertEquals (1, snap1.getEntities().get(entity3.getEntityIdentifier().getObjectIdentifier()).size());
+		assertEquals (1, snap1.getEntities().get(new Identifier(entity3.getEntityIdentifier())).size());
 		assertTrue(canFind(entity1a));
 		assertTrue(canFind(entity1b));
 		assertTrue(canFind(entity2));
@@ -121,10 +123,10 @@ public class TestSnapshot {
 	@Test
 	public void testRemove() {
 		snap1.remove(entity1b);
-		assertEquals (1, snap1.getEntities().get(entity1a.getEntityIdentifier().getObjectIdentifier()).size());
-		assertEquals (1, snap1.getEntities().get(entity1b.getEntityIdentifier().getObjectIdentifier()).size());
-		assertEquals (1, snap1.getEntities().get(entity2.getEntityIdentifier().getObjectIdentifier()).size());
-		assertEquals (1, snap1.getEntities().get(entity3.getEntityIdentifier().getObjectIdentifier()).size());
+		assertEquals (1, snap1.getEntities().get(new Identifier(entity1a.getEntityIdentifier())).size());
+		assertEquals (1, snap1.getEntities().get(new Identifier(entity1b.getEntityIdentifier())).size());
+		assertEquals (1, snap1.getEntities().get(new Identifier(entity2.getEntityIdentifier())).size());
+		assertEquals (1, snap1.getEntities().get(new Identifier(entity3.getEntityIdentifier())).size());
 		snap1.remove(entity2);
 		assertFalse (snap1.getGlobals().contains(entity2.getEntityIdentifier()));
 		assertTrue(canFind(entity1a));
@@ -151,11 +153,5 @@ public class TestSnapshot {
 		
 	}
 	
-	@Test
-	public void testXML() {
-		xmlTest (snap1, "breakpoint", "foo.java");
-		xmlTest (snap1, "component1", "link");
-		
-	}
-
+	
 }

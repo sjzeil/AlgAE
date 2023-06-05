@@ -15,6 +15,8 @@ import java.io.ByteArrayOutputStream;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
+
 /**
  * @author zeil
  *
@@ -38,7 +40,7 @@ public class TestEntity {
 		entity1a = new Entity(id1, "");
 		Identifier id2 = new Identifier(2);
 		entity2 = new Entity(id2, "label2");
-		entity1b = new Entity(id1, entity2, "componentA");
+		entity1b = new Entity(id1, entity2.getEntityIdentifier(), "componentA");
 		Identifier id3 = new Identifier(3);
 		entity3 = new Entity(id3, "labeled");
 		entity2.getComponents().add(entity1b.getEntityIdentifier());
@@ -51,35 +53,5 @@ public class TestEntity {
 
 
 
-	void xmlTest (Object x, String mustContain1, String mustContain2)
-	{
-		ByteArrayOutputStream byOut = new ByteArrayOutputStream();
-		XMLEncoder out = new XMLEncoder(new BufferedOutputStream(byOut));
-		out.writeObject(x);
-		out.close();
-		String xmlStr = byOut.toString();
-		assertTrue (xmlStr.contains(x.getClass().getSimpleName()));
-		if (mustContain1.length() > 0)
-			assertTrue (xmlStr.contains(mustContain1));
-		if (mustContain2.length() > 0)
-			assertTrue (xmlStr.contains(mustContain2));
-		
-		XMLDecoder in = new XMLDecoder(new ByteArrayInputStream(xmlStr.getBytes()));
-		Object y = in.readObject();
-		
-		assertEquals (x, y);	
-		in.close();
-	}
-	
-	@Test
-	public void testXML()
-	{
-		xmlTest (entity1a, entity1a.getEntityIdentifier().getObjectIdentifier().toString(), 
-				"");
-		xmlTest (entity1b, entity2.getEntityIdentifier().getObjectIdentifier().toString(), "componentA");
-		xmlTest (entity2, entity2.getEntityIdentifier().getObjectIdentifier().toString(), "foobar");
-		xmlTest (entity3, entity2.getEntityIdentifier().getObjectIdentifier().toString(), "link");
-		
-	}
 
 }

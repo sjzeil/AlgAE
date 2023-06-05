@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
+
 public class Entity implements Serializable {
 
     /**
@@ -12,7 +14,7 @@ public class Entity implements Serializable {
      * "Square" describes a packing in which elements are packed into
      * rows and columns to fill a nearly square area.
      */
-    public enum Directions {Vertical, Horizontal, Square};
+    public enum Directions {Vertical, Horizontal, Square, HorizontalTree, VerticalTree};
 
     /**
      * The objects immediately contained within this one
@@ -33,7 +35,7 @@ public class Entity implements Serializable {
     private Directions direction;
     private double spacing;
     private boolean closedOnConnections;
-    
+    private EntityIdentifier container;
 
 
     
@@ -46,36 +48,16 @@ public class Entity implements Serializable {
     public Entity (Identifier id, String label) {
         components = new LinkedList<EntityIdentifier>();
         connections = new LinkedList<Connector>();
-        this.entityIdentifier = new EntityIdentifier(id,label);
+        this.entityIdentifier = id.asEntityIdentifier();
         this.label = label;
         value = "";
         color = Color.lightGray;
         direction = Directions.Vertical;
         spacing = 1;
         closedOnConnections = false;
+        container = null;
     }
 
-    
-    /**
-     * Create an entity representing an object that is a component
-     * of a larger entity.
-     *
-     * @param id   object to be represented by this new entity
-     * @param container  entity that is considered to contain this one as a component
-     * @param componentLabel  a string differentiating this component from all others of the same container
-     */
-    public Entity (Identifier id, Entity container, String componentLabel) {
-        components = new LinkedList<EntityIdentifier>();
-        connections = new LinkedList<Connector>();
-        this.entityIdentifier = new EntityIdentifier(id, container.getEntityIdentifier(), componentLabel);
-        label = componentLabel;
-        value = "";
-        color = Color.lightGray;
-        direction = Directions.Vertical;
-        spacing = 1;
-        closedOnConnections = false;
-    }
-    
     
     /**
      * Create an entity representing an object that is a component
@@ -88,14 +70,17 @@ public class Entity implements Serializable {
     public Entity (Identifier id, EntityIdentifier container, String componentLabel) {
         components = new LinkedList<EntityIdentifier>();
         connections = new LinkedList<Connector>();
-        this.entityIdentifier = new EntityIdentifier(id, container, componentLabel);
+        this.entityIdentifier = id.asEntityIdentifier();
         label = componentLabel;
         value = "";
         color = Color.lightGray;
         direction = Directions.Vertical;
         spacing = 1;
         closedOnConnections = false;
+        this.container = container;
     }
+    
+    
     
 
 
@@ -113,15 +98,10 @@ public class Entity implements Serializable {
         return result.toString();
     }
 
-    public Identifier getObjectIdentifier() {
-        return entityIdentifier.getObjectIdentifier();
-    }
-
     public EntityIdentifier getContainer() {
-        return entityIdentifier.getContainer();
+        return container;
     }
 
-        
     public String toString() {
         StringBuffer result = new StringBuffer();
         
@@ -305,7 +285,6 @@ public class Entity implements Serializable {
     public void setClosedOnConnections(boolean closedOnConnections) {
         this.closedOnConnections = closedOnConnections;
     }
-    
-    
+        
 
 }

@@ -13,19 +13,47 @@ public class Component {
 
     private Object component;
     private String label;
+    private Component container;
         
+    
+    /**
+     * @return the container
+     */
+    public Component getContainer() {
+        return container;
+    }
+
+    /**
+     * @param container the container to set
+     */
+    public void setContainer(Component container) {
+        this.container = container;
+    }
+
+    public Component (Object comp, Component container, String label) {
+        component = comp;
+        this.label = label;
+        this.container = container;
+    }
     
     public Component (Object comp, String label) {
         component = comp;
         this.label = label;
+        this.container = null;
+    }
+
+    public Component (Object comp, Component container) {
+        component = comp;
+        this.label = null;
+        this.container = container;
     }
     
     public Component (Object comp) {
         component = comp;
         this.label = null;
+        this.container = null;
     }
     
-
     
     public Object getComponentObject() {
         return component;

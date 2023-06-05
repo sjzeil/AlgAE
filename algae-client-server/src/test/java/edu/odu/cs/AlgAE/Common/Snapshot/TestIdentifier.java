@@ -11,6 +11,8 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
+
 
 /**
  * @author zeil
@@ -73,7 +75,7 @@ public class TestIdentifier {
 	}
 
 	/**
-	 * Test method for {@link edu.odu.cs.AlgAE.Common.Snapshot.Identifier#hashCode()}.
+	 * Test method for {@link edu.odu.cs.AlgAE.Server.MemoryModel.Identifier#hashCode()}.
 	 */
 	@Test
 	public void testHashCode() {
@@ -85,7 +87,7 @@ public class TestIdentifier {
 
 
 	/**
-	 * Test method for {@link edu.odu.cs.AlgAE.Common.Snapshot.Identifier#toString()}.
+	 * Test method for {@link edu.odu.cs.AlgAE.Server.MemoryModel.Identifier#toString()}.
 	 */
 	@Test
 	public void testToString() {

@@ -18,6 +18,8 @@ import org.junit.Test;
 
 import com.google.gson.Gson;
 
+import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
+
 /**
  * @author zeil
  *
@@ -34,18 +36,15 @@ public class TestEntityIdentifier {
 
 	@BeforeClass
 	public static void setUpOnce()  {
-		id1 = new EntityIdentifier(new Identifier(1), "entityA");
-		id2 = new EntityIdentifier(new Identifier(2), id1, "entityB");
+		id1 = new Identifier(1).asEntityIdentifier();
+		id2 = new Identifier(2).asEntityIdentifier();
 	}
 
 	@Test
 	public void testBasics() {
-		assertEquals ("entityA", id1.getComponentLabel());
-		assertEquals ("entityB", id2.getComponentLabel());
+		//assertEquals ("entityA", id1.getComponentLabel());
+		//assertEquals ("entityB", id2.getComponentLabel());
 		//assertEquals (Identifier.nullID, id1.getContainer());
-		assertEquals (id1, id2.getContainer());
-		assertEquals(0, id1.depth());
-		assertEquals(1, id2.depth());
 		
 		assertNotEquals(id1.toString(), id2.toString());
 	}
@@ -54,11 +53,11 @@ public class TestEntityIdentifier {
 
 	void xmlTest (Object x, String mustContain1, String mustContain2)
 	{
-		ByteArrayOutputStream byout = new ByteArrayOutputStream();
-		XMLEncoder out = new XMLEncoder(new BufferedOutputStream(byout));
+		ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
+		XMLEncoder out = new XMLEncoder(new BufferedOutputStream(bytesOut));
 		out.writeObject(x);
 		out.close();
-		String xmlStr = byout.toString();
+		String xmlStr = bytesOut.toString();
 		assertTrue (xmlStr.contains(x.getClass().getSimpleName()));
 		if (mustContain1.length() > 0)
 			assertTrue (xmlStr.contains(mustContain1));

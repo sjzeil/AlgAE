@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
+
 /**
  * A snapshot is a model of the current data state in terms of a graph of connected
  * Entities.  The graph is "rooted" at an activation stack and at a set of global entities.
@@ -42,9 +44,9 @@ public class Snapshot  implements Iterable<Entity> {
     private SourceLocation breakpointLocation;
     
     /**
-     * Entity representing the activation stack    
+     * The root of the entity containment tree
      */
-    private EntityIdentifier activationStack;
+    private EntityIdentifier rootEntity;
     
     /**
      * Entities denoting global variables
@@ -60,7 +62,7 @@ public class Snapshot  implements Iterable<Entity> {
         entities = new HashMap<Identifier, LinkedList<Entity>>();
         descriptor = "";
         breakpointLocation = new SourceLocation();
-        activationStack = null;
+        rootEntity = null;
         globals = new HashSet<EntityIdentifier>();
     }
     
@@ -75,7 +77,7 @@ public class Snapshot  implements Iterable<Entity> {
         entities = new HashMap<Identifier, LinkedList<Entity>>();
         descriptor = description;
         breakpointLocation = breakpoint;
-        activationStack = null;
+        rootEntity = null;
         globals = new HashSet<EntityIdentifier>();
     }
 
@@ -83,7 +85,7 @@ public class Snapshot  implements Iterable<Entity> {
     public void add (Entity entity)
     {
         EntityIdentifier eid = entity.getEntityIdentifier();
-        Identifier id = eid.getObjectIdentifier();
+        Identifier id = new Identifier(eid);
         LinkedList<Entity> aliases = entities.get(id);
         if (aliases == null) {
             aliases = new LinkedList<Entity>();
@@ -122,7 +124,7 @@ public class Snapshot  implements Iterable<Entity> {
     {
         EntityIdentifier eid = entity.getEntityIdentifier();
         globals.remove(eid);
-        Identifier id = eid.getObjectIdentifier();
+        Identifier id = new Identifier(eid);
         LinkedList<Entity> aliases = entities.get(id);
         if (aliases != null) {
             for (ListIterator<Entity> it = aliases.listIterator(); it.hasNext();) {
@@ -231,8 +233,8 @@ public class Snapshot  implements Iterable<Entity> {
     /**
      * @return the activationStack
      */
-    public EntityIdentifier getActivationStack() {
-        return activationStack;
+    public EntityIdentifier getRootEntity() {
+        return rootEntity;
     }
 
 
@@ -240,8 +242,8 @@ public class Snapshot  implements Iterable<Entity> {
     /**
      * @param activationStack the activationStack to set
      */
-    public void setActivationStack(EntityIdentifier activationStack) {
-        this.activationStack = activationStack;
+    public void setRootEntity(EntityIdentifier activationStack) {
+        this.rootEntity = activationStack;
     }
 
 
@@ -260,7 +262,7 @@ public class Snapshot  implements Iterable<Entity> {
         buf.append ("@");
         buf.append (breakpointLocation);
         buf.append (": ");
-        buf.append (activationStack);
+        buf.append (rootEntity);
         buf.append ("\n");
         buf.append ("entities: ");
         buf.append (entities.toString());
@@ -277,7 +279,7 @@ public class Snapshot  implements Iterable<Entity> {
         try {
             Snapshot s = (Snapshot)o;
             return s.descriptor.equals(descriptor) && s.breakpointLocation.equals(breakpointLocation)
-                    && (s.activationStack == activationStack || s.activationStack.equals(activationStack))
+                    && (s.rootEntity == rootEntity || s.rootEntity.equals(rootEntity))
                     && s.globals.equals(globals) && s.entities.equals(entities);
                     
         } catch (Exception e) {

@@ -13,9 +13,9 @@ import edu.odu.cs.AlgAE.Client.Layout.Coordinates.Dimension2DDouble;
 import edu.odu.cs.AlgAE.Common.Snapshot.Connector;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
 import edu.odu.cs.AlgAE.Common.Snapshot.EntityIdentifier;
-import edu.odu.cs.AlgAE.Common.Snapshot.Identifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
+import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
 
 /**
  * @author zeil
@@ -38,15 +38,15 @@ public class TestLayout {
     	stack.setColor(Color.lightGray);
     	stack.setDirection(Entity.Directions.Vertical);
     	s.add(stack);
-    	s.setActivationStack(stack.getEntityIdentifier());
+    	s.setRootEntity(stack.getEntityIdentifier());
 
-    	Entity mainAct = new Entity(new Identifier(mainActID), stack, "call0");
+    	Entity mainAct = new Entity(new Identifier(mainActID), stack.getEntityIdentifier(), "call0");
     	mainAct.setValue("main()");
     	mainAct.setColor(Color.cyan);
     	s.add(mainAct);
     	stack.getComponents().add(mainAct.getEntityIdentifier());
 
-    	Entity fooAct = new Entity(new Identifier(fooActID), stack, "call1");
+    	Entity fooAct = new Entity(new Identifier(fooActID), stack.getEntityIdentifier(), "call1");
     	fooAct.setValue("foo(");
     	fooAct.setColor(Color.cyan);
     	fooAct.setDirection(Entity.Directions.Horizontal);
@@ -80,7 +80,7 @@ public class TestLayout {
 		assertEquals (cnt, countVar(entities, objID));
 		Identifier oid = new Identifier(objID);
 		EntityIdentifier eid;
-		eid = new EntityIdentifier(oid, label);
+		eid = oid.asEntityIdentifier();
 		Entity e = entities.get(eid);
 		assertNotNull(e);
 		if (label != null)
@@ -93,7 +93,7 @@ public class TestLayout {
 		Identifier id = new Identifier (objID);
 		int count = 0;
 		for (EntityIdentifier eid: entities.keySet()) {
-			if (id.equals(eid.getObjectIdentifier())) {
+			if (id.equals(new Identifier(eid))) {
 				++count;
 			}
 		}
@@ -130,7 +130,7 @@ public class TestLayout {
 		assertEquals (5, entities.keySet().size());
 		checkVar (entities, stackID, 1, null, null);
 		checkVar (entities, aID, 1, null, "42");
-		checkSize (scene, new EntityIdentifier(new Identifier(aID)), "A", 6, 9, 1, 2);
+		checkSize (scene, new EntityIdentifier("", aID), "A", 6, 9, 1, 2);
 	}
 
     @Test
@@ -144,7 +144,7 @@ public class TestLayout {
 		assertEquals (5, entities.keySet().size());
 		checkVar (entities, stackID, 1, null, null);
 		checkVar (entities, aID, 1, null, "42");
-		checkSize (scene, new EntityIdentifier(new Identifier(aID)), "A", 6, 9, 1, 2);
+		checkSize (scene, new EntityIdentifier("", aID), "A", 6, 9, 1, 2);
 	}
 
 
