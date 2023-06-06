@@ -58,7 +58,7 @@ public class SpanTree implements CanBeRendered<SpanTree>, Renderer<SpanTree> {
             Identifier oid = new Identifier(obj);
             if (!componentsMap.containsKey(oid)) {
                 Component newComponent = new Component(obj, spanTreeComponent);
-                components.add(newComponent);
+                //components.add(newComponent);
                 Renderer<Object> render = activationStack.getRenderer(obj);
                 List<Connection> connections = render.getConnections(obj);
                 if (connections != null) {

@@ -69,14 +69,14 @@ public class Layout {
     private class LocationInfo implements BoundedRegion {
         private Dimension2DDouble size;
         private Location loc;
-        private int height;
+        private int depth;
         private Entity describes;
 
         public LocationInfo(Entity e) {
             size = null;
             loc = null;
             describes = e;
-            height = 0;
+            depth = 0;
         }
 
         /**
@@ -152,15 +152,15 @@ public class Layout {
          *
          * @param h the height to set
          */
-        public void setHeight(int h) {
-            this.height = h;
+        public void setDepth(int h) {
+            this.depth = h;
         }
 
         /**
          * @return the height
          */
-        public int getHeight() {
-            return height;
+        public int getDepth() {
+            return depth;
         }
 
         public String toString() {
@@ -168,7 +168,7 @@ public class Layout {
             result.append("describes:");
             result.append(describes.getEntityIdentifier());
             result.append(", height:");
-            result.append(height);
+            result.append(depth);
             result.append(", loc:");
             result.append(loc);
             result.append(", size:");
@@ -246,14 +246,16 @@ public class Layout {
      * Position all internal components of entity eid
      *
      * @param eid identifier of a container of zero or more components
+     * @return max depth of recursion of this function
      *
      */
-    private void positionComponentsOf(EntityIdentifier eid) {
+    private int positionComponentsOf(EntityIdentifier eid) {
         Entity e = entities.get(eid);
         System.err.println ("Layout: positioning components of " + eid);
-        int maxHeight = -1;
+        int maxDepth = -1;
         for (EntityIdentifier cEID : e.getComponents()) {
-            positionComponentsOf(cEID);
+            int depth = positionComponentsOf(cEID);
+            maxDepth = Math.max(maxDepth, depth);
         }
         double yOffset = VerticalMargin;
         double xOffset = HorizontalMargin;
@@ -267,10 +269,11 @@ public class Layout {
             minWidth = 2 * HorizontalMargin + description.length();
         }
         LocationInfo loc = locations.get(eid);
-        loc.setHeight(1 + maxHeight);
+        loc.setDepth(1 + maxDepth);
         Dimension2DDouble sz = layoutComponents(e, loc, xOffset, yOffset - VerticalMargin);
         sz.setSize(Math.max(minWidth, sz.getWidth()) + HorizontalMargin, sz.getHeight() + yAddition);
         loc.setSize(sz);
+        return 1 + maxDepth;
     }
 
     private void positionFixedEntities(Snapshot snapshot) {
@@ -823,7 +826,7 @@ public class Layout {
      * @param frame the frame into which the entity should be rendered
      */
     private void renderInto(EntityIdentifier eid, Frame frame) {
-        System.out.println("Rendering " + eid + " into a frame.");
+        System.out.println("Layout: Rendering " + eid + " into a frame.");
         Entity e = entities.get(eid);
         LocationInfo loc = locations.get(eid);
 
@@ -831,7 +834,7 @@ public class Layout {
         float xx = (float) p.getX();
         float yy = (float) p.getY();
         Dimension2DDouble size = loc.getSize();
-        int depth = loc.getHeight();
+        int depth = loc.getDepth();
         Color color = e.getColor().toAWTColor();
         String description = e.getDescription();
 

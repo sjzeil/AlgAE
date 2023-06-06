@@ -405,7 +405,7 @@ public class MemoryModel implements ContextAware,
     		++componentCount;
     		if (container != null) {
     			if (render.getClosedOnConnections()) {
-    				SpanTree spanTree = new SpanTree(container.getActualObject(), 
+    				SpanTree spanTree = new SpanTree(comp.getActualObject(), 
     						render.getDirection(),   
     						components,
     						activationStack);
