@@ -84,8 +84,10 @@ public class MemoryModel implements ContextAware,
 
         @Override
         public List<Component> getComponents(GlobalList obj) {
-            List<Component> components = new LinkedList<>();
-            return components;
+            for (Component comp: globals)  {
+                comp.setContainer(components.get(globalsID));
+            }
+            return globals;
         }
 
         @Override
@@ -254,7 +256,7 @@ public class MemoryModel implements ContextAware,
         // Get the top three components
         Identifier rootID = new Identifier(this);
         EntityIdentifier rootEID = rootID.asEntityIdentifier();
-        Component rootComponent = new Component(this, "root");
+        Component rootComponent = new Component(this,"root");
 
         Identifier stackID = new Identifier(activationStack);
         EntityIdentifier stackEID = stackID.asEntityIdentifier();
@@ -265,6 +267,8 @@ public class MemoryModel implements ContextAware,
         Component globalsComponent = new Component(globalList, rootComponent, "globals");
 
         Entity rootEntity = new Entity(rootID, "root");
+        Renderer<Object> renderer = getRenderer(this);
+        renderBasicEntityAttributes(rootEntity, this, renderer);
 
         entities.clear();
         entities.put(rootEID, rootEntity);
@@ -278,11 +282,12 @@ public class MemoryModel implements ContextAware,
         components.put(rootID, rootComponent);
         
 
-
+        /*
         for (Component gC : globals) {
             gC.setContainer(globalsComponent);
             queue.add(gC);
         }
+        */
 
         while (!queue.isEmpty()) {
             // For each component in the queue, use the renderer for that object
@@ -300,13 +305,16 @@ public class MemoryModel implements ContextAware,
         Component container = c.getContainer();
 
         if (components.get(oid) != null) {
+            if (container == null) {
+                System.err.println("Closure: not re-rendering global " + oid);
+                return;
+            }
             Renderer<Object> containerRenderer = activationStack.getRenderer(container.getActualObject());
             if (!containerRenderer.getClosedOnConnections()) {
                 // This object appears to be a component of multiple larger
                 // objects. We can't render it in two different places.
                 Object obj = c.getActualObject();
-                Renderer<Object> renderer = activationStack.getRenderer(obj);
-                Alias alias = new Alias(renderer);
+                Alias alias = new Alias(obj, activationStack);
                 queue.push(new Component(alias, c.getContainer()));
             }  else {
                 // We have processed this object elsewhere and don't need to
@@ -315,7 +323,6 @@ public class MemoryModel implements ContextAware,
             }
         } else { // rendering this for the first time
                 components.put(oid, c);
-                Object containerObj = container.getActualObject();
                 Entity entity = renderObject(c, queue);
                 snap.add(entity);
                 // System.err.println ("Closure: new entity " + entity);
@@ -332,7 +339,8 @@ public class MemoryModel implements ContextAware,
             Entity container = entities.get(containerEID);
             container.getComponents().add(eid);
         } else {
-            globalList.getEntity().getComponents().add(eid);
+            Entity container = entities.get(globalsID.asEntityIdentifier());
+            container.getComponents().add(eid);
         }
         Object obj = c.getActualObject();
         Renderer<Object> render = activationStack.getRenderer(obj);
@@ -369,8 +377,7 @@ public class MemoryModel implements ContextAware,
             entity.getConnections().add(connector);
             if (destObj != null) {
                 Component destComponent = new Component(destObj, components.get(globalsID), "");
-                // System.err.println ("" + entity.getEntityIdentifier() + " connects to " +
-                // destID);
+                System.err.println ("" + entity.getEntityIdentifier() + " connects to " + destID);
 
                 queue.add(destComponent);
             }
@@ -385,9 +392,12 @@ public class MemoryModel implements ContextAware,
     		return;
     	}
     	int componentCount = 0;
-    	ListIterator<Component> reversed = componentList.listIterator(componentList.size()-1);
+    	ListIterator<Component> reversed = componentList.listIterator(componentList.size());
     	while (reversed.hasPrevious()) {
     		Component comp = reversed.previous();
+            if (container == null) {
+                System.err.println ("Only root object should have a null container: " + comp);
+            }
     		comp.setContainer(container);
     		String cLabel = comp.getLabel();
     		if (cLabel == null || cLabel.length() == 0)

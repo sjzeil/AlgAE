@@ -1,6 +1,7 @@
 package edu.odu.cs.AlgAE.Server.MemoryModel;
 
 import java.awt.Color;
+import java.util.LinkedList;
 import java.util.List;
 
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
@@ -19,55 +20,52 @@ import edu.odu.cs.AlgAE.Server.Rendering.Renderer;
  */
 public class Alias implements CanBeRendered<Alias>, Renderer<Alias>{
 
-    public Alias(Renderer<Object> renderer) {
+    Object original;
+    Renderer<Object> originalRenderer;
+
+    public Alias(Object original, ActivationStack aStack) {
+        this.original = original;
+        originalRenderer = aStack.getRenderer(original);
     }
 
     @Override
     public String getValue(Alias obj) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getValue'");
+        return originalRenderer.getValue(original);
     }
 
     @Override
     public Color getColor(Alias obj) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getColor'");
+        return originalRenderer.getColor(original);
     }
 
     @Override
     public List<Component> getComponents(Alias obj) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getComponents'");
+        return originalRenderer.getComponents(original);
     }
 
     @Override
     public List<Connection> getConnections(Alias obj) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getConnections'");
+        return new LinkedList<>();
     }
 
     @Override
     public Directions getDirection() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDirection'");
+        return originalRenderer.getDirection();
     }
 
     @Override
     public Double getSpacing() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSpacing'");
+        return originalRenderer.getSpacing();
     }
 
     @Override
     public Boolean getClosedOnConnections() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getClosedOnConnections'");
+        return originalRenderer.getClosedOnConnections();
     }
 
     @Override
     public Renderer<Alias> getRenderer() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRenderer'");
+        return this;
     }
 
 }

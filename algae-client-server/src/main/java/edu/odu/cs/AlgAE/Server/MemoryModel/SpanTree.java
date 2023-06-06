@@ -3,10 +3,10 @@ package edu.odu.cs.AlgAE.Server.MemoryModel;
 import edu.odu.cs.AlgAE.Common.Snapshot.EntityIdentifier;
 import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
 import edu.odu.cs.AlgAE.Server.Rendering.Renderer;
-import edu.odu.cs.AlgAE.Server.Utilities.LinkedList;
 
 import java.awt.Color;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -98,5 +98,6 @@ public class SpanTree implements CanBeRendered<SpanTree>, Renderer<SpanTree> {
     public Renderer<SpanTree> getRenderer() {
         return this;
     }
+
 
 }

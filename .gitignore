@@ -8,3 +8,4 @@
 **/ivy
 **/.vscode/
 **/*.log
+**/*.log.lck

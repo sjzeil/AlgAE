@@ -15,21 +15,6 @@ public class Component {
     private String label;
     private Component container;
         
-    
-    /**
-     * @return the container
-     */
-    public Component getContainer() {
-        return container;
-    }
-
-    /**
-     * @param container the container to set
-     */
-    public void setContainer(Component container) {
-        this.container = container;
-    }
-
     public Component (Object comp, Component container, String label) {
         actual = comp;
         this.label = label;
@@ -70,6 +55,21 @@ public class Component {
             return "<" + label + ":" + actual.toString() + ">";
     }
     
+    
+    /**
+     * @return the container
+     */
+    public Component getContainer() {
+        return container;
+    }
+
+    /**
+     * @param container the container to set
+     */
+    public void setContainer(Component container) {
+        this.container = container;
+    }
+
     
     
 }

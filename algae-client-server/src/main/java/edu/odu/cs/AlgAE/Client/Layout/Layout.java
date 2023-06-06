@@ -250,7 +250,7 @@ public class Layout {
      */
     private void positionComponentsOf(EntityIdentifier eid) {
         Entity e = entities.get(eid);
-        // System.err.println ("Layout: positioning components of " + eid);
+        System.err.println ("Layout: positioning components of " + eid);
         int maxHeight = -1;
         for (EntityIdentifier cEID : e.getComponents()) {
             positionComponentsOf(cEID);
@@ -823,6 +823,7 @@ public class Layout {
      * @param frame the frame into which the entity should be rendered
      */
     private void renderInto(EntityIdentifier eid, Frame frame) {
+        System.out.println("Rendering " + eid + " into a frame.");
         Entity e = entities.get(eid);
         LocationInfo loc = locations.get(eid);
 
