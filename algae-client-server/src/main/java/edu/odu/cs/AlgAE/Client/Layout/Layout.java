@@ -10,7 +10,6 @@ import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import edu.odu.cs.AlgAE.Client.DataViewer.Frames.Arrow;
 import edu.odu.cs.AlgAE.Client.DataViewer.Frames.ArrowToSelf;
@@ -26,9 +25,6 @@ import edu.odu.cs.AlgAE.Client.Layout.Coordinates.PerimeterPoint;
 import edu.odu.cs.AlgAE.Client.Layout.Coordinates.Point;
 import edu.odu.cs.AlgAE.Client.Layout.Coordinates.RelativePoint;
 import edu.odu.cs.AlgAE.Client.Layout.Coordinates.RelativePoint.Connections;
-import edu.odu.cs.AlgAE.Client.Layout.Optimization.OptimizationProblem;
-import edu.odu.cs.AlgAE.Client.Layout.Optimization.Optimizer;
-import edu.odu.cs.AlgAE.Client.Layout.Optimization.Variable;
 import edu.odu.cs.AlgAE.Common.Snapshot.Connector;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
 import edu.odu.cs.AlgAE.Common.Snapshot.EntityIdentifier;
@@ -53,7 +49,6 @@ public class Layout {
 
     private HashMap<EntityIdentifier, Entity> entities;
     private HashMap<EntityIdentifier, LocationInfo> locations;
-    private LinkedList<LocationInfo> movable;
     private String descriptor;
     private SourceLocation sourceLoc;
     private Anchors anchors;
@@ -110,13 +105,6 @@ public class Layout {
                 return loc;
         }
 
-        /**
-         * True if this entity has been assigned a position
-         *
-         */
-        public boolean hasBeenPositioned() {
-            return loc != null;
-        }
 
         /**
          * @return the entity described by this location
@@ -191,7 +179,6 @@ public class Layout {
         entities = new HashMap<EntityIdentifier, Entity>();
         locations = new HashMap<EntityIdentifier, LocationInfo>();
         baseObjectIDs = new HashSet<EntityIdentifier>();
-        movable = new LinkedList<LocationInfo>();
         descriptor = current.getDescriptor();
         sourceLoc = current.getBreakpointLocation();
 
@@ -285,186 +272,10 @@ public class Layout {
         }
     }
 
-    /**
-     * Assign initial positions to any unfixed globals
-     * at top of screen alongside the activation stack
-     * 
-     * @param set
-     * @param xOffset
-     */
-    private void positionGlobals(Set<EntityIdentifier> set, double xOffset) {
-        int count = 0;
-        double y = 0.0;
-        double height = 0.0;
-        double x = 0.0;
-        double maxWidth = 0.0;
-        for (EntityIdentifier eid : set) {
-            LocationInfo loc = locations.get(eid);
-            if (loc != null && !loc.hasBeenPositioned()) {
-                ++count;
-                Dimension2DDouble sz = loc.getSize();
-                if (count > 2 && x + sz.getWidth() > maxWidth) {
-                    y += VerticalMargin + height;
-                    height = 0.0;
-                    x = HorizontalMargin;
-                } else {
-                    x += HorizontalMargin;
-                }
-                loc.setLoc(new Point(x + ReservedHorizontalMargin, y));
-                movable.add(loc);
-                x += sz.getWidth();
-                maxWidth = Math.max(maxWidth, x);
-                height = Math.max(height, sz.getHeight());
-            }
-        }
-    }
-
-    /**
-     * Check to see if any of the base entities in this scene were
-     * present in a prior layout. If so, copy their former locations into
-     * this layout.
-     *
-     * As a side effect, builds the list movable of all base objects that
-     * have not already been assigned a location.
-     *
-     * @param previous a prior scene
-     * @return true if any base entities in this scene were not in the prior scene
-     *         and therefore still have no location
-     */
-    private boolean positionOldEntities(Layout previous) {
-        if (previous != null) {
-            boolean anyNew = false;
-            for (EntityIdentifier eid : baseObjectIDs) {
-                LocationInfo newLocationInfo = locations.get(eid);
-                boolean hasOldPosition = previous.baseObjectIDs.contains(eid);
-                anyNew = anyNew || !hasOldPosition;
-                if (!newLocationInfo.hasBeenPositioned()) {
-                    movable.add(newLocationInfo);
-                    if (hasOldPosition) {
-                        Location formerLocation = previous.locations.get(eid).getLoc();
-                        Location newLocation = new Point(formerLocation.getCoordinates());
-                        newLocationInfo.setLoc(newLocation);
-                    }
-                }
-            }
-            return anyNew;
-        } else {
-            return true;
-        }
-    }
 
     static private Random random = new Random();
-    static private final double InitialXRange = 100.0;
-    static private final double InitialYRange = 10.0;
 
-    private class MinimizePositionScore implements OptimizationProblem {
 
-        private ArrayList<Variable> variables;
-
-        public MinimizePositionScore(ArrayList<Variable> vars) {
-            variables = vars;
-        }
-
-        @Override
-        public ArrayList<Variable> getVariables() {
-            return variables;
-        }
-
-        @Override
-        public double objectiveFunction() {
-            return positionScore();
-        }
-
-    }
-
-    private void positionNewEntities() {
-        ArrayList<Variable> newEntityVariables = new ArrayList<Variable>();
-        HashSet<EntityIdentifier> newEntities = new HashSet<EntityIdentifier>();
-        // Collect all the new entities
-        for (EntityIdentifier eid : baseObjectIDs) {
-            LocationInfo locInfo = locations.get(eid);
-            if (!locInfo.hasBeenPositioned()) {
-                newEntities.add(eid);
-            }
-        }
-
-        boolean done = false;
-        while (!done) {
-            // Try to find a good position for at least one new entity
-            done = true;
-            for (EntityIdentifier eid : entities.keySet()) {
-                LocationInfo locInfo = locations.get(eid);
-                if (locInfo.isFixed(null)) {
-                    // See if this already positioned entity has a connector to
-                    // any of the new entities
-                    Entity oldEntity = entities.get(eid);
-                    for (Connector c : oldEntity.getConnections()) {
-                        if (newEntities.contains(c.getDestination())) {
-                            double angle = c.getMinAngle() + random.nextDouble() * (c.getMaxAngle() - c.getMinAngle());
-                            PerimeterPoint pp = new PerimeterPoint(angle, locInfo);
-                            Point2D p = pp.getCoordinates();
-                            double dx = p.getX() - locInfo.getBBox().getCenterX();
-                            double dy = p.getY() - locInfo.getBBox().getCenterY();
-                            double d = Math.sqrt(dx * dx + dy * dy);
-                            if (d == 0.0)
-                                d = 1.0;
-                            dx = dx / d;
-                            dy = dy / d;
-                            double x = p.getX() + c.getPreferredLength() * dx;
-                            double y = p.getY() + c.getPreferredLength() * dy;
-                            LocationInfo newInfo = locations.get(c.getDestination());
-                            newInfo.setLoc(new Point(x, y));
-                            done = false;
-                            newEntities.remove(c.getDestination());
-                            break;
-                        }
-                    }
-                }
-
-            }
-
-            if (done) {
-                // Fallback: random initial position
-                for (EntityIdentifier eid : newEntities) {
-                    LocationInfo locInfo = locations.get(eid);
-                    double x = random.nextDouble() * (InitialXRange - ReservedHorizontalMargin)
-                            + ReservedHorizontalMargin;
-                    double y = random.nextDouble() * InitialYRange + InitialYRange / 2.0;
-                    Point p = new Point(x, y);
-                    locInfo.setLoc(p);
-                    for (Variable v : p.getVariables()) {
-                        newEntityVariables.add(v);
-                    }
-                    done = false;
-                    newEntities.remove(eid);
-                    break;
-                }
-            }
-        }
-        // Now solve the optimization problems to get a better position
-        // for all new entities.
-        MinimizePositionScore optProblem = new MinimizePositionScore(newEntityVariables);
-        Optimizer opt = new Optimizer(optProblem);
-        opt.solve(20.0, 0.25, 10000);
-    }
-
-    private void repositionAllEntities() {
-        ArrayList<Variable> entityVariables = new ArrayList<Variable>();
-        // Copy the locations of all non-anchored base objects into
-        for (LocationInfo locInfo : movable) {
-            Location loc = locInfo.getLoc();
-            for (Variable v : loc.getVariables()) {
-                entityVariables.add(v);
-            }
-        }
-        // Now solve the optimization problems to get a better position
-        // for all entities.
-        MinimizePositionScore optProblem = new MinimizePositionScore(entityVariables);
-        // System.err.println ("repositionAllEntities: " + entityVariables.size() + "
-        // variables");
-        Optimizer opt = new Optimizer(optProblem);
-        opt.solve(20.0, 0.25, 10000);
-    }
 
     /**
      * Arranges a list of components to pack a rectangular space whose upper left
@@ -687,124 +498,11 @@ public class Layout {
         return sum;
     }
 
-    private double positionScore() {
-        double obScore = 0.0;
-        double connScore = 0.0;
-        for (EntityIdentifier eid : baseObjectIDs) {
-            obScore += baseObjectScore(eid);
-        }
-        for (EntityIdentifier eid : entities.keySet()) {
-            Entity e = entities.get(eid);
-            for (Connector conn : e.getConnections()) {
-                connScore += connectorScore(conn);
-            }
-        }
-        double score = OverlapForceMultiplier * obScore + connScore;
-        return score;
-    }
 
-    private static double OverlapForceMultiplier = 10.0;
-    private static double OverlapGutter = 1.0;
-    private static double Gravity = 0.01;
     private static final float TextColorThreshold = 1.5f;
 
-    private final static double ReservedHorizontalMargin = 40;
 
-    private double baseObjectScore(EntityIdentifier eid) {
-        /*
-         * This is a piecewise linear function that peaks at M1*M2
-         * when the center of two objects overlap and that falls to 0
-         * when their centers are far enough apart that the objects are
-         * separated by OverlapGutter.
-         */
-        LocationInfo loc = locations.get(eid);
-        Rectangle2D bBox = loc.getBBox();
-        double score = 0.0;
-        for (EntityIdentifier other : baseObjectIDs) {
-            if (!other.equals(eid)) {
-                LocationInfo otherLoc = locations.get(other);
-                Rectangle2D oBox = otherLoc.getBBox();
 
-                double dx0 = bBox.getWidth() / 2.0 + oBox.getWidth() / 2.0 + OverlapGutter;
-                double dy0 = bBox.getHeight() / 2.0 + oBox.getHeight() / 2.0 + OverlapGutter;
-
-                double dx = Math.abs(bBox.getCenterX() - oBox.getCenterX());
-                double dy = Math.abs(bBox.getCenterY() - oBox.getCenterY());
-
-                if (dx < dx0 && dy < dy0) {
-                    // Boxes overlap or nearly overlap
-                    double fx = 1.0 - dx / dx0;
-                    double fy = 1.0 - dy / dy0;
-
-                    score += fx + fy;
-                }
-            }
-        }
-
-        // Artificial collision calculation to keep coordinates positive
-        double dx = 0.0;
-        double dy = 0.0;
-        if (bBox.getX() < ReservedHorizontalMargin)
-            dx = ReservedHorizontalMargin - bBox.getX();
-        else
-            dx = 0.0;
-        if (bBox.getY() < 0)
-            dy = -bBox.getY();
-        else
-            dy = 0.0;
-        score += dx + dy;
-
-        // Gravity pulls all objects gently towards 0,0
-        double gravity = Math.abs(bBox.getX() - HorizontalMargin) + Math.abs(bBox.getY() - VerticalMargin);
-        score += Gravity * gravity;
-
-        return score;
-    }
-
-    private static final double TorsionTensionRatio = 5.0;
-
-    private double connectorScore(Connector conn) {
-        EntityIdentifier destination = conn.getDestination();
-        EntityIdentifier source = conn.getSource();
-
-        if (destination.equals(EntityIdentifier.nullID()) || destination.equals(source))
-            return 0.0;
-
-        LocationInfo destInfo = locations.get(destination);
-        LocationInfo sourceInfo = locations.get(source);
-
-        Location destCenter = new RelativePoint(0.0, 0.0, Connections.CC, destInfo);
-        Location sourceCenter = new RelativePoint(0.0, 0.0, Connections.CC, sourceInfo);
-
-        Location sourceExitLoc = new ClosestPointOnPerimeter(sourceInfo, destCenter, conn.getMinAngle(),
-                conn.getMaxAngle());
-        Location destEntryLoc = new ClosestPointOnPerimeter(destInfo, sourceCenter, 0.0, 360.0);
-
-        Point2D sourceCenterPt = new Point2D.Double(sourceInfo.getBBox().getCenterX(),
-                sourceInfo.getBBox().getCenterY());
-        Point2D sourceExit = sourceExitLoc.getCoordinates();
-        Point2D destEntry = destEntryLoc.getCoordinates();
-
-        double len = sourceExit.distance(destEntry);
-        double tension = Math.abs(len - conn.getPreferredLength());
-
-        double dx1 = sourceExit.getX() - sourceCenterPt.getX();
-        double dy1 = sourceExit.getY() - sourceCenterPt.getY();
-
-        double d1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
-        if (d1 == 0.0)
-            d1 = 1.0;
-
-        double dx2 = destEntry.getX() - sourceExit.getX();
-        double dy2 = destEntry.getY() - sourceExit.getY();
-
-        double d2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
-        if (d2 == 0.0)
-            d2 = 1.0;
-
-        double torsion = 1.0 - (dx1 * dx2 + dy1 * dy2) / (d1 * d2);
-        return TorsionTensionRatio * torsion + tension / conn.getElasticity();
-    }
 
     /**
      * Convert this state model to a DataPicture suitable for tweening and drawing.

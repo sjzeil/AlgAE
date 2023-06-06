@@ -8,43 +8,9 @@ package edu.odu.cs.AlgAE.Common.Snapshot;
   public class Color implements java.io.Serializable {
  
      // Named colors 
-     public final static Color white     = new Color(java.awt.Color.white);
-     public final static Color WHITE = white;
-     public final static Color lightGray     = new Color(java.awt.Color.lightGray);
-     public final static Color LIGHT_GRAY = lightGray;
- 
-     public final static Color gray      = new Color(java.awt.Color.gray);
-     public final static Color GRAY = gray;
-    
-     public final static Color darkGray  = new Color(java.awt.Color.darkGray);
-     public final static Color DARK_GRAY = darkGray;
- 
-     public final static Color black     = new Color(java.awt.Color.black);
-     public final static Color BLACK = black;
- 
-     public final static Color red       = new Color(java.awt.Color.red);
-     public final static Color RED = red;
- 
-     public final static Color pink      = new Color(java.awt.Color.pink);
-     public final static Color PINK = pink;
- 
-     public final static Color orange    = new Color(java.awt.Color.orange);
-     public final static Color ORANGE = orange;
- 
-     public final static Color yellow    = new Color(java.awt.Color.yellow);
-     public final static Color YELLOW = yellow;
- 
-     public final static Color green     = new Color(java.awt.Color.green);
-     public final static Color GREEN = green;
- 
-     public final static Color magenta   = new Color(java.awt.Color.magenta);
-     public final static Color MAGENTA = magenta;
- 
-     public final static Color cyan      = new Color(java.awt.Color.cyan);
-     public final static Color CYAN = cyan;
- 
-     public final static Color blue      = new Color(java.awt.Color.blue);
-     public final static Color BLUE = blue;
+     public final static java.awt.Color transparent
+        = new java.awt.Color(255,255,255,255);
+
  
      private int r;
      private int g;

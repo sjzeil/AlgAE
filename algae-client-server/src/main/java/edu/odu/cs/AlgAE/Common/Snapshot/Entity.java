@@ -51,7 +51,7 @@ public class Entity implements Serializable {
         this.entityIdentifier = id.asEntityIdentifier();
         this.label = label;
         value = "";
-        color = Color.lightGray;
+        color = new Color(java.awt.Color.lightGray);
         direction = Directions.Vertical;
         spacing = 1;
         closedOnConnections = false;
@@ -73,7 +73,7 @@ public class Entity implements Serializable {
         this.entityIdentifier = id.asEntityIdentifier();
         label = componentLabel;
         value = "";
-        color = Color.lightGray;
+        color = new Color(java.awt.Color.lightGray);
         direction = Directions.Vertical;
         spacing = 1;
         closedOnConnections = false;

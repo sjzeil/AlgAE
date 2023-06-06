@@ -1,5 +1,6 @@
 package edu.odu.cs.AlgAE.Common.Snapshot;
 
+
 public class Connector {
     private EntityIdentifier source;
     private EntityIdentifier destination;
@@ -24,7 +25,7 @@ public class Connector {
         this.id = id;
         preferredLength = 2.0;
         elasticity = 1.0;
-        color = Color.black;
+        color = new Color(java.awt.Color.black);
         value = "";
         label = "";
         componentIndex = -1;
@@ -39,7 +40,7 @@ public class Connector {
         this.id = id;
         preferredLength = 2.0;
         elasticity = 1.0;
-        color = Color.black;
+        color = new Color(java.awt.Color.black);
         value = "";
         label = "";
         componentIndex = component;

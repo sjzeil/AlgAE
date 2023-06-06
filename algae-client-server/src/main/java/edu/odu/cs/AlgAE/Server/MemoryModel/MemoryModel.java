@@ -2,13 +2,10 @@ package edu.odu.cs.AlgAE.Server.MemoryModel;
 
 import java.awt.Color;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 
 import edu.odu.cs.AlgAE.Animations.AnimationContext;
 import edu.odu.cs.AlgAE.Animations.ContextAware;
@@ -62,14 +59,8 @@ public class MemoryModel implements ContextAware,
     private Identifier globalsID;
 
     private class GlobalList implements CanBeRendered<GlobalList>, Renderer<GlobalList> {
-        private Entity entity;
 
         public GlobalList() {
-            entity = new Entity(new Identifier(this), "*globals*");
-        }
-
-        public Entity getEntity() {
-            return entity;
         }
 
         @Override
@@ -229,20 +220,6 @@ public class MemoryModel implements ContextAware,
         return snap;
     }
 
-    private class InternalComponent {
-        public Component container;
-        public Component component;
-
-        public InternalComponent(Component container, Component component) {
-            this.container = container;
-            this.component = component;
-
-        }
-
-        public String toString() {
-            return "IC[" + component + "]@" + container;
-        }
-    }
 
     /**
      * Adds to the snapshot all objects that can be reached in one or more
@@ -256,15 +233,12 @@ public class MemoryModel implements ContextAware,
         // Get the top three components
         Identifier rootID = new Identifier(this);
         EntityIdentifier rootEID = rootID.asEntityIdentifier();
-        Component rootComponent = new Component(this,"root");
+        Component rootComponent = new Component(this);
 
-        Identifier stackID = new Identifier(activationStack);
-        EntityIdentifier stackEID = stackID.asEntityIdentifier();
-        Component stackComponent = new Component(activationStack, rootComponent, "astack");
+        Component stackComponent = new Component(activationStack, rootComponent);
 
         globalsID = new Identifier(globalList);
-        EntityIdentifier globalsEID = globalsID.asEntityIdentifier();
-        Component globalsComponent = new Component(globalList, rootComponent, "globals");
+        Component globalsComponent = new Component(globalList, rootComponent);
 
         Entity rootEntity = new Entity(rootID, "root");
         Renderer<Object> renderer = getRenderer(this);
@@ -446,96 +420,6 @@ public class MemoryModel implements ContextAware,
         return entity;
     }
 
-    /**
-     * Attempts to resolve duplications caused by objects that map onto several
-     * discrete entities.
-     *
-     * 1) If two entities exist for the same object and one is not a component of a
-     * larger entity
-     * and is also unlabeled, then that one is removed.
-     * 2) For each remaining object with multiple renderings, the most deeply nested
-     * one is considered as
-     * the primary occurrence. If there is a tie for most deeply nested, the tie is
-     * broken arbitrarily.
-     * 3) All connectors incoming to an entity are re-routed to the primary
-     * occurrence of that object.
-     * 4) All connectors outgoing from a non-primary entity are dropped.
-     */
-    private void normalize(Snapshot snap) {
-        HashMap<Identifier, Entity> primaries = new HashMap<Identifier, Entity>();
-        HashMap<EntityIdentifier, Entity> unique = new HashMap<EntityIdentifier, Entity>();
-        for (Identifier oid : snap.getEntities().keySet()) {
-            LinkedList<Entity> aliases = snap.getEntities().get(oid);
-            Entity deepest = null;
-            Iterator<Entity> it = aliases.iterator();
-            while (it.hasNext()) {
-                Entity entity = it.next();
-                unique.put(entity.getEntityIdentifier(), entity);
-                if (aliases.size() > 1) {
-                    if (entity.getContainer() == null &&
-                            (entity.getLabel() == null || entity.getLabel().length() == 0)) {
-                        it.remove();
-                    }
-                }
-            }
-            primaries.put(oid, deepest);
-        }
-
-        HashSet<EntityIdentifier> keepThese = new HashSet<EntityIdentifier>();
-        LinkedList<Entity> queue = new LinkedList<Entity>();
-        for (Identifier oid : snap.getEntities().keySet()) {
-            LinkedList<Entity> aliases = snap.getEntities().get(oid);
-            for (Entity e : aliases) {
-                EntityIdentifier cEID = e.getContainer();
-                if (cEID == null || cEID.equals(EntityIdentifier.nullID())) {
-                    queue.add(e);
-                }
-            }
-        }
-        while (!queue.isEmpty()) {
-            Entity e = queue.getFirst();
-            queue.removeFirst();
-            EntityIdentifier eid = e.getEntityIdentifier();
-            keepThese.add(eid);
-            for (EntityIdentifier cEID : e.getComponents()) {
-                queue.add(unique.get(cEID));
-            }
-        }
-        HashMap<Identifier, LinkedList<Entity>> trimmedEntities = new HashMap<Identifier, LinkedList<Entity>>();
-        for (Identifier oid : snap.getEntities().keySet()) {
-            LinkedList<Entity> aliases = snap.getEntities().get(oid);
-            Iterator<Entity> it = aliases.iterator();
-            while (it.hasNext()) {
-                Entity entity = it.next();
-                if (!keepThese.contains(entity.getEntityIdentifier())) {
-                    it.remove();
-                }
-            }
-            if (aliases.size() > 0) {
-                trimmedEntities.put(oid, aliases);
-            }
-        }
-        snap.getEntities().clear();
-        snap.getEntities().putAll(trimmedEntities);
-
-        for (Identifier oid : snap.getEntities().keySet()) {
-            LinkedList<Entity> aliases = snap.getEntities().get(oid);
-            Entity primary = primaries.get(oid);
-            for (Entity e : aliases) {
-                if (e == primary) {
-                    for (Connector conn : e.getConnections()) {
-                        EntityIdentifier destID = conn.getDestination();
-                        if (!destID.isNull()) {
-                            EntityIdentifier primaryDest = primaries.get(new Identifier(destID)).getEntityIdentifier();
-                            conn.setDestination(primaryDest);
-                        }
-                    }
-                } else {
-                    e.getConnections().clear();
-                }
-            }
-        }
-    }
 
     /**
      * @return the activationStack
