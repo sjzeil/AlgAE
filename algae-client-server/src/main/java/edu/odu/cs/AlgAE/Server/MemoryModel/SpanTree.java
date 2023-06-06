@@ -1,11 +1,11 @@
 package edu.odu.cs.AlgAE.Server.MemoryModel;
 
-import edu.odu.cs.AlgAE.Common.Snapshot.EntityIdentifier;
 import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
 import edu.odu.cs.AlgAE.Server.Rendering.Renderer;
 
 import java.awt.Color;
 import java.util.List;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
@@ -50,15 +50,22 @@ public class SpanTree implements CanBeRendered<SpanTree>, Renderer<SpanTree> {
     public List<Component> getComponents(SpanTree spanTree) {
         Component spanTreeComponent = componentsMap.get(new Identifier(this));
         LinkedList<Component> components = new LinkedList<>();
-        components.add(new Component(theRoot));
+
+        Set<Identifier> seen = new HashSet<>();
+
+
         Queue<Object> queue = new java.util.LinkedList<Object>();
         queue.add(theRoot);
         while (!queue.isEmpty()) {
             Object obj = queue.remove();
             Identifier oid = new Identifier(obj);
-            if (!componentsMap.containsKey(oid)) {
+            if (seen.contains(oid)) {
+                continue;
+            }
+            seen.add(oid);
+            if (obj == theRoot || !componentsMap.containsKey(oid)) {
                 Component newComponent = new Component(obj, spanTreeComponent);
-                //components.add(newComponent);
+                components.add(newComponent);
                 Renderer<Object> render = activationStack.getRenderer(obj);
                 List<Connection> connections = render.getConnections(obj);
                 if (connections != null) {
@@ -68,6 +75,29 @@ public class SpanTree implements CanBeRendered<SpanTree>, Renderer<SpanTree> {
                             queue.add(destObject);
                         }
                     }
+                }
+                // Also look through the components: add their connections
+                // (but not the components) themselves
+                LinkedList<Component> componentsQueue = new LinkedList<>();
+                List<Component> innerComponents = render.getComponents(obj);
+                if (innerComponents != null)
+                    componentsQueue.addAll(innerComponents);
+                while (!componentsQueue.isEmpty()) {
+                    Component innerComponent = componentsQueue.remove();
+                    Object innerObj = innerComponent.getActualObject();
+                    Renderer<Object> innerRender = activationStack.getRenderer(innerObj);
+                    List<Connection> innerConnections = innerRender.getConnections(innerObj);
+                    if (innerConnections != null) {
+                        for (Connection conn: innerConnections) {
+                            Object destObject = conn.getDestination();
+                            if (destObject != null) {
+                                queue.add(destObject);
+                            }
+                        }
+                    }
+                    innerComponents = innerRender.getComponents(innerObj);
+                    if (innerComponents != null)
+                        componentsQueue.addAll(innerComponents);
                 }
             }
         }
