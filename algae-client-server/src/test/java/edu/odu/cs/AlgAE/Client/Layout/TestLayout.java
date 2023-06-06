@@ -16,6 +16,8 @@ import edu.odu.cs.AlgAE.Common.Snapshot.EntityIdentifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
+import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
+
 
 /**
  * @author zeil
@@ -53,13 +55,13 @@ public class TestLayout {
     	s.add(fooAct);
     	stack.getComponents().add(fooAct.getEntityIdentifier());
     	
-    	Entity a = new Entity(new Identifier(aID), "");
+    	Entity a = new Entity(new Identifier(aID), fooAct.getEntityIdentifier(), "");
     	a.setLabel("A");
     	a.setValue("42");
+    	fooAct.getComponents().add(a.getEntityIdentifier());
     	s.add(a);
-    	s.setGlobal(a.getEntityIdentifier(), true);
 
-    	Entity b = new Entity(new Identifier(bID), "");
+    	Entity b = new Entity(new Identifier(bID), fooAct.getEntityIdentifier(), "");
     	b.setLabel("B");
     	b.setValue("12");
     	s.add(b);
@@ -122,6 +124,18 @@ public class TestLayout {
 	}
 
     @Test
+	public void test_emptyMemoryModel() {
+    	MemoryModel memory = new MemoryModel(null);
+    	SourceLocation sourceLoc = new SourceLocation();
+		Snapshot snap = memory.renderInto("test", sourceLoc);
+		Anchors anchors = new Anchors();
+		Layout scene = new Layout(snap, null, anchors);
+		Map<EntityIdentifier, Entity> entities =  scene.getEntities();
+		assertEquals (4, entities.keySet().size());
+	}
+
+    
+    @Test
 	public void test_Snap1() {
 		Snapshot snap = snap1(0);
 		Anchors anchors = new Anchors();
@@ -130,7 +144,8 @@ public class TestLayout {
 		assertEquals (5, entities.keySet().size());
 		checkVar (entities, stackID, 1, null, null);
 		checkVar (entities, aID, 1, null, "42");
-		checkSize (scene, new EntityIdentifier("", aID), "A", 6, 9, 1, 2);
+		EntityIdentifier aEID = new Identifier(aID).asEntityIdentifier(); 
+		checkSize (scene, aEID, "A", 6, 9, 1, 2);
 	}
 
     @Test

@@ -11,7 +11,7 @@ package edu.odu.cs.AlgAE.Server.MemoryModel;
  */
 public class Component {
 
-    private Object component;
+    private Object actual;
     private String label;
     private Component container;
         
@@ -31,32 +31,32 @@ public class Component {
     }
 
     public Component (Object comp, Component container, String label) {
-        component = comp;
+        actual = comp;
         this.label = label;
         this.container = container;
     }
     
     public Component (Object comp, String label) {
-        component = comp;
+        actual = comp;
         this.label = label;
         this.container = null;
     }
 
     public Component (Object comp, Component container) {
-        component = comp;
+        actual = comp;
         this.label = null;
         this.container = container;
     }
     
     public Component (Object comp) {
-        component = comp;
+        actual = comp;
         this.label = null;
         this.container = null;
     }
     
     
-    public Object getComponentObject() {
-        return component;
+    public Object getActualObject() {
+        return actual;
     }
     
     public String getLabel() {
@@ -65,9 +65,9 @@ public class Component {
     
     public String toString() {
         if (label == null)
-            return "<" + component.toString() + ">";
+            return "<" + actual.toString() + ">";
         else
-            return "<" + label + ":" + component.toString() + ">";
+            return "<" + label + ":" + actual.toString() + ">";
     }
     
     
