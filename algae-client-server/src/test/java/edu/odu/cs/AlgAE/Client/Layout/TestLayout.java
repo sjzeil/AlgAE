@@ -117,8 +117,7 @@ public class TestLayout {
     @Test
 	public void test_emptySnap() {
 		Snapshot snap = new Snapshot();
-		Anchors anchors = new Anchors();
-		Layout scene = new Layout(snap, null, anchors);
+		Layout scene = new Layout(snap);
 		Map<EntityIdentifier, Entity> entities =  scene.getEntities();
 		assertEquals (0, entities.keySet().size());
 	}
@@ -128,8 +127,7 @@ public class TestLayout {
     	MemoryModel memory = new MemoryModel(null);
     	SourceLocation sourceLoc = new SourceLocation();
 		Snapshot snap = memory.renderInto("test", sourceLoc);
-		Anchors anchors = new Anchors();
-		Layout scene = new Layout(snap, null, anchors);
+		Layout scene = new Layout(snap);
 		Map<EntityIdentifier, Entity> entities =  scene.getEntities();
 		assertEquals (4, entities.keySet().size());
 	}
@@ -138,8 +136,7 @@ public class TestLayout {
     @Test
 	public void test_Snap1() {
 		Snapshot snap = snap1(0);
-		Anchors anchors = new Anchors();
-		Layout scene = new Layout(snap, null, anchors);
+		Layout scene = new Layout(snap);
 		Map<EntityIdentifier, Entity> entities =  scene.getEntities();
 		assertEquals (5, entities.keySet().size());
 		checkVar (entities, stackID, 1, null, null);
@@ -150,11 +147,8 @@ public class TestLayout {
 
     @Test
 	public void test_Snap12() {
-		Snapshot snap = snap1(0);
 		Snapshot snap2 = snap1(1);
-		Anchors anchors = new Anchors();
-		Layout scene0 = new Layout(snap, null, anchors);
-		Layout scene = new Layout(snap2, scene0, anchors);
+		Layout scene = new Layout(snap2);
 		Map<EntityIdentifier, Entity> entities =  scene.getEntities();
 		assertEquals (5, entities.keySet().size());
 		checkVar (entities, stackID, 1, null, null);

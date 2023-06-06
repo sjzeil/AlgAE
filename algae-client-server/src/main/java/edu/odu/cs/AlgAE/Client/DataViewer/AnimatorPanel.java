@@ -29,7 +29,6 @@ import javax.swing.event.ChangeListener;
 
 import edu.odu.cs.AlgAE.Client.DataViewer.Frames.DataShape;
 import edu.odu.cs.AlgAE.Client.DataViewer.Frames.Frame;
-import edu.odu.cs.AlgAE.Client.Layout.Anchors;
 import edu.odu.cs.AlgAE.Client.Layout.Layout;
 import edu.odu.cs.AlgAE.Client.SourceViewer.SourceViewer;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
@@ -101,13 +100,9 @@ public class AnimatorPanel extends JPanel
     static final int MinTweenFramesPerKey = 1;
     static final int InitialTweenFramesPerKey = 10;
     
-    private Anchors anchors;
-        
 
     public AnimatorPanel(SourceViewer source)
     {
-        anchors = new Anchors();
-        
         setLayout(new BorderLayout());
 
         canvas = new DataCanvas(source);
@@ -467,8 +462,7 @@ public class AnimatorPanel extends JPanel
                     // FutureFrames queue was empty, but client has supplied the next
                     // key frame. Tween it and fill the tweened frames into the futureFrames queue.
                     Frame currentPicture = (pastFrames.size() > 0)? pastFrames.getLast() : null;
-                    Layout currentLayout = (currentPicture != null) ? currentPicture.getKeyFor() : null;
-                    Layout newLayout = new Layout (nextPicture, currentLayout, anchors);
+                    Layout newLayout = new Layout (nextPicture);
                     Frame newKey = newLayout.toPicture();
                     Frame tweenedPics[] = tween(currentPicture, newKey);
                     for (int i = 0; i < tweenedPics.length; ++i) {

@@ -51,7 +51,6 @@ public class Layout {
     private HashMap<EntityIdentifier, LocationInfo> locations;
     private String descriptor;
     private SourceLocation sourceLoc;
-    private Anchors anchors;
 
     /**
      * A subset of the total objects of the snapshot, consisting of those objects
@@ -170,12 +169,8 @@ public class Layout {
      * anchorAt calls since the former layout was created.
      *
      * @param Snapshot the memory snapshot for which a layout is being created
-     * @param previous an existing layout
-     * @param anchors  entities that have been assigned a fixed position on
-     *                 the screen.
      */
-    public Layout(Snapshot current, Layout previous, Anchors anchors) {
-        this.anchors = anchors;
+    public Layout(Snapshot current) {
         entities = new HashMap<EntityIdentifier, Entity>();
         locations = new HashMap<EntityIdentifier, LocationInfo>();
         baseObjectIDs = new HashSet<EntityIdentifier>();
@@ -185,18 +180,6 @@ public class Layout {
         loadEntities(current);
         positionComponents();
         positionFixedEntities(current);
-        /*
-        boolean anyNew = (previous == null);
-        if (previous != null) {
-            anyNew = positionOldEntities(previous);
-        }
-        anyNew = true;
-        if (anyNew) {
-            positionGlobals(current.getGlobals(), ReservedHorizontalMargin);
-            positionNewEntities();
-            repositionAllEntities();
-        }
-        */
     }
 
     /**
@@ -268,7 +251,6 @@ public class Layout {
         LocationInfo sLoc = locations.get(stack);
         if (sLoc != null) {
             sLoc.setLoc(new Point(0.25, 0.0));
-            anchors.anchorAt(stack, new Point2D.Double(0.0, 0.0));
         }
     }
 
