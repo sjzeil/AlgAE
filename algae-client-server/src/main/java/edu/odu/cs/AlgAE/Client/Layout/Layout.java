@@ -221,7 +221,7 @@ public class Layout {
      */
     private int positionComponentsOf(EntityIdentifier eid) {
         Entity e = entities.get(eid);
-        System.err.println ("Layout: positioning components of " + eid);
+        //System.err.println ("Layout: positioning components of " + eid);
         int maxDepth = -1;
         for (EntityIdentifier cEID : e.getComponents()) {
             int depth = positionComponentsOf(cEID);
@@ -383,6 +383,54 @@ public class Layout {
     private Dimension2DDouble layoutComponentsInSquare(Entity container, BoundedRegion relativeTo,
             double xOffset, double yOffset) {
 
+        ArrayList<LinkedList<EntityIdentifier>> rows 
+           = new ArrayList<LinkedList<EntityIdentifier>>();
+
+        // Arranges a list of components to pack a rectangular space whose upper left corner is
+            //   specified.
+            int numRows = 0;
+            int r = 0;
+            rows.add(new LinkedList<EntityIdentifier>());
+            for (EntityIdentifier eid: container.getComponents()) {
+                int nextr = r+1;
+                rows.get(r).add (eid);
+                if (r >= numRows) {
+                    ++numRows;
+                    rows.add(new LinkedList<EntityIdentifier>());
+                    nextr = 0;
+                }
+                r = nextr;
+            }
+        
+        
+        // Compute the actual position within each row
+            double y = VerticalMargin;
+            double width = 0;
+            for (int i = 0; i < rows.size(); ++i) {
+                LinkedList<EntityIdentifier> row = rows.get(i);
+                if (i > 0 && row.size() > 0) {
+                    y += VerticalSpacing;
+                }
+                double x = HorizontalMargin - container.getSpacing();
+                double height = 0.0;
+                if (row.size() > 0) {
+                    for (EntityIdentifier eid: row) {
+                        x += container.getSpacing();
+                        LocationInfo loc = locations.get(eid);
+                        Dimension2DDouble sz = loc.getSize();
+                        loc.setLoc(new RelativePoint(x+xOffset, y+yOffset, Connections.LU, relativeTo));
+                        x += sz.getWidth();
+                        height = Math.max(height, sz.getHeight());
+                    }
+                    width = Math.max(width, x + HorizontalMargin);
+                    y += height;
+                }
+            }
+            width += HorizontalMargin;
+            y += VerticalMargin;
+            return new Dimension2DDouble(width, y);
+                /* ----------------------------------------- 
+
         ArrayList<LinkedList<EntityIdentifier>> rows = new ArrayList<LinkedList<EntityIdentifier>>();
         ArrayList<Double> rowHeights = new ArrayList<>();
         ArrayList<Double> rowWidths = new ArrayList<>();
@@ -451,6 +499,7 @@ public class Layout {
         double totalRowHeight = sum(rowHeights) + VerticalMargin;
         double maxRowWidth = max(rowWidths) + HorizontalMargin;
         return new Dimension2DDouble(maxRowWidth, totalRowHeight);
+        */
     }
 
     private double max(ArrayList<Double> values) {

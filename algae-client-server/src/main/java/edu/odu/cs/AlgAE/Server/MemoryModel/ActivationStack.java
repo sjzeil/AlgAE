@@ -52,8 +52,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
         typeRenderers  = new HashMap<String, Renderer<?>>();
         stack = new ArrayList<ActivationRecord>();
         stack.renderHorizontally(false);
-        stack.setColor(Color.lightGray.darker());
-        //render (ActivationStack.class, new CallStackRendering());
+        stack.setColor(Color.darkGray);
     }
     
     /**
@@ -323,7 +322,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
 
     @Override
     public Color getColor(ActivationStack obj) {
-        return new Color(1.0f, 1.0f, 1.0f, 0.0f);
+        return Color.darkGray;
     }
 
     @Override
