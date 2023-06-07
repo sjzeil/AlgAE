@@ -70,7 +70,7 @@ public class MemoryModel implements ContextAware,
 
         @Override
         public Color getColor(GlobalList obj) {
-            return Color.white;
+            return edu.odu.cs.AlgAE.Common.Snapshot.Color.transparent;
         }
 
         @Override
@@ -268,7 +268,7 @@ public class MemoryModel implements ContextAware,
             // to create an entity and add its components and connections to the queue
             // for future processing.
             Component c = queue.pop();
-            System.err.println("formClosure on " + c);
+            //System.err.println("formClosure on " + c);
             renderIfUnknownSoFar(snap, queue, c);
         }
     }
@@ -289,7 +289,7 @@ public class MemoryModel implements ContextAware,
                 // objects. We can't render it in two different places.
                 Object obj = c.getActualObject();
                 Alias alias = new Alias(obj, activationStack);
-                queue.push(new Component(alias, c.getContainer()));
+                queue.push(new Component(alias, c.getContainer(), c.getLabel()));
             }  else {
                 // We have processed this object elsewhere and don't need to
                 // do it again.
@@ -351,7 +351,7 @@ public class MemoryModel implements ContextAware,
             entity.getConnections().add(connector);
             if (destObj != null) {
                 Component destComponent = new Component(destObj, components.get(globalsID), "");
-                System.err.println ("" + entity.getEntityIdentifier() + " connects to " + destID);
+                //System.err.println ("" + entity.getEntityIdentifier() + " connects to " + destID);
 
                 queue.add(destComponent);
             }
