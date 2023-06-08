@@ -247,8 +247,8 @@ public class Layout {
     }
 
     private void positionFixedEntities(Snapshot snapshot) {
-        EntityIdentifier stack = snapshot.getRootEntity();
-        LocationInfo sLoc = locations.get(stack);
+        EntityIdentifier memory = snapshot.getRootEntity();
+        LocationInfo sLoc = locations.get(memory);
         if (sLoc != null) {
             sLoc.setLoc(new Point(0.25, 0.0));
         }
@@ -282,9 +282,9 @@ public class Layout {
             case Square:
                 return layoutComponentsInSquare(container, relativeTo, xOffset, yOffset);
             case HorizontalTree:
-                return layoutComponentsInSquare(container, relativeTo, xOffset, yOffset);
+                return layoutComponentsInHorizontalTree(container, relativeTo, xOffset, yOffset);
             case VerticalTree:
-                return layoutComponentsInSquare(container, relativeTo, xOffset, yOffset);
+                return layoutComponentsInVerticalTree(container, relativeTo, xOffset, yOffset);
             default:
                 return new Dimension2DDouble();
         }
@@ -429,78 +429,130 @@ public class Layout {
             width += HorizontalMargin;
             y += VerticalMargin;
             return new Dimension2DDouble(width, y);
-                /* ----------------------------------------- 
+    }
 
-        ArrayList<LinkedList<EntityIdentifier>> rows = new ArrayList<LinkedList<EntityIdentifier>>();
-        ArrayList<Double> rowHeights = new ArrayList<>();
-        ArrayList<Double> rowWidths = new ArrayList<>();
+        /**
+     * Arranges a list of components to pack a rectangular space.
+     * 
+     * @param container  entity whose components are to be inserted into the
+     *                   snapshot
+     * @param relativeTo upper left corner of the region where the components
+     *                   should be placed
+     * @param xOffset    distance from the left of relativeTo at which to start
+     * @param yOffset    distance from the to of relativeTo at which to start
+     */
+    private Dimension2DDouble layoutComponentsInHorizontalTree(Entity container, BoundedRegion relativeTo,
+            double xOffset, double yOffset) {
 
-        // Apportion the components to different rows.
-        // Arranges a list of components to pack a rectangular space.
-        int numRows = 0;
-        for (EntityIdentifier eid : container.getComponents()) {
-            double totalRowHeight = sum(rowHeights);
-            double maxRowWidth = max(rowWidths);
+        ArrayList<LinkedList<EntityIdentifier>> rows 
+           = new ArrayList<LinkedList<EntityIdentifier>>();
 
-            double baseArea = totalRowHeight * maxRowWidth;
-
-            // Suppose that we add a new row...
-            LocationInfo loc = locations.get(eid);
-            Dimension2DDouble sz = loc.getSize();
-            double h = totalRowHeight + sz.getHeight();
-            double w = Math.max(maxRowWidth, sz.getWidth());
-
-            double bestDiffSoFar = Math.abs(h - w);
-            int bestRowSoFar = numRows;
-
-            for (int r = 0; r < numRows; ++r) {
-                // Suppose that we add this to row r
-                double h0 = Math.max(rowHeights.get(r), sz.getHeight());
-                double w0 = Math.max(maxRowWidth,
-                        rowWidths.get(r) + sz.getWidth());
-                double newDiff = Math.abs(h0 - w0);
-                double deltaHeight = Math.max(h0, rowHeights.get(r))
-                        - rowHeights.get(r);
-                double newArea = (totalRowHeight + deltaHeight) * w0;
-                if ((newArea <= baseArea) ||
-                        (newDiff < bestDiffSoFar)) {
-                    bestDiffSoFar = newDiff;
-                    bestRowSoFar = r;
+        // Arranges a list of components to pack a rectangular space whose upper left corner is
+            //   specified.
+            int numRows = 0;
+            int r = 0;
+            rows.add(new LinkedList<EntityIdentifier>());
+            for (EntityIdentifier eid: container.getComponents()) {
+                int nextr = r+1;
+                rows.get(r).add (eid);
+                if (r >= numRows) {
+                    ++numRows;
+                    rows.add(new LinkedList<EntityIdentifier>());
+                    nextr = 0;
+                }
+                r = nextr;
+            }
+        
+        
+        // Compute the actual position within each row
+            double y = VerticalMargin;
+            double width = 0;
+            for (int i = 0; i < rows.size(); ++i) {
+                LinkedList<EntityIdentifier> row = rows.get(i);
+                if (i > 0 && row.size() > 0) {
+                    y += VerticalSpacing;
+                }
+                double x = HorizontalMargin - container.getSpacing();
+                double height = 0.0;
+                if (row.size() > 0) {
+                    for (EntityIdentifier eid: row) {
+                        x += container.getSpacing();
+                        LocationInfo loc = locations.get(eid);
+                        Dimension2DDouble sz = loc.getSize();
+                        loc.setLoc(new RelativePoint(x+xOffset, y+yOffset, Connections.LU, relativeTo));
+                        x += sz.getWidth();
+                        height = Math.max(height, sz.getHeight());
+                    }
+                    width = Math.max(width, x + HorizontalMargin);
+                    y += height;
                 }
             }
-
-            if (bestRowSoFar < numRows) {
-                // Add this to an existing row.
-                double y = sum(rowHeights, bestRowSoFar)
-                        + bestRowSoFar * container.getSpacing();
-                double h1 = sz.getHeight();
-                rowHeights.set(bestRowSoFar,
-                        Math.max(h1, rowHeights.get(bestRowSoFar)));
-                double w1 = (rowWidths.get(bestRowSoFar) > 0.0) ? container.getSpacing() : HorizontalMargin;
-                w1 += sz.getWidth() + rowWidths.get(bestRowSoFar);
-                rowWidths.set(bestRowSoFar, w1);
-                double x = rowWidths.get(bestRowSoFar) + (rowHeights.size() - 1) * container.getSpacing();
-                loc.setLoc(new RelativePoint(x + xOffset, y + yOffset, Connections.LU, relativeTo));
-                rows.get(bestRowSoFar).add(eid);
-            } else {
-                // Add this to a new row
-                double x = 0.0;
-                double y = sum(rowHeights)
-                        + rows.size() * container.getSpacing();
-                rows.add(new LinkedList<EntityIdentifier>());
-                rowHeights.add(h + container.getSpacing());
-                rowWidths.add(w);
-                rows.get(numRows).add(eid);
-                loc.setLoc(new RelativePoint(x + xOffset,
-                        y + yOffset, Connections.LU, relativeTo));
-                ++numRows;
-            }
-        }
-        double totalRowHeight = sum(rowHeights) + VerticalMargin;
-        double maxRowWidth = max(rowWidths) + HorizontalMargin;
-        return new Dimension2DDouble(maxRowWidth, totalRowHeight);
-        */
+            width += HorizontalMargin;
+            y += VerticalMargin;
+            return new Dimension2DDouble(width, y);
     }
+
+        /**
+     * Arranges a list of components to pack a rectangular space.
+     * 
+     * @param container  entity whose components are to be inserted into the
+     *                   snapshot
+     * @param relativeTo upper left corner of the region where the components
+     *                   should be placed
+     * @param xOffset    distance from the left of relativeTo at which to start
+     * @param yOffset    distance from the to of relativeTo at which to start
+     */
+    private Dimension2DDouble layoutComponentsInVerticalTree(Entity container, BoundedRegion relativeTo,
+            double xOffset, double yOffset) {
+
+        ArrayList<LinkedList<EntityIdentifier>> rows 
+           = new ArrayList<LinkedList<EntityIdentifier>>();
+
+        // Arranges a list of components to pack a rectangular space whose upper left corner is
+            //   specified.
+            int numRows = 0;
+            int r = 0;
+            rows.add(new LinkedList<EntityIdentifier>());
+            for (EntityIdentifier eid: container.getComponents()) {
+                int nextr = r+1;
+                rows.get(r).add (eid);
+                if (r >= numRows) {
+                    ++numRows;
+                    rows.add(new LinkedList<EntityIdentifier>());
+                    nextr = 0;
+                }
+                r = nextr;
+            }
+        
+        
+        // Compute the actual position within each row
+            double y = VerticalMargin;
+            double width = 0;
+            for (int i = 0; i < rows.size(); ++i) {
+                LinkedList<EntityIdentifier> row = rows.get(i);
+                if (i > 0 && row.size() > 0) {
+                    y += VerticalSpacing;
+                }
+                double x = HorizontalMargin - container.getSpacing();
+                double height = 0.0;
+                if (row.size() > 0) {
+                    for (EntityIdentifier eid: row) {
+                        x += container.getSpacing();
+                        LocationInfo loc = locations.get(eid);
+                        Dimension2DDouble sz = loc.getSize();
+                        loc.setLoc(new RelativePoint(x+xOffset, y+yOffset, Connections.LU, relativeTo));
+                        x += sz.getWidth();
+                        height = Math.max(height, sz.getHeight());
+                    }
+                    width = Math.max(width, x + HorizontalMargin);
+                    y += height;
+                }
+            }
+            width += HorizontalMargin;
+            y += VerticalMargin;
+            return new Dimension2DDouble(width, y);
+    }
+
 
     private double max(ArrayList<Double> values) {
         if (values.size() == 0) {
