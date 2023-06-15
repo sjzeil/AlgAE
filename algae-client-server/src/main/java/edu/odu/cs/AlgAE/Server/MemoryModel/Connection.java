@@ -7,13 +7,10 @@ public class Connection {
     private Object destination;
     private Color color;
     private String refID;
-    private double elasticity;
     private String label;
     private String value;
     private double minAngle;
     private double maxAngle;
-    private static final double DefaultLength = 3.0;
-    private double preferredLength;
     private int componentIndex;
     
     
@@ -21,12 +18,10 @@ public class Connection {
         destination = dest;
         color = c;
         refID = "";
-        elasticity = 1.0;
         label = "";
         value = "";
         minAngle = minA;
         maxAngle = maxA;
-        preferredLength = DefaultLength;
         componentIndex = -1;
     }
     
@@ -34,12 +29,10 @@ public class Connection {
         destination = dest;
         color = Color.black;
         refID = "";
-        elasticity = 1.0;
         label = "";
         value = "";
         minAngle = minA;
         maxAngle = maxA;
-        preferredLength = DefaultLength;
         componentIndex = -1;
     }
 
@@ -47,12 +40,10 @@ public class Connection {
         destination = dest;
         color = Color.black;
         refID = "";
-        elasticity = 1.0;
         label = "";
         value = "";
         minAngle = 0.0;
         maxAngle = 360.0;
-        preferredLength = DefaultLength;
         componentIndex = -1;
     }
 
@@ -60,12 +51,10 @@ public class Connection {
         destination = dest;
         color = c;
         refID = id;
-        elasticity = 1.0;
         label = "";
         value = "";
         minAngle = minA;
         maxAngle = maxA;
-        preferredLength = DefaultLength;
         componentIndex = -1;
     }
     
@@ -73,12 +62,10 @@ public class Connection {
         destination = dest;
         color = Color.black;
         refID = id;
-        elasticity = 1.0;
         label = "";
         value = "";
         minAngle = minA;
         maxAngle = maxA;
-        preferredLength = DefaultLength;
         componentIndex = -1;
     }
 
@@ -102,13 +89,6 @@ public class Connection {
         return refID;
     }
 
-    public void setElasticity(double elasticity) {
-        this.elasticity = elasticity;
-    }
-
-    public double getElasticity() {
-        return elasticity;
-    }
     public void setLabel(String label) {
         this.label = label;
     }
@@ -150,19 +130,6 @@ public class Connection {
         return maxAngle;
     }
 
-    /**
-     * @param preferredLength the preferredLength to set
-     */
-    public void setPreferredLength(double preferredLength) {
-        this.preferredLength = preferredLength;
-    }
-
-    /**
-     * @return the preferredLength
-     */
-    public double getPreferredLength() {
-        return preferredLength;
-    }
 
     /**
      * Get an index for an internal component of the destination

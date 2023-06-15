@@ -97,7 +97,6 @@ public class RenderedReference<T> implements CanBeRendered<RenderedReference<T>>
         LinkedList<Connection> conn = new LinkedList<Connection>();
         Connection c = new Connection(refersTo, minAngle, maxAngle);
         c.setColor(Color.darkGray);
-        c.setElasticity(10.0);
         conn.add(c);
         return conn;
     }

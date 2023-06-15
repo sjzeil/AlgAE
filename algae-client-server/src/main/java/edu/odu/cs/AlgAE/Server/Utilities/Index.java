@@ -141,7 +141,6 @@ public class Index implements CanBeRendered<Index>, Renderer<Index> {
             return null;
         Connection conn = new Connection(target, minAngle, maxAngle);
         conn.setColor(color.brighter());
-        conn.setElasticity(10.0);
         conn.setComponentIndex(index);
         return conn;
     }

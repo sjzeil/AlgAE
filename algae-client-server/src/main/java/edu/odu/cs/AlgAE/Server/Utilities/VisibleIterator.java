@@ -123,7 +123,6 @@ public class VisibleIterator<T> implements Iterator<T>, CanBeRendered<VisibleIte
             return null;
         Connection conn = new Connection(target, minAngle, maxAngle);
         conn.setColor(color.brighter());
-        conn.setElasticity(10.0);
         conn.setComponentIndex(index);
         return conn;
     }
