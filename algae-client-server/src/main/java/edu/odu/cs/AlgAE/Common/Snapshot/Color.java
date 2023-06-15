@@ -9,7 +9,7 @@ package edu.odu.cs.AlgAE.Common.Snapshot;
  
      // Named colors 
      public final static java.awt.Color transparent
-        = new java.awt.Color(255,255,255,255);
+        = new java.awt.Color(255,255,255,0);
 
  
      private int r;

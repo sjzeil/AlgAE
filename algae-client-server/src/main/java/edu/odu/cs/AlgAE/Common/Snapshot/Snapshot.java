@@ -6,13 +6,9 @@ import java.beans.Statement;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.ListIterator;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
-import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
 
 /**
  * A snapshot is a model of the current data state in terms of a graph of connected
@@ -30,7 +26,7 @@ public class Snapshot  implements Iterable<Entity> {
      *  Provides access to all objects in this snapshot, indexed by their identifiers.
      *
      */
-    private HashMap<Identifier, LinkedList<Entity> > entities;
+    private HashMap<EntityIdentifier, Entity> entities;
 
     
     /**
@@ -59,7 +55,7 @@ public class Snapshot  implements Iterable<Entity> {
      * Create a new snapshot.
      */
     public Snapshot() {
-        entities = new HashMap<Identifier, LinkedList<Entity>>();
+        entities = new HashMap<>();
         descriptor = "";
         breakpointLocation = new SourceLocation();
         rootEntity = null;
@@ -74,7 +70,7 @@ public class Snapshot  implements Iterable<Entity> {
      * @param breakpoint
      */
     public Snapshot(String description, SourceLocation breakpoint) {
-        entities = new HashMap<Identifier, LinkedList<Entity>>();
+        entities = new HashMap<>();
         descriptor = description;
         breakpointLocation = breakpoint;
         rootEntity = null;
@@ -85,24 +81,7 @@ public class Snapshot  implements Iterable<Entity> {
     public void add (Entity entity)
     {
         EntityIdentifier eid = entity.getEntityIdentifier();
-        Identifier id = new Identifier(eid);
-        LinkedList<Entity> aliases = entities.get(id);
-        if (aliases == null) {
-            aliases = new LinkedList<Entity>();
-            entities.put(id,  aliases);
-        }
-        boolean found = false;
-        for (ListIterator<Entity> it = aliases.listIterator(); it.hasNext();) {
-            Entity e = it.next();
-            if (e.getEntityIdentifier().equals(eid)) {
-                found = true;
-                it.set(entity);
-                break;
-            }
-        }
-        if (!found) {
-            aliases.add (entity);
-        }
+        entities.put(eid,  entity);
     }
     
     
@@ -124,50 +103,26 @@ public class Snapshot  implements Iterable<Entity> {
     {
         EntityIdentifier eid = entity.getEntityIdentifier();
         globals.remove(eid);
-        Identifier id = new Identifier(eid);
-        LinkedList<Entity> aliases = entities.get(id);
-        if (aliases != null) {
-            for (ListIterator<Entity> it = aliases.listIterator(); it.hasNext();) {
-                Entity e = it.next();
-                if (e.getEntityIdentifier().equals(eid)) {
-                    it.remove();
-                    if (aliases.size() == 0) {
-                        entities.remove(id);
-                    }
-                    return;
-                }
-            }
-        }
     }
 
 
     private class EntityIterator implements Iterator<Entity> {
-        private Iterator<Identifier> mapIterator;
-        private Iterator<Entity> listIterator;
+        
+        private Iterator<Entity> theIterator;
         
         EntityIterator()
         {
-            mapIterator = getEntities().keySet().iterator();
-            listIterator = null;
+            theIterator = entities.values().iterator();
         }
 
         @Override
         public boolean hasNext() {
-            return mapIterator.hasNext()
-              || (listIterator != null && listIterator.hasNext());
+            return theIterator.hasNext();
         }
 
         @Override
         public Entity next() {
-            while (listIterator == null || !listIterator.hasNext()) {
-                if (mapIterator.hasNext()) {
-                    Identifier id = mapIterator.next();
-                    listIterator = getEntities().get(id).iterator();
-                } else {
-                    throw new NoSuchElementException();
-                }
-            }
-            return listIterator.next();
+            return theIterator.next();
         }
 
         @Override
@@ -189,7 +144,7 @@ public class Snapshot  implements Iterable<Entity> {
     /**
      * @return the entities
      */
-    public Map<Identifier, LinkedList<Entity> > getEntities() {
+    public Map<EntityIdentifier, Entity> getEntities() {
         return entities;
     }
 
@@ -265,13 +220,29 @@ public class Snapshot  implements Iterable<Entity> {
         buf.append (rootEntity);
         buf.append ("\n");
         buf.append ("entities: ");
-        buf.append (entities.toString());
+        buf.append (printEntityTree(rootEntity, ""));
         buf.append ("\n");
         buf.append ("globals: ");
         buf.append (globals.toString());
     
         return buf.toString();
     }
+
+    private String printEntityTree(EntityIdentifier eid, String indent) {
+        if (eid == null || eid.isNull()) {
+            return indent + "null\n";
+        } else {
+           StringBuffer buf = new StringBuffer();
+           buf.append(indent + "(" + eid.toString() + "\n");
+           Entity entity = entities.get(eid);
+           for (EntityIdentifier child: entity.getComponents()) {
+              buf.append(printEntityTree(child, indent + "   "));
+           }
+           buf.append(indent + ")\n");
+           return buf.toString();
+        }
+    }
+
 
     public boolean equals (Object o) {
         if (o == null)

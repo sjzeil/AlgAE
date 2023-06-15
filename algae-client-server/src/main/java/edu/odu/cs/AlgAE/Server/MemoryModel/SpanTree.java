@@ -5,6 +5,8 @@ import edu.odu.cs.AlgAE.Server.Rendering.Renderer;
 
 import java.awt.Color;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
@@ -15,18 +17,22 @@ import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 
 public class SpanTree implements CanBeRendered<SpanTree>, Renderer<SpanTree> {
 
-    Object theRoot;
-    Directions direction;
-    Map<Identifier, Component> componentsMap;
+    private Object theRoot;
+    private Directions direction;
+    private Map<Identifier, Component> componentsMap;
     private ActivationStack activationStack;
+    private ArrayList<Component> components;
+    private Component container;
 
     public SpanTree(
       Object root, 
+      Component container,
       Directions containerDirection, 
       Map<Identifier, Component> components,
       ActivationStack theActivationStack) 
     {
         theRoot = root;
+        this.container = container;
         this.componentsMap = components;
         activationStack = theActivationStack;
         if (containerDirection.equals(Directions.Horizontal)) {
@@ -34,23 +40,18 @@ public class SpanTree implements CanBeRendered<SpanTree>, Renderer<SpanTree> {
         } else {
             direction = Directions.HorizontalTree;
         }
+        this.components = collectRenderedComponents();
     }
 
-    @Override
-    public String getValue(SpanTree obj) {
-        return "";
-    }
-
-    @Override
-    public Color getColor(SpanTree obj) {
-        return Color.white;
-    }
-
-    @Override
-    public List<Component> getComponents(SpanTree spanTree) {
+    private ArrayList<Component> collectRenderedComponents() {
         Component spanTreeComponent = componentsMap.get(new Identifier(this));
-        LinkedList<Component> components = new LinkedList<>();
-
+        if (spanTreeComponent == null) {
+            spanTreeComponent = new Component(this, container);
+        }
+        /*
+        componentsMap.put(new Identifier(this), spanTreeComponent);
+        */
+        ArrayList<Component> components = new ArrayList<>();
         Set<Identifier> seen = new HashSet<>();
 
 
@@ -64,8 +65,12 @@ public class SpanTree implements CanBeRendered<SpanTree>, Renderer<SpanTree> {
             }
             seen.add(oid);
             if (obj == theRoot || !componentsMap.containsKey(oid)) {
+                
                 Component newComponent = new Component(obj, spanTreeComponent);
                 components.add(newComponent);
+                /* componentsMap.put(new Identifier(newComponent.getActualObject()),
+                    newComponent);
+                    */
                 Renderer<Object> render = activationStack.getRenderer(obj);
                 List<Connection> connections = render.getConnections(obj);
                 if (connections != null) {
@@ -105,6 +110,21 @@ public class SpanTree implements CanBeRendered<SpanTree>, Renderer<SpanTree> {
     }
 
     @Override
+    public String getValue(SpanTree obj) {
+        return "";
+    }
+
+    @Override
+    public Color getColor(SpanTree obj) {
+        return edu.odu.cs.AlgAE.Common.Snapshot.Color.transparent;
+    }
+
+    @Override
+    public List<Component> getComponents(SpanTree spanTree) {
+        return components;
+    }
+
+    @Override
     public List<Connection> getConnections(SpanTree obj) {
         return new java.util.LinkedList<>();
     }
@@ -116,7 +136,7 @@ public class SpanTree implements CanBeRendered<SpanTree>, Renderer<SpanTree> {
 
     @Override
     public Double getSpacing() {
-        return 2.0;
+        return 3.0;
     }
 
     @Override
@@ -127,6 +147,22 @@ public class SpanTree implements CanBeRendered<SpanTree>, Renderer<SpanTree> {
     @Override
     public Renderer<SpanTree> getRenderer() {
         return this;
+    }
+
+    /**
+     * Get the set of all objects that will be rendered as nodes in
+     * this spanning tree. This will include the root and all objects
+     * reachable by connections from the root that are not already known to
+     * be components of some other container.
+     * 
+     * @return a set of object identifiers
+     */
+    public Collection<Identifier> getClosure() {
+        ArrayList<Identifier> ids = new ArrayList<>();
+        for (Component c: components) {
+            ids.add(new Identifier(c.getActualObject()));
+        }
+        return ids;
     }
 
 

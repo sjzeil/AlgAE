@@ -2,10 +2,11 @@ package edu.odu.cs.AlgAE.Server.MemoryModel;
 
 import java.awt.Color;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import edu.odu.cs.AlgAE.Animations.AnimationContext;
 import edu.odu.cs.AlgAE.Animations.ContextAware;
@@ -55,7 +56,8 @@ public class MemoryModel implements ContextAware,
     private AnimationContext animation;
     private GlobalList globalList;
     private Map<EntityIdentifier, Entity> entities;
-    private Map<Identifier, Component> components;
+    private Map<Identifier, Component> knownComponents;
+    private Map<Identifier, Set<Identifier>> closures;
     private Identifier globalsID;
 
     private class GlobalList implements CanBeRendered<GlobalList>, Renderer<GlobalList> {
@@ -75,8 +77,8 @@ public class MemoryModel implements ContextAware,
 
         @Override
         public List<Component> getComponents(GlobalList obj) {
-            for (Component comp: globals)  {
-                comp.setContainer(components.get(globalsID));
+            for (Component comp : globals) {
+                comp.setContainer(knownComponents.get(globalsID));
             }
             return globals;
         }
@@ -113,7 +115,8 @@ public class MemoryModel implements ContextAware,
         globals = new LinkedList<Component>();
         globalList = new GlobalList();
         entities = new HashMap<>();
-        components = new HashMap<>();
+        knownComponents = new HashMap<>();
+        closures = new HashMap<>();
     }
 
     /**
@@ -216,10 +219,11 @@ public class MemoryModel implements ContextAware,
         EntityIdentifier rootEID = new Identifier(this).asEntityIdentifier();
         snap.add(entities.get(rootEID));
         snap.setRootEntity(rootEID);
+        System.err.println("**renderInto ends with\n" + snap.toString());
+
         // normalize(snap);
         return snap;
     }
-
 
     /**
      * Adds to the snapshot all objects that can be reached in one or more
@@ -240,36 +244,32 @@ public class MemoryModel implements ContextAware,
         globalsID = new Identifier(globalList);
         Component globalsComponent = new Component(globalList, rootComponent);
 
-        Entity rootEntity = new Entity(rootID, "root");
+        Entity rootEntity = new Entity(rootID, "");
         Renderer<Object> renderer = getRenderer(this);
         renderBasicEntityAttributes(rootEntity, this, renderer);
 
         entities.clear();
         entities.put(rootEID, rootEntity);
 
+        closures.clear();
+
         // Initialize the queue with the memory model
         LinkedList<Component> queue = new LinkedList<>();
         queue.add(stackComponent);
         queue.add(globalsComponent);
 
-        components.clear();
-        components.put(rootID, rootComponent);
-        
+        knownComponents.clear();
+        knownComponents.put(rootID, rootComponent);
 
-        /*
-        for (Component gC : globals) {
-            gC.setContainer(globalsComponent);
-            queue.add(gC);
-        }
-        */
-
+        System.err.println("**Starting formClosure");
         while (!queue.isEmpty()) {
             // For each component in the queue, use the renderer for that object
             // to create an entity and add its components and connections to the queue
             // for future processing.
             Component c = queue.pop();
-            //System.err.println("formClosure on " + c);
+            //System.err.println("*formClosure on " + c);
             renderIfUnknownSoFar(snap, queue, c);
+            //System.err.println("*end formClosure on " + c);
         }
     }
 
@@ -278,28 +278,35 @@ public class MemoryModel implements ContextAware,
 
         Component container = c.getContainer();
 
-        if (components.get(oid) != null) {
+        if (knownComponents.get(oid) != null) {
             if (container == null) {
                 System.err.println("Closure: not re-rendering global " + oid);
                 return;
             }
             Renderer<Object> containerRenderer = activationStack.getRenderer(container.getActualObject());
             if (!containerRenderer.getClosedOnConnections()) {
-                // This object appears to be a component of multiple larger
-                // objects. We can't render it in two different places.
-                Object obj = c.getActualObject();
-                Alias alias = new Alias(obj, activationStack);
-                queue.push(new Component(alias, c.getContainer(), c.getLabel()));
-            }  else {
+                if (!(container.getActualObject() instanceof SpanTree)) {
+                    // This object appears to be a component of multiple larger
+                    // objects. We can't render it in two different places.
+                    Object obj = c.getActualObject();
+                    Alias alias = new Alias(obj, activationStack);
+                    queue.push(new Component(alias, c.getContainer(), c.getLabel()));
+                }
+            } else {
                 // We have processed this object elsewhere and don't need to
                 // do it again.
                 System.err.println("Closure: not re-rendering " + oid);
             }
         } else { // rendering this for the first time
-                components.put(oid, c);
-                Entity entity = renderObject(c, queue);
-                snap.add(entity);
-                // System.err.println ("Closure: new entity " + entity);
+            knownComponents.put(oid, c);
+            Entity entity = renderObject(c, queue);
+            System.err.println("  Adding entity for " 
+                + new Identifier(c.getActualObject())
+                + " within "
+                + ((c.getContainer() == null) ? "null" : new Identifier(c.getContainer().getActualObject()))
+                );
+            snap.add(entity);
+            // System.err.println ("Closure: new entity " + entity);
         }
     }
 
@@ -328,7 +335,7 @@ public class MemoryModel implements ContextAware,
             Renderer<Object> render) {
         List<Connection> connections = render.getConnections(obj);
         if (connections != null) {
-        	EntityIdentifier eid = new Identifier(obj).asEntityIdentifier();
+            EntityIdentifier eid = new Identifier(obj).asEntityIdentifier();
             renderAllConnections(eid, queue, entity, connections);
         }
     }
@@ -339,7 +346,7 @@ public class MemoryModel implements ContextAware,
             Object destObj = conn.getDestination();
             Identifier destID = null;
             destID = new Identifier(destObj);
-            Connector connector = new Connector(conn.getID(), sourceEID, 
+            Connector connector = new Connector(conn.getID(), sourceEID,
                     destID.asEntityIdentifier(),
                     conn.getMinAngle(), conn.getMaxAngle(), conn.getComponentIndex());
             if (conn.getColor() != null)
@@ -350,52 +357,65 @@ public class MemoryModel implements ContextAware,
             connector.setPreferredLength(conn.getPreferredLength());
             entity.getConnections().add(connector);
             if (destObj != null) {
-                Component destComponent = new Component(destObj, components.get(globalsID), "");
-                //System.err.println ("" + entity.getEntityIdentifier() + " connects to " + destID);
+                Component destComponent = new Component(destObj, knownComponents.get(globalsID), "");
+                // System.err.println ("" + entity.getEntityIdentifier() + " connects to " +
+                // destID);
 
                 queue.add(destComponent);
             }
         }
     }
 
-    private void renderComponents(LinkedList<Component> queue, Entity entity, Object obj,
-    		Renderer<Object> render) {
-    	Component container = components.get(new Identifier(obj));
-    	List<Component> componentList = render.getComponents(obj);
-    	if (componentList == null || componentList.size() == 0) {
-    		return;
-    	}
-    	int componentCount = 0;
-    	ListIterator<Component> reversed = componentList.listIterator(componentList.size());
-    	while (reversed.hasPrevious()) {
-    		Component comp = reversed.previous();
+    private void renderComponents(LinkedList<Component> queue, Entity entity, Object containerObj,
+            Renderer<Object> render) {
+        Component container = knownComponents.get(new Identifier(containerObj));
+        List<Component> componentList = render.getComponents(containerObj);
+        if (componentList == null || componentList.size() == 0) {
+            return;
+        }
+        int componentCount = 0;
+        LinkedList<Component> newComponents = new LinkedList<>();
+        for (Component comp : componentList) {
             if (container == null) {
-                System.err.println ("Only root object should have a null container: " + comp);
+                System.err.println("Only root object should have a null container: " + comp);
             }
-    		comp.setContainer(container);
-    		String cLabel = comp.getLabel();
-    		if (cLabel == null || cLabel.length() == 0)
-    			cLabel = "\t" + componentCount;
-    		++componentCount;
-    		if (container != null) {
-    			if (render.getClosedOnConnections()) {
-    				SpanTree spanTree = new SpanTree(comp.getActualObject(), 
-    						render.getDirection(),   
-    						components,
-    						activationStack);
-    				Component spanComponent = new Component(spanTree, container, cLabel);
-    				queue.push(spanComponent);
-    			} else {
-    				// EntityIdentifier c_eid = new EntityIdentifier(new Identifier(cObj), eid,
-    				// cLabel);
-    				// entity.getComponents().add(c_eid);
-    				//Component c = new Component(comp, container, cLabel);
-    				// System.err.println ("" + entity.getEntityIdentifier() + " has component " +
-    				// c_eid);
-    				queue.push(comp);
-    			}
-    		}
-    	}
+            comp.setContainer(container);
+            String cLabel = comp.getLabel();
+            if (cLabel == null || cLabel.length() == 0)
+                cLabel = "\t" + componentCount;
+            ++componentCount;
+            if (render.getClosedOnConnections()) {
+                Identifier componentID = new Identifier(comp.getActualObject());
+                Identifier containerID = new Identifier(containerObj);
+                Set<Identifier> closure = closures.get(containerID);
+                if (closure == null) {
+                    closure = new HashSet<Identifier>();
+                    closures.put(containerID, closure);
+                }
+                if (!closure.contains(componentID)) {
+                    SpanTree spanTree = new SpanTree(comp.getActualObject(),
+                            container,
+                            entity.getDirection(),
+                            knownComponents,
+                            activationStack);
+                    closure.addAll(spanTree.getClosure());
+                    Component spanComponent = new Component(spanTree, container, cLabel);
+                    newComponents.push(spanComponent);
+                }
+            } else {
+                // EntityIdentifier c_eid = new EntityIdentifier(new Identifier(cObj), eid,
+                // cLabel);
+                // entity.getComponents().add(c_eid);
+                // Component c = new Component(comp, container, cLabel);
+                // System.err.println ("" + entity.getEntityIdentifier() + " has component " +
+                // c_eid);
+                newComponents.push(comp);
+            }
+
+        }
+        for (Component comp : newComponents) {
+            queue.push(comp);
+        }
     }
 
     private void renderBasicEntityAttributes(Entity entity, Object obj, Renderer<Object> render) {
@@ -407,19 +427,18 @@ public class MemoryModel implements ContextAware,
     }
 
     private Entity createNewEntity(Component c) {
-    	Identifier oid = new Identifier(c.getActualObject());
+        Identifier oid = new Identifier(c.getActualObject());
         Entity entity = null;
         if (c.getContainer() == null) {
             String label = c.getLabel();
             entity = new Entity(oid, label);
         } else {
-        	Component container = c.getContainer();
-        	EntityIdentifier containerEID = new Identifier(container.getActualObject()).asEntityIdentifier();
+            Component container = c.getContainer();
+            EntityIdentifier containerEID = new Identifier(container.getActualObject()).asEntityIdentifier();
             entity = new Entity(oid, containerEID, c.getLabel());
         }
         return entity;
     }
-
 
     /**
      * @return the activationStack

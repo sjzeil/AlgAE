@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
+import edu.odu.cs.AlgAE.Common.Snapshot.EntityIdentifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
@@ -58,11 +59,9 @@ public class TestMemoryRendering {
     }
     
     
-	private void checkVar (Map<Identifier, LinkedList<Entity> > entities, Object obj, int len, String label, String value) {
-		LinkedList<Entity> list = entities.get(new Identifier(obj));
-		assertNotNull(list);
-		assertEquals (len, list.size());
-		Entity e = list.getFirst();
+	private void checkVar (Map<EntityIdentifier, Entity> entities, Object obj, int len, String label, String value) {
+		Entity e = entities.get(new Identifier(obj).asEntityIdentifier());
+		assertNotNull(e);
 		if (label != null)
 			assertEquals (label, e.getLabel());
 		if (value != null)
@@ -75,7 +74,7 @@ public class TestMemoryRendering {
 	public void test_emptySnap() {
     	MemoryModel memory = anim.getMemoryModel();
 		Snapshot snap = memory.renderInto("description", new SourceLocation("foo.java", 23));
-		Map<Identifier, LinkedList<Entity> > entities =  snap.getEntities();
+		Map<EntityIdentifier, Entity> entities =  snap.getEntities();
 		//assertEquals (2, entities.keySet().size());
 		checkVar (entities, memory.getActivationStack(), 1, null, null);
 	}
@@ -87,7 +86,7 @@ public class TestMemoryRendering {
 		String fortyTwo = "42";
 		callStack.globalVar("foo", fortyTwo);
 		Snapshot snap = memory.renderInto("description", new SourceLocation("foo.java", 23));
-		Map<Identifier, LinkedList<Entity> > entities =  snap.getEntities();
+		var entities =  snap.getEntities();
 		assertEquals (3, entities.keySet().size());
 		checkVar (entities, callStack, 1, null, null);
 		checkVar (entities, fortyTwo, 1, "foo", "42");
@@ -155,7 +154,7 @@ public class TestMemoryRendering {
 		String2 dozen = new String2(twelve);
 		callStack.globalVar("dozen", dozen);
 		Snapshot snap = memory.renderInto("description", new SourceLocation("foo.java", 23));
-		Map<Identifier, LinkedList<Entity> > entities =  snap.getEntities();
+		var entities =  snap.getEntities();
 		assertEquals (5, entities.keySet().size());
 		checkVar (entities, callStack, 1, null, null);
 		checkVar (entities, fortyTwo, 1, "foo", "42");
@@ -173,7 +172,7 @@ public class TestMemoryRendering {
 		String2 dozen = new String2(twelve);
 		callStack.globalRefVar("dozen", dozen);
 		Snapshot snap = memory.renderInto("description", new SourceLocation("foo.java", 23));
-		Map<Identifier, LinkedList<Entity> > entities =  snap.getEntities();
+		var entities =  snap.getEntities();
 		assertEquals (6, entities.keySet().size());
 		checkVar (entities, callStack, 1, null, null);
 		checkVar (entities, fortyTwo, 1, "foo", "42");
@@ -190,7 +189,7 @@ public class TestMemoryRendering {
 		String2 dozen = new String2(fortyTwo);
 		callStack.globalVar("dozen", dozen);
 		Snapshot snap = memory.renderInto("description", new SourceLocation("foo.java", 23));
-		Map<Identifier, LinkedList<Entity> > entities =  snap.getEntities();
+		var entities =  snap.getEntities();
 		assertEquals (4, entities.keySet().size());
 		checkVar (entities, callStack, 1, null, null);
 		checkVar (entities, fortyTwo, 2, "foo", "42");
