@@ -353,8 +353,6 @@ public class MemoryModel implements ContextAware,
                 connector.setColor(conn.getColor());
             connector.setLabel(conn.getLabel());
             connector.setValue(conn.getValue());
-            connector.setElasticity(conn.getElasticity());
-            connector.setPreferredLength(conn.getPreferredLength());
             entity.getConnections().add(connector);
             if (destObj != null) {
                 Component destComponent = new Component(destObj, knownComponents.get(globalsID), "");

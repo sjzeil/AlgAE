@@ -6,8 +6,6 @@ public class Connector {
     private EntityIdentifier destination;
     private double minAngle;
     private double maxAngle;
-    private double preferredLength;
-    private double elasticity;
     private String value;
     private String label;
     private Color color;
@@ -23,8 +21,6 @@ public class Connector {
         this.minAngle = minAngle;
         this.maxAngle = maxAngle;
         this.id = id;
-        preferredLength = 2.0;
-        elasticity = 1.0;
         color = new Color(java.awt.Color.black);
         value = "";
         label = "";
@@ -38,8 +34,6 @@ public class Connector {
         this.minAngle = minAngle;
         this.maxAngle = maxAngle;
         this.id = id;
-        preferredLength = 2.0;
-        elasticity = 1.0;
         color = new Color(java.awt.Color.black);
         value = "";
         label = "";
@@ -54,8 +48,6 @@ public class Connector {
         this.minAngle = 0;
         this.maxAngle = 360;
         this.id = null;
-        preferredLength = -1.0;
-        elasticity = -1.0;
         color = null;
         value = "";
         label = "";
@@ -77,8 +69,8 @@ public class Connector {
             Connector c = (Connector)o;
             return c.source.equals(source) && c.destination.equals(destination)
                     && c.minAngle == minAngle && c.maxAngle == maxAngle
-                    && c.id.equals(id) && c.preferredLength == preferredLength
-                    && c.elasticity == elasticity && c.color.equals(color)
+                    && c.id.equals(id) 
+                    && c.color.equals(color)
                     && c.value.equals(value) && c.label.equals(label)
                     && c.componentIndex == componentIndex;
         } catch (Exception e) {
@@ -142,33 +134,6 @@ public class Connector {
         this.maxAngle = maxAngle;
     }
 
-    /**
-     * @return the preferredLength
-     */
-    public double getPreferredLength() {
-        return preferredLength;
-    }
-
-    /**
-     * @param preferredLength the preferredLength to set
-     */
-    public void setPreferredLength(double preferredLength) {
-        this.preferredLength = preferredLength;
-    }
-
-    /**
-     * @return the elasticity
-     */
-    public double getElasticity() {
-        return elasticity;
-    }
-
-    /**
-     * @param elasticity the elasticity to set
-     */
-    public void setElasticity(double elasticity) {
-        this.elasticity = elasticity;
-    }
 
     /**
      * @return the value
