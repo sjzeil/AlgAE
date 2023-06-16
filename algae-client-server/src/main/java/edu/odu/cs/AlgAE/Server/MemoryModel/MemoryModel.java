@@ -219,7 +219,7 @@ public class MemoryModel implements ContextAware,
         EntityIdentifier rootEID = new Identifier(this).asEntityIdentifier();
         snap.add(entities.get(rootEID));
         snap.setRootEntity(rootEID);
-        System.err.println("**renderInto ends with\n" + snap.toString());
+        //System.err.println("**renderInto ends with\n" + snap.toString());
 
         // normalize(snap);
         return snap;
@@ -261,7 +261,7 @@ public class MemoryModel implements ContextAware,
         knownComponents.clear();
         knownComponents.put(rootID, rootComponent);
 
-        System.err.println("**Starting formClosure");
+        //System.err.println("**Starting formClosure");
         while (!queue.isEmpty()) {
             // For each component in the queue, use the renderer for that object
             // to create an entity and add its components and connections to the queue
@@ -300,11 +300,11 @@ public class MemoryModel implements ContextAware,
         } else { // rendering this for the first time
             knownComponents.put(oid, c);
             Entity entity = renderObject(c, queue);
-            System.err.println("  Adding entity for " 
+            /*System.err.println("  Adding entity for " 
                 + new Identifier(c.getActualObject())
                 + " within "
                 + ((c.getContainer() == null) ? "null" : new Identifier(c.getContainer().getActualObject()))
-                );
+                );*/
             snap.add(entity);
             // System.err.println ("Closure: new entity " + entity);
         }

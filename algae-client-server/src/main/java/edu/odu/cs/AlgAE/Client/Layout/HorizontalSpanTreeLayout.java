@@ -58,15 +58,15 @@ public class HorizontalSpanTreeLayout implements LayoutModel {
         TreeNode root = new TreeNode(null);
         root.subtreeBB = findBBOfRoot(root);
         setPositions(root, relativeTo, xOffset, yOffset, spanTree);
-        System.err.println("SpanTree width is " + root.subtreeBB.getWidth());
+        //System.err.println("SpanTree width is " + root.subtreeBB.getWidth());
         return new Dimension2DDouble(root.subtreeBB.getWidth(), root.subtreeBB.getHeight());
     }
 
     private void setPositions(TreeNode root, BoundedRegion relativeTo, double xOffset, double yOffset,
             Entity spanTree) {
-        System.err.print("(" + ((root.data == null) ? "0" : root.data.getEntityIdentifier().toString()) + " ");
+        /*System.err.print("(" + ((root.data == null) ? "0" : root.data.getEntityIdentifier().toString()) + " ");
         System.err.print("" + root.subtreeBB.getWidth()
-                + "*" + root.subtreeBB.getHeight() + " ");
+                + "*" + root.subtreeBB.getHeight() + " ");*/
 
         double xOffsetChildren = xOffset;
         if (root.data != null) {
@@ -88,7 +88,7 @@ public class HorizontalSpanTreeLayout implements LayoutModel {
             LocationInfo childLoc = locations.get(child.data.getEntityIdentifier());
             yOffsetChildren += childLoc.getSize().getHeight();
         }
-        System.err.println(")");
+        //System.err.println(")");
     }
 
     private Rectangle2D.Double findBBOfRoot(TreeNode root) {

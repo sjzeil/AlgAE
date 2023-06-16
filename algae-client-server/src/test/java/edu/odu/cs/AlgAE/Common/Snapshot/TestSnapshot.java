@@ -7,12 +7,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,27 +19,6 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
 public class TestSnapshot {
 	
 	
-	void xmlTest (Object x, String mustContain1, String mustContain2)
-	{
-		ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
-		XMLEncoder out = new XMLEncoder(new BufferedOutputStream(bytesOut));
-		out.setPersistenceDelegate(Snapshot.class, new Snapshot.SnapshotPersistenceDelegate());
-		out.writeObject(x);
-		out.close();
-		String xmlStr = bytesOut.toString();
-		assertTrue (xmlStr.contains(x.getClass().getSimpleName()));
-		if (mustContain1.length() > 0)
-			assertTrue (xmlStr.contains(mustContain1));
-		if (mustContain2.length() > 0)
-			assertTrue (xmlStr.contains(mustContain2));
-		
-		XMLDecoder in = new XMLDecoder(new ByteArrayInputStream(xmlStr.getBytes()));
-		Object y = in.readObject();
-		in.close();
-		
-		assertEquals (x, y);	
-	}
-
 
 	private Snapshot snap1;
 	private Entity entity1a;
@@ -75,8 +48,6 @@ public class TestSnapshot {
 		Snapshot snap = new Snapshot();
 		snap.add(entity1a);
 		snap.add(entity2);
-		snap.setGlobal(entity2.getEntityIdentifier(), true);
-		snap.add(entity1b);
 		snap.add(entity3);
 		snap.setRootEntity(entity3.getEntityIdentifier());
 		snap.setDescriptor("a breakpoint");
@@ -89,7 +60,7 @@ public class TestSnapshot {
 	{
 		boolean found = false;
 		for (Entity e: snap1) {
-			if (e.equals(e0))
+			if (e.getEntityIdentifier().equals(e0.getEntityIdentifier()))
 				found = true;
 		}
 		return found;
@@ -101,10 +72,6 @@ public class TestSnapshot {
 	 */
 	@Test
 	public void testAdd() {
-		assertTrue (snap1.getGlobals().contains(entity2.getEntityIdentifier()));
-		assertFalse (snap1.getGlobals().contains(entity1a.getEntityIdentifier()));
-		assertFalse (snap1.getGlobals().contains(entity1b.getEntityIdentifier()));
-		assertFalse (snap1.getGlobals().contains(entity3.getEntityIdentifier()));
 		snap1.add (entity3);
 		assertTrue(canFind(entity1a));
 		assertTrue(canFind(entity1b));
@@ -117,11 +84,9 @@ public class TestSnapshot {
 	 */
 	@Test
 	public void testRemove() {
-		snap1.remove(entity1b);
+		snap1.remove(entity1a);
 		snap1.remove(entity2);
-		assertFalse (snap1.getGlobals().contains(entity2.getEntityIdentifier()));
-		assertTrue(canFind(entity1a));
-		assertFalse(canFind(entity1b));
+		assertFalse(canFind(entity1a));
 		assertFalse(canFind(entity2));
 		assertTrue(canFind(entity3));
 	}

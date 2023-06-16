@@ -1,13 +1,8 @@
 package edu.odu.cs.AlgAE.Common.Snapshot;
 
-import java.beans.DefaultPersistenceDelegate;
-import java.beans.Encoder;
-import java.beans.Statement;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -44,11 +39,6 @@ public class Snapshot  implements Iterable<Entity> {
      */
     private EntityIdentifier rootEntity;
     
-    /**
-     * Entities denoting global variables
-     */
-    private Set<EntityIdentifier> globals;
-
     
     
     /**
@@ -59,7 +49,6 @@ public class Snapshot  implements Iterable<Entity> {
         descriptor = "";
         breakpointLocation = new SourceLocation();
         rootEntity = null;
-        globals = new HashSet<EntityIdentifier>();
     }
     
     
@@ -74,7 +63,6 @@ public class Snapshot  implements Iterable<Entity> {
         descriptor = description;
         breakpointLocation = breakpoint;
         rootEntity = null;
-        globals = new HashSet<EntityIdentifier>();
     }
 
     
@@ -85,24 +73,11 @@ public class Snapshot  implements Iterable<Entity> {
     }
     
     
-    public void setGlobal (EntityIdentifier eid, boolean isGlobal)
-    {
-        if (isGlobal)
-            globals.add(eid);
-        else
-            globals.remove(eid);
-    }
-    
-    public boolean isGlobal (EntityIdentifier eid)
-    {
-        return globals.contains(eid);
-    }
-    
 
     public void remove (Entity entity)
     {
         EntityIdentifier eid = entity.getEntityIdentifier();
-        globals.remove(eid);
+        entities.remove(eid);
     }
 
 
@@ -203,12 +178,6 @@ public class Snapshot  implements Iterable<Entity> {
 
 
 
-    /**
-     * @return the globals
-     */
-    public Set<EntityIdentifier> getGlobals() {
-        return globals;
-    }
 
 
     public String toString() {
@@ -222,8 +191,6 @@ public class Snapshot  implements Iterable<Entity> {
         buf.append ("entities: ");
         buf.append (printEntityTree(rootEntity, ""));
         buf.append ("\n");
-        buf.append ("globals: ");
-        buf.append (globals.toString());
     
         return buf.toString();
     }
@@ -251,30 +218,13 @@ public class Snapshot  implements Iterable<Entity> {
             Snapshot s = (Snapshot)o;
             return s.descriptor.equals(descriptor) && s.breakpointLocation.equals(breakpointLocation)
                     && (s.rootEntity == rootEntity || s.rootEntity.equals(rootEntity))
-                    && s.globals.equals(globals) && s.entities.equals(entities);
+                    && s.entities.equals(entities);
                     
         } catch (Exception e) {
             return false;
         }
     }
     
-    static public class SnapshotPersistenceDelegate extends DefaultPersistenceDelegate {
-        protected void initialize(@SuppressWarnings("rawtypes") Class type, Object oldInstance,
-                                  Object newInstance, Encoder out) {
-            super.initialize(type, oldInstance,  newInstance, out);
-
-            Snapshot oldSnap = (Snapshot)oldInstance;
-
-            for (Entity e: oldSnap) {
-                boolean isGlobal = oldSnap.globals.contains(e.getEntityIdentifier());
-                out.writeStatement (new Statement(oldInstance, "add", new Object[]{ e } ));
-                if (isGlobal) {
-                    out.writeStatement (new Statement(oldInstance, "setGlobal",
-                            new Object[]{ e.getEntityIdentifier(), Boolean.valueOf(isGlobal) } ));
-                }
-            }
-        }
-    }
     
     
 }

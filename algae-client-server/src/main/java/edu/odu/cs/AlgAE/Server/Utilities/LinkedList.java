@@ -457,9 +457,13 @@ public class LinkedList<T>
 
 
     @Override
-    public boolean addAll(Collection<? extends T> arg0) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addAll'");
+    public boolean addAll(Collection<? extends T> collection) {
+        boolean added = false;
+        for (T t: collection) {
+            add(t);
+            added = true;
+        }
+        return added;
     }
 
 

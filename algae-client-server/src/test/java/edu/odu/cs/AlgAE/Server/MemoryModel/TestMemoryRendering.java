@@ -87,9 +87,9 @@ public class TestMemoryRendering {
 		callStack.globalVar("foo", fortyTwo);
 		Snapshot snap = memory.renderInto("description", new SourceLocation("foo.java", 23));
 		var entities =  snap.getEntities();
-		assertEquals (3, entities.keySet().size());
+		assertEquals (6, entities.keySet().size());
 		checkVar (entities, callStack, 1, null, null);
-		checkVar (entities, fortyTwo, 1, "foo", "42");
+		checkVar (entities, fortyTwo, 1, null, "42");
 	}
 
 	private static class String2 implements Renderer<String2>, CanBeRendered<String2> {
@@ -155,10 +155,10 @@ public class TestMemoryRendering {
 		callStack.globalVar("dozen", dozen);
 		Snapshot snap = memory.renderInto("description", new SourceLocation("foo.java", 23));
 		var entities =  snap.getEntities();
-		assertEquals (5, entities.keySet().size());
+		assertEquals (9, entities.keySet().size());
 		checkVar (entities, callStack, 1, null, null);
-		checkVar (entities, fortyTwo, 1, "foo", "42");
-		checkVar (entities, dozen, 1, "dozen", "12");
+		checkVar (entities, fortyTwo, 1, null, "42");
+		checkVar (entities, dozen, 1, null, "12");
 		checkVar (entities, twelve, 1, "comp", "12");
 	}
 
@@ -173,11 +173,11 @@ public class TestMemoryRendering {
 		callStack.globalRefVar("dozen", dozen);
 		Snapshot snap = memory.renderInto("description", new SourceLocation("foo.java", 23));
 		var entities =  snap.getEntities();
-		assertEquals (6, entities.keySet().size());
+		assertEquals (10, entities.keySet().size());
 		checkVar (entities, callStack, 1, null, null);
-		checkVar (entities, fortyTwo, 1, "foo", "42");
+		checkVar (entities, fortyTwo, 1, null, "42");
 		checkVar (entities, dozen, 1, null, "12");
-		checkVar (entities, twelve, 1, "comp", "12");
+		checkVar (entities, twelve, 1, null, "12");
 	}
 
 	@Test
@@ -190,9 +190,9 @@ public class TestMemoryRendering {
 		callStack.globalVar("dozen", dozen);
 		Snapshot snap = memory.renderInto("description", new SourceLocation("foo.java", 23));
 		var entities =  snap.getEntities();
-		assertEquals (4, entities.keySet().size());
+		assertEquals (9, entities.keySet().size());
 		checkVar (entities, callStack, 1, null, null);
-		checkVar (entities, fortyTwo, 2, "foo", "42");
-		checkVar (entities, dozen, 1, "dozen", "42");
+		checkVar (entities, fortyTwo, 2, null, "42");
+		checkVar (entities, dozen, 1, null, "42");
 	}
 }

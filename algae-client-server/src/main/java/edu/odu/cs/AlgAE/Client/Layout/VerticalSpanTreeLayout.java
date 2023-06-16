@@ -58,15 +58,15 @@ public class VerticalSpanTreeLayout implements LayoutModel {
         TreeNode root = new TreeNode(null);
         root.subtreeBB = findBBOfRoot(root);
         setPositions(root, relativeTo, xOffset, yOffset, spanTree);
-        System.err.println("SpanTree height is " + root.subtreeBB.getHeight());
+        //System.err.println("SpanTree height is " + root.subtreeBB.getHeight());
         return new Dimension2DDouble(root.subtreeBB.getWidth(), root.subtreeBB.getHeight());
     }
 
     private void setPositions(TreeNode root, BoundedRegion relativeTo, double xOffset, double yOffset,
             Entity spanTree) {
-        System.err.print("(" + ((root.data == null) ? "0" : root.data.getEntityIdentifier().toString()) + " ");
+        /*System.err.print("(" + ((root.data == null) ? "0" : root.data.getEntityIdentifier().toString()) + " ");
         System.err.print("" + root.subtreeBB.getWidth()
-                + "*" + root.subtreeBB.getHeight() + " ");
+                + "*" + root.subtreeBB.getHeight() + " ");*/
 
         double yOffsetChildren = yOffset;
         if (root.data != null) {
@@ -88,7 +88,7 @@ public class VerticalSpanTreeLayout implements LayoutModel {
             LocationInfo childLoc = locations.get(child.data.getEntityIdentifier());
             xOffsetChildren += childLoc.getSize().getWidth();
         }
-        System.err.println(")");
+        //System.err.println(")");
     }
 
     private Rectangle2D.Double findBBOfRoot(TreeNode root) {

@@ -80,7 +80,6 @@ public class DemoClientVisually  implements ServerCommunications {
 		Snapshot snap = new Snapshot();
 		snap.add(stk);
 		snap.add(global);
-		snap.setGlobal(global.getEntityIdentifier(), true);
 		snap.setDescriptor("heads");
 		snap.setBreakpointLocation(new SourceLocation("foo.java", k%5));
 		snap.setRootEntity(stk.getEntityIdentifier());
@@ -115,7 +114,6 @@ public class DemoClientVisually  implements ServerCommunications {
 		snap.add (heapObj);
 		snap.add (component);
 		
-		snap.setGlobal(global.getEntityIdentifier(), true);
 		snap.setDescriptor("tails");
 		snap.setBreakpointLocation(new SourceLocation("bar.java", k%5));
 		snap.setRootEntity(stk.getEntityIdentifier());

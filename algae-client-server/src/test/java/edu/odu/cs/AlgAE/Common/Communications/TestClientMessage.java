@@ -139,7 +139,6 @@ public class TestClientMessage {
 		Snapshot snap = new Snapshot();
 		snap.add(entity1a);
 		snap.add(entity2);
-		snap.setGlobal(entity2.getEntityIdentifier(), true);
 		snap.add(entity1b);
 		snap.add(entity3);
 		snap.setRootEntity(entity3.getEntityIdentifier());

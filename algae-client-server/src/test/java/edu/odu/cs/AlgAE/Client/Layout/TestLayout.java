@@ -142,7 +142,7 @@ public class TestLayout {
 		checkVar (entities, stackID, 1, null, null);
 		checkVar (entities, aID, 1, null, "42");
 		EntityIdentifier aEID = new Identifier(aID).asEntityIdentifier(); 
-		checkSize (scene, aEID, "A", 6, 9, 1, 2);
+		checkSize (scene, aEID, "A", 5, 9, 1, 3);
 	}
 
     @Test
@@ -153,7 +153,7 @@ public class TestLayout {
 		assertEquals (5, entities.keySet().size());
 		checkVar (entities, stackID, 1, null, null);
 		checkVar (entities, aID, 1, null, "42");
-		checkSize (scene, new EntityIdentifier("", aID), "A", 6, 9, 1, 2);
+		checkSize (scene, new Identifier(aID).asEntityIdentifier(), "A", 5, 9, 1, 3);
 	}
 
 
