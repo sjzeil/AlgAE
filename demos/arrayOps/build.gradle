@@ -21,8 +21,8 @@ repositories {
 
 
 dependencies {
-    //implementation 'edu.odu.cs.algae:algae-client-server:4.2'
-    implementation project(':algae-client-server')
+    implementation 'edu.odu.cs.algae:algae-client-server:4.4'
+    //implementation project(':algae-client-server')
 }
 
 

@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static edu.odu.cs.AlgAE.Server.LocalServer.activate;
+
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
@@ -51,6 +53,21 @@ class nodeType implements CanBeRendered<nodeType>, Renderer<nodeType>
 	public String getValue(nodeType obj) {//!
 		return "";//!
 	}//!
+
+	@Override
+	public Directions getDirection() {
+		return Directions.Horizontal;
+	}
+
+	@Override
+	public Double getSpacing() {
+		return null;
+	}
+
+	@Override
+	public Boolean getClosedOnConnections() {
+		return false;
+	}
 }
 
 nodeType head = null;
@@ -102,7 +119,7 @@ public Renderer<SinglyLinkedLists> getRenderer() {
 
 @Override
 public Color getColor(SinglyLinkedLists obj) {
-	return null;
+	return Color.yellow.brighter().brighter();
 }
 
 @Override
@@ -118,13 +135,23 @@ public List<Connection> getConnections(SinglyLinkedLists obj) {
 }
 
 @Override
-public int getMaxComponentsPerRow(SinglyLinkedLists obj) {
-	return 100;
+public String getValue(SinglyLinkedLists obj) {
+	return "";
 }
 
 @Override
-public String getValue(SinglyLinkedLists obj) {
-	return "";
+public Directions getDirection() {
+	return Directions.Vertical;
+}
+
+@Override
+public Double getSpacing() {
+	return null;
+}
+
+@Override
+public Boolean getClosedOnConnections() {
+	return false;
 }
 
         

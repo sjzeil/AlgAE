@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
@@ -56,14 +57,25 @@ public List<Connection> getConnections(ArrayContainer obj) {
      return new ArrayList<Connection>();
 }
 
-@Override
-public int getMaxComponentsPerRow(ArrayContainer obj) {
-     return 1;
-}
 
 @Override
 public String getValue(ArrayContainer obj) {
      return "";
+}
+
+@Override
+public Directions getDirection() {
+     return Directions.Vertical;
+}
+
+@Override
+public Double getSpacing() {
+     return null;
+}
+
+@Override
+public Boolean getClosedOnConnections() {
+     return false;
 }
 
 }
@@ -108,7 +120,7 @@ public void selected() {
        try {
              Integer v = Integer.parseInt(value);
              Index k = new ArrayOperations().seqOrderedSearch(array, size, v);
-             out.println ("seqorderedSearch returned " + k);
+             out.println ("seqOrderedSearch returned " + k);
              } catch (Exception e) {
              // do nothing
              }
