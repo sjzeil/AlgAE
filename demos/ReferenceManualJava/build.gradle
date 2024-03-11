@@ -10,7 +10,8 @@ java {
 
 
 dependencies {
-    implementation project(':algae-client-server')
+    //implementation project(':algae-client-server')
+    implementation 'edu.odu.cs.algae:algae-client-server:4.4'
 }
 
 

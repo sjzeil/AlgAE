@@ -10,6 +10,7 @@ import java.util.Set;
 
 import edu.odu.cs.AlgAE.Animations.AnimationContext;
 import edu.odu.cs.AlgAE.Animations.ContextAware;
+import edu.odu.cs.AlgAE.Common.LayoutDebugging;
 import edu.odu.cs.AlgAE.Common.Snapshot.Connector;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
@@ -421,7 +422,23 @@ public class MemoryModel implements ContextAware,
         entity.setDirection(render.getDirection());
         entity.setSpacing(render.getSpacing());
         entity.setClosedOnConnections(render.getClosedOnConnections());
-        entity.setValue(render.getValue(obj));
+        entity.setValue(debugLabel(obj) + render.getValue(obj));
+    }
+
+    private String debugLabel(Object obj) {
+        if (LayoutDebugging.ShowOIDs) {
+            Identifier oid = new Identifier(obj);
+            String toDisplay = oid.toString();
+            int lastDot = toDisplay.lastIndexOf('.');
+            int lastDollar = toDisplay.lastIndexOf('$');
+            lastDot = Math.max(lastDot, lastDollar);
+            if (lastDot >= 0) {
+                toDisplay = toDisplay.substring(lastDot+1);
+            }
+            return "(" + toDisplay + ") ";
+        } else {
+            return "";
+        }
     }
 
     private Entity createNewEntity(Component c) {
