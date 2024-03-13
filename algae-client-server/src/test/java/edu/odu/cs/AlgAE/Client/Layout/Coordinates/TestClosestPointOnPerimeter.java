@@ -7,29 +7,20 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.IdentityHashMap;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+import static org.junit.jupiter.api.Assertions.*;
+//import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.BeforeEach;
+//import static org.hamcrest.MatcherAssert.assertThat; 
+//import static org.hamcrest.Matchers.*;
+
 import edu.odu.cs.AlgAE.Client.Layout.Optimization.Variable;
 
 /**
  * @author zeil
  *
  */
-public class TestClosestPointOnPerimeter extends TestCase {
+public class TestClosestPointOnPerimeter  {
 
-    public TestClosestPointOnPerimeter(String testName) {
-        super(testName);
-    }
-
-    public static void main( String[] args ) throws Exception {
-        TestRunner.run( suite() );
-    }
-
-    public static Test suite() {
-        return new TestSuite(TestClosestPointOnPerimeter.class);
-    }
     
     
     private static class BoundedBox implements BoundedRegion {
@@ -58,8 +49,8 @@ public class TestClosestPointOnPerimeter extends TestCase {
     
 	public static void test_multi() {
 		BoundedBox box = new BoundedBox(1.0, 1.0, 2.0, 2.0);
-		double mina = 0.0;
-		double maxa = 360.0;
+		double minA = 0.0;
+		double maxA = 360.0;
 		double[] tests = {0.0, 22.5, 45.0, 67.5, 
 				90.0, 112.5, 135.0, 157.5, 
 				180.0, 202.5, 225.0, 247.5, 
@@ -72,14 +63,14 @@ public class TestClosestPointOnPerimeter extends TestCase {
 			Point2D p1 = pp1.getCoordinates();
 			Point2D p2 = new Point2D.Double(p1.getX() + (p1.getX() - p0.getX()),
 					p1.getY() + (p1.getY() - p0.getY()));
-			ClosestPointOnPerimeter pp3 = new ClosestPointOnPerimeter(box, new Point(p2.getX(), p2.getY()), mina, maxa);
+			ClosestPointOnPerimeter pp3 = new ClosestPointOnPerimeter(box, new Point(p2.getX(), p2.getY()), minA, maxA);
 			Point2D p3 = pp3.getCoordinates();
 			
 			double angle2 = angle;
-			if (angle2 < mina || angle2 > maxa) {
-				double d1 = Math.abs(angle2 - mina);
-				double d2 = Math.abs(angle2 - maxa);
-				angle2 = (d1 < d2) ? mina : maxa;
+			if (angle2 < minA || angle2 > maxA) {
+				double d1 = Math.abs(angle2 - minA);
+				double d2 = Math.abs(angle2 - maxA);
+				angle2 = (d1 < d2) ? minA : maxA;
 			}
 			PerimeterPoint pp4 = new PerimeterPoint(angle2, box);
 			Point2D p4 = pp4.getCoordinates();
@@ -90,8 +81,8 @@ public class TestClosestPointOnPerimeter extends TestCase {
 
 	public static void test_multi_bounded() {
 		BoundedBox box = new BoundedBox(1.0, 1.0, 2.0, 2.0);
-		double mina = 45.0;
-		double maxa = 135.0;
+		double minA = 45.0;
+		double maxA = 135.0;
 		double[] tests = {0.0, 22.5, 45.0, 67.5, 
 				90.0, 112.5, 135.0, 157.5, 
 				180.0, 202.5, 225.0, 247.5, 
@@ -104,16 +95,16 @@ public class TestClosestPointOnPerimeter extends TestCase {
 			Point2D p1 = pp1.getCoordinates();
 			Point2D p2 = new Point2D.Double(p1.getX() + (p1.getX() - p0.getX()),
 					p1.getY() + (p1.getY() - p0.getY()));
-			ClosestPointOnPerimeter pp3 = new ClosestPointOnPerimeter(box, new Point(p2.getX(), p2.getY()), mina, maxa);
+			ClosestPointOnPerimeter pp3 = new ClosestPointOnPerimeter(box, new Point(p2.getX(), p2.getY()), minA, maxA);
 			Point2D p3 = pp3.getCoordinates();
 			
 			double angle2 = angle;
-			if (angle2 < mina || angle2 > maxa) {
-				double d1 = Math.abs(angle2 - mina);
-				double d2 = Math.abs(angle2 - maxa);
-				angle2 = (d1 < d2) ? mina : maxa;
+			if (angle2 < minA || angle2 > maxA) {
+				double d1 = Math.abs(angle2 - minA);
+				double d2 = Math.abs(angle2 - maxA);
+				angle2 = (d1 < d2) ? minA : maxA;
 			}
-			Math.min(Math.max(angle, mina), maxa);
+			Math.min(Math.max(angle, minA), maxA);
 			PerimeterPoint pp4 = new PerimeterPoint(angle2, box);
 			Point2D p4 = pp4.getCoordinates();
 			assertEquals ((int)(100.0*p4.getX()), (int)(100*p3.getX()));

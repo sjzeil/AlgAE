@@ -3,12 +3,12 @@
  */
 package edu.odu.cs.AlgAE.Common.Snapshot;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+//import static org.hamcrest.MatcherAssert.assertThat; 
+//import static org.hamcrest.Matchers.*;
 
 import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
 
@@ -27,7 +27,7 @@ public class TestSnapshot {
 	private Entity entity3;
 	
 	
-	@Before
+	@BeforeEach
 	public void setup()
 	{
 		Identifier id1 = new Identifier(1);

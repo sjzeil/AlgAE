@@ -1,15 +1,16 @@
 package edu.odu.cs.AlgAE.Server.MemoryModel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+//import static org.hamcrest.MatcherAssert.assertThat; 
+//import static org.hamcrest.Matchers.*;
 
 import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
 
 import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
@@ -32,7 +33,7 @@ public class TestMemoryRendering {
     private LocalJavaAnimation applet;
     private LocalServer anim;
     
-    @Before
+    @BeforeEach
     public void setUp() {
     	applet = new LocalJavaAnimation("dummy") {
 			

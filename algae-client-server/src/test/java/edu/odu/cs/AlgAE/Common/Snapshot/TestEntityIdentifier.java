@@ -3,9 +3,12 @@
  */
 package edu.odu.cs.AlgAE.Common.Snapshot;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+//import static org.hamcrest.MatcherAssert.assertThat; 
+//import static org.hamcrest.Matchers.*;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
@@ -13,8 +16,6 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 import com.google.gson.Gson;
 
@@ -26,15 +27,12 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
  */
 public class TestEntityIdentifier {
 	
-	public static void main(String args[]) {
-		org.junit.runner.JUnitCore.main(TestEntityIdentifier.class.getName());
-	}
-
+	
 
 	private static EntityIdentifier id1;
 	private static EntityIdentifier id2;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUpOnce()  {
 		id1 = new Identifier(1).asEntityIdentifier();
 		id2 = new Identifier(2).asEntityIdentifier();

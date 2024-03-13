@@ -7,30 +7,19 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.IdentityHashMap;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import junit.textui.TestRunner;
+import static org.junit.jupiter.api.Assertions.*;
+//import org.junit.jupiter.api.Test;
+//import static org.hamcrest.MatcherAssert.assertThat; 
+//import static org.hamcrest.Matchers.*;
+
 import edu.odu.cs.AlgAE.Client.Layout.Optimization.Variable;
 
 /**
  * @author zeil
  *
  */
-public class TestPerimeterPoint extends TestCase {
+public class TestPerimeterPoint {
 
-    public TestPerimeterPoint(String testName) {
-        super(testName);
-    }
-
-    public static void main( String[] args ) throws Exception {
-        TestRunner.run( suite() );
-    }
-
-    public static Test suite() {
-        return new TestSuite(TestPerimeterPoint.class);
-    }
-    
     
     private static class BoundedBox implements BoundedRegion {
 

@@ -1,23 +1,20 @@
 package edu.odu.cs.AlgAE.Client.Layout;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.util.Map;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import static org.hamcrest.MatcherAssert.assertThat; 
+import static org.hamcrest.Matchers.*;
 
 import edu.odu.cs.AlgAE.Client.Layout.Coordinates.Dimension2DDouble;
-import edu.odu.cs.AlgAE.Client.Layout.Coordinates.Location;
 import edu.odu.cs.AlgAE.Common.Snapshot.Connector;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
 import edu.odu.cs.AlgAE.Common.Snapshot.EntityIdentifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
-import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationStack;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
 import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
 
@@ -194,13 +191,13 @@ public class TestLayout {
         Point2D bLoc = scene.getLocationOf(b.getEntityIdentifier()).getCoordinates();
         Dimension2DDouble bSize = scene.getSizeOf(b.getEntityIdentifier());
 
-        assertTrue(aLoc.getX() + aSize.getWidth() < bLoc.getX());
-        assertEquals(aLoc.getY(), bLoc.getY(), 0.001);
-        assertTrue(aLoc.getX()  > containerLoc.getX());
-        assertTrue(aLoc.getX()  < containerLoc.getX() + 1);
-        assertTrue(containerSize.getHeight() < 2 + aSize.getHeight());
-        assertTrue(containerSize.getWidth() > aSize.getWidth() + bSize.getWidth());
-        assertTrue(containerSize.getWidth() < aSize.getWidth() + bSize.getWidth() + 2);
+        assertThat(aLoc.getX() + aSize.getWidth(), lessThan(bLoc.getX()));
+        assertThat(aLoc.getY(), closeTo(bLoc.getY(), 0.001));
+        assertThat(aLoc.getX(), greaterThan(containerLoc.getX()));
+        assertThat(aLoc.getX(), lessThan(containerLoc.getX() + 1));
+        assertThat(containerSize.getHeight(), lessThan(2 + aSize.getHeight()));
+        assertThat(containerSize.getWidth(), greaterThan(aSize.getWidth() + bSize.getWidth()));
+        assertThat(containerSize.getWidth(), lessThan(aSize.getWidth() + bSize.getWidth() + 2));
         
         
 

@@ -3,13 +3,12 @@
  */
 package edu.odu.cs.AlgAE.Common.Snapshot;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+//import static org.hamcrest.MatcherAssert.assertThat; 
+//import static org.hamcrest.Matchers.*;
 
 import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
 
@@ -20,9 +19,6 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
  */
 public class TestIdentifier {
 	
-	public static void main(String args[]) {
-		org.junit.runner.JUnitCore.main(TestIdentifier.class.getName());
-	}
 
 
 	public static class A {
@@ -55,7 +51,7 @@ public class TestIdentifier {
 	private Identifier id3;
 	private Identifier id4;
 
-	@Before
+	@BeforeEach
 	public void setUpOnce()  {
 		a1 = new A();
 		a2 = new A();

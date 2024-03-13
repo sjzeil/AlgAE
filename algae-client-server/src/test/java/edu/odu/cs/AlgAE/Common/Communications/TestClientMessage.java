@@ -3,14 +3,15 @@
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+//import static org.hamcrest.MatcherAssert.assertThat; 
+//import static org.hamcrest.Matchers.*;
 
 import java.io.InputStream;
 
-import org.junit.Before;
-import org.junit.Test;
 
 import edu.odu.cs.AlgAE.Common.Snapshot.Connector;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
@@ -118,7 +119,7 @@ public class TestClientMessage {
 	private Entity entity2;
 	private Entity entity3;
 	
-	@Before
+	@BeforeEach
 	public void setup()
 	{
 		Identifier id1 = new Identifier(1);

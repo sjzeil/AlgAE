@@ -3,9 +3,10 @@
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+//import static org.hamcrest.MatcherAssert.assertThat; 
+//import static org.hamcrest.Matchers.*;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
@@ -13,7 +14,6 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
-import org.junit.Test;
 
 /**
  * @author zeil
@@ -39,11 +39,11 @@ public class TestServerMessage {
 	public void testXML() {
 		for (ServerMessage.ServerMessageTypes kind: ServerMessage.ServerMessageTypes.values()) {
 			ServerMessage message1 = new ServerMessage(kind, "message1.x");
-			ByteArrayOutputStream byout = new ByteArrayOutputStream();
-			XMLEncoder out = new XMLEncoder(new BufferedOutputStream(byout));
+			ByteArrayOutputStream byOut = new ByteArrayOutputStream();
+			XMLEncoder out = new XMLEncoder(new BufferedOutputStream(byOut));
 			out.writeObject(message1);
 			out.close();
-			String inXML = byout.toString();
+			String inXML = byOut.toString();
 			System.out.println ("Kind: " + kind);
 			assertTrue (inXML.contains(kind.toString()));
 			assertTrue (inXML.contains("message1.x"));

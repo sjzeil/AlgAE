@@ -3,11 +3,12 @@
  */
 package edu.odu.cs.AlgAE.Client.SourceViewer;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+//import static org.hamcrest.MatcherAssert.assertThat; 
+//import static org.hamcrest.Matchers.*;
 
 
 /**
@@ -21,7 +22,7 @@ public class TestSourceFile {
 	/**
 	 * Test method for {@link edu.odu.cs.AlgAE.Client.SourceViewer.SourceFile#load()}.
 	 */
-	@Ignore
+	@Disabled
 	public void testLoadSelf() {
 		SourceFile file = new SourceFile(getClass(), "TestSourceFile.java");
 		String sourceCode = file.getContents();

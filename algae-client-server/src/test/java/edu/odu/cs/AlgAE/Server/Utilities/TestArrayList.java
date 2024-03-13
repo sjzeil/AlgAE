@@ -3,14 +3,17 @@
  */
 package edu.odu.cs.AlgAE.Server.Utilities;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.BeforeEach;
+//import static org.hamcrest.MatcherAssert.assertThat; 
+//import static org.hamcrest.Matchers.*;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.function.Consumer;
 
-import org.junit.Test;
 
 /**
  * @author zeil
@@ -145,7 +148,7 @@ public class TestArrayList {
      * Test method for {@link edu.odu.cs.AlgAE.Server.Utilities.ArrayList#ArrayList(java.util.Collection)}.
      */
     @Test
-    public void testArrayListCollectionOfQextendsT() {
+    public void testArrayListCollectionOfQExtendsT() {
         List<Integer> in = new java.util.ArrayList<Integer>();
         Integer zero = Integer.valueOf(0);
         Integer one = Integer.valueOf(1);
@@ -466,7 +469,7 @@ public class TestArrayList {
      * Test method for {@link java.util.AbstractList#addAll(int, java.util.Collection)}.
      */
     @Test
-    public void testAddAllIntCollectionOfQextendsE() {
+    public void testAddAllIntCollectionOfQExtendsE() {
         List<Integer> in = new java.util.ArrayList<Integer>();
         Integer zero = Integer.valueOf(0);
         Integer one = Integer.valueOf(1);

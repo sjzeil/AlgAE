@@ -3,11 +3,12 @@
  */
 package edu.odu.cs.AlgAE.Common.Communications;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+//import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+//import static org.hamcrest.MatcherAssert.assertThat; 
+//import static org.hamcrest.Matchers.*;
 
 /**
  * @author zeil
@@ -15,19 +16,6 @@ import org.junit.Test;
  */
 public class TestProcessCommunication {
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
 
 	/**
 	 * Test method for {@link edu.odu.cs.AlgAE.Common.Communications.LocalProcessCommunication#LocalProcessCommunication(java.io.File)}.
