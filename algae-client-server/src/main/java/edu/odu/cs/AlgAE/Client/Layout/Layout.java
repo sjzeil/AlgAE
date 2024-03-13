@@ -112,7 +112,7 @@ public class Layout {
      * @return max depth of recursion of this function
      *
      */
-    private int positionComponentsOf(EntityIdentifier eid) {
+    int positionComponentsOf(EntityIdentifier eid) {
         Entity e = entities.get(eid);
         //System.err.println ("Layout: positioning components of " + eid);
         int maxDepth = -1;
@@ -394,4 +394,14 @@ public class Layout {
         return loc.getSize();
     }
 
+    /**
+     * Provided for testing purposes (and therefore restricted to package
+     * visibility)
+     * 
+     * @return the entities
+     */
+    Location getLocationOf(EntityIdentifier eid) {
+        LocationInfo loc = locations.get(eid);
+        return loc.getLoc();
+    }
 }

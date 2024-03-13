@@ -5,16 +5,19 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.awt.Color;
+import java.awt.geom.Point2D;
 import java.util.Map;
 
 import org.junit.Test;
 
 import edu.odu.cs.AlgAE.Client.Layout.Coordinates.Dimension2DDouble;
+import edu.odu.cs.AlgAE.Client.Layout.Coordinates.Location;
 import edu.odu.cs.AlgAE.Common.Snapshot.Connector;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
 import edu.odu.cs.AlgAE.Common.Snapshot.EntityIdentifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Snapshot;
 import edu.odu.cs.AlgAE.Common.Snapshot.SourceLocation;
+import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationStack;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Identifier;
 import edu.odu.cs.AlgAE.Server.MemoryModel.MemoryModel;
 
@@ -155,6 +158,53 @@ public class TestLayout {
 		checkVar (entities, aID, 1, null, "42");
 		checkSize (scene, new Identifier(aID).asEntityIdentifier(), "A", 5, 9, 1, 3);
 	}
+
+    @Test
+	public void testHorizontalLayout() {
+    	MemoryModel memory = new MemoryModel(null);
+    	SourceLocation sourceLoc = new SourceLocation();
+		Snapshot snap = memory.renderInto("test", sourceLoc);
+
+        
+        Entity container = new Entity(new Identifier(10), "");
+        container.setValue("container");
+        container.setDirection(Entity.Directions.Horizontal);
+        snap.add(container);
+        snap.setRootEntity(container.getEntityIdentifier());
+
+        Entity a = new Entity(new Identifier(aID), container.getEntityIdentifier(), "1");
+        a.setValue("AAAAAAAA");
+        snap.add(a);
+        container.getComponents().add(a.getEntityIdentifier());
+
+        Entity b = new Entity(new Identifier(bID), container.getEntityIdentifier(), "2");
+        b.setValue("BBBBBBBB");
+        snap.add(b);
+        container.getComponents().add(b.getEntityIdentifier());
+
+        Layout scene = new Layout(snap);
+        
+    
+        Point2D containerLoc = scene.getLocationOf(container.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble containerSize = scene.getSizeOf(container.getEntityIdentifier());
+
+        Point2D aLoc = scene.getLocationOf(a.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble aSize = scene.getSizeOf(a.getEntityIdentifier());
+
+        Point2D bLoc = scene.getLocationOf(b.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble bSize = scene.getSizeOf(b.getEntityIdentifier());
+
+        assertTrue(aLoc.getX() + aSize.getWidth() < bLoc.getX());
+        assertEquals(aLoc.getY(), bLoc.getY(), 0.001);
+        assertTrue(aLoc.getX()  > containerLoc.getX());
+        assertTrue(aLoc.getX()  < containerLoc.getX() + 1);
+        assertTrue(containerSize.getHeight() < 2 + aSize.getHeight());
+        assertTrue(containerSize.getWidth() > aSize.getWidth() + bSize.getWidth());
+        assertTrue(containerSize.getWidth() < aSize.getWidth() + bSize.getWidth() + 2);
+        
+        
+
+    }
 
 
 }
