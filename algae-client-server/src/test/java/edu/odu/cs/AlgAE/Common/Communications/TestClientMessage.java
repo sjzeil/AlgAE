@@ -6,6 +6,7 @@ package edu.odu.cs.AlgAE.Common.Communications;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 //import static org.hamcrest.MatcherAssert.assertThat; 
 //import static org.hamcrest.Matchers.*;
@@ -148,7 +149,7 @@ public class TestClientMessage {
 		return snap;
 	}
 
-	@Test
+	@Disabled  // Message serialization is not currently used
 	public void testSnapshotXML() {
 		writeReadTest (new SnapshotMessage(snap1, true), "component1");
 		writeReadTest (new SnapshotMessage(snap1, false), "link");

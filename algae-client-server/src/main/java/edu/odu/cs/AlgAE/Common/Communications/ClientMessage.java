@@ -133,6 +133,7 @@ public abstract class ClientMessage extends MessageBase {
         // Then parse a value of the message type.
         Gson gson = new Gson();
         try {
+            System.err.println(messageBuffer.toString());
             JsonReader jreader = new JsonReader(new StringReader(messageBuffer.toString()));
             jreader.setLenient(true);
             ClientMessage message = gson.fromJson(jreader, actualMessageClass);

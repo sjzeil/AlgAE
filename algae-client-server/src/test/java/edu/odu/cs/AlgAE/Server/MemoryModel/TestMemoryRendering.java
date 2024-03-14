@@ -13,6 +13,7 @@ import java.util.Map;
 
 
 import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
+import edu.odu.cs.AlgAE.Common.LayoutDebugging;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity;
 import edu.odu.cs.AlgAE.Common.Snapshot.EntityIdentifier;
 import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
@@ -65,8 +66,12 @@ public class TestMemoryRendering {
 		assertNotNull(e);
 		if (label != null)
 			assertEquals (label, e.getLabel());
+        String eValue = e.getValue();
+        if (LayoutDebugging.ShowOIDs) {
+            eValue = eValue.substring(eValue.indexOf(')')+2);
+        }
 		if (value != null)
-			assertEquals(value, e.getValue());
+			assertEquals(value, eValue);
 		
 	}
 	

@@ -198,10 +198,50 @@ public class TestLayout {
         assertThat(containerSize.getHeight(), lessThan(2 + aSize.getHeight()));
         assertThat(containerSize.getWidth(), greaterThan(aSize.getWidth() + bSize.getWidth()));
         assertThat(containerSize.getWidth(), lessThan(aSize.getWidth() + bSize.getWidth() + 2));
-        
-        
-
     }
 
+    @Test
+	public void testVerticalLayout() {
+    	MemoryModel memory = new MemoryModel(null);
+    	SourceLocation sourceLoc = new SourceLocation();
+		Snapshot snap = memory.renderInto("test", sourceLoc);
+
+        
+        Entity container = new Entity(new Identifier(10), "");
+        container.setValue("container");
+        container.setDirection(Entity.Directions.Vertical);
+        snap.add(container);
+        snap.setRootEntity(container.getEntityIdentifier());
+
+        Entity a = new Entity(new Identifier(aID), container.getEntityIdentifier(), "1");
+        a.setValue("AAAAAAAA");
+        snap.add(a);
+        container.getComponents().add(a.getEntityIdentifier());
+
+        Entity b = new Entity(new Identifier(bID), container.getEntityIdentifier(), "2");
+        b.setValue("BBBBBBBB");
+        snap.add(b);
+        container.getComponents().add(b.getEntityIdentifier());
+
+        Layout scene = new Layout(snap);
+        
+    
+        Point2D containerLoc = scene.getLocationOf(container.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble containerSize = scene.getSizeOf(container.getEntityIdentifier());
+
+        Point2D aLoc = scene.getLocationOf(a.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble aSize = scene.getSizeOf(a.getEntityIdentifier());
+
+        Point2D bLoc = scene.getLocationOf(b.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble bSize = scene.getSizeOf(b.getEntityIdentifier());
+
+        assertThat(aLoc.getY() + aSize.getHeight(), lessThan(bLoc.getY()));
+        assertThat(aLoc.getX(), closeTo(bLoc.getX(), 0.001));
+        assertThat(aLoc.getY(), greaterThan(containerLoc.getY()));
+        assertThat(aLoc.getY(), lessThan(containerLoc.getY() + 2.5));
+        assertThat(containerSize.getWidth(), lessThan(1.5 + aSize.getWidth()));
+        assertThat(containerSize.getHeight(), greaterThan(aSize.getHeight() + bSize.getHeight()));
+        assertThat(containerSize.getHeight(), lessThan(aSize.getHeight() + bSize.getHeight() + 4));
+    }
 
 }
