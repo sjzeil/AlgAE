@@ -244,4 +244,87 @@ public class TestLayout {
         assertThat(containerSize.getHeight(), lessThan(aSize.getHeight() + bSize.getHeight() + 4));
     }
 
+    @Test
+	public void testSquareLayout() {
+    	MemoryModel memory = new MemoryModel(null);
+    	SourceLocation sourceLoc = new SourceLocation();
+		Snapshot snap = memory.renderInto("test", sourceLoc);
+
+        
+        Entity container = new Entity(new Identifier(10), "");
+        container.setValue("container");
+        container.setDirection(Entity.Directions.Square);
+        snap.add(container);
+        snap.setRootEntity(container.getEntityIdentifier());
+
+        // Container should get a layout roughly like this:
+        //
+        //  ______________
+        //  | A    |     |
+        //  |  ___ |  D  |
+        //  |  |B| |_____| 
+        //  |  |_| |     |
+        //  |      |  E  |
+        //  |  ___ |_____|
+        //  |  |C| |
+        //  |  |_| |
+        //  |______|
+
+
+        Entity a = new Entity(new Identifier(aID), container.getEntityIdentifier(), "1");
+        a.setValue("AAAA");
+        a.setDirection(Entity.Directions.Vertical);
+        snap.add(a);
+        container.getComponents().add(a.getEntityIdentifier());
+
+        Entity b = new Entity(new Identifier(bID), a.getEntityIdentifier(), "2");
+        b.setValue("BBBB");
+        snap.add(b);
+        a.getComponents().add(b.getEntityIdentifier());
+
+        Entity c = new Entity(new Identifier(43), a.getEntityIdentifier(), "2");
+        c.setValue("CCCC");
+        snap.add(c);
+        a.getComponents().add(c.getEntityIdentifier());
+
+        Entity d = new Entity(new Identifier(44), container.getEntityIdentifier(), "");
+        d.setValue("DDDD");
+        snap.add(d);
+        container.getComponents().add(d.getEntityIdentifier());
+
+        Entity e = new Entity(new Identifier(45), container.getEntityIdentifier(), "");
+        e.setValue("EEEE");
+        snap.add(e);
+        container.getComponents().add(e.getEntityIdentifier());
+
+        Layout scene = new Layout(snap);
+        
+    
+        Point2D containerLoc = scene.getLocationOf(container.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble containerSize = scene.getSizeOf(container.getEntityIdentifier());
+
+        Point2D aLoc = scene.getLocationOf(a.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble aSize = scene.getSizeOf(a.getEntityIdentifier());
+
+        Point2D bLoc = scene.getLocationOf(b.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble bSize = scene.getSizeOf(b.getEntityIdentifier());
+
+        Point2D cLoc = scene.getLocationOf(c.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble cSize = scene.getSizeOf(c.getEntityIdentifier());
+
+        Point2D dLoc = scene.getLocationOf(d.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble dSize = scene.getSizeOf(d.getEntityIdentifier());
+
+        Point2D eLoc = scene.getLocationOf(e.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble eSize = scene.getSizeOf(e.getEntityIdentifier());
+
+        assertThat(aLoc.getX() + aSize.getWidth(), lessThan(dLoc.getX()));
+        assertThat(aLoc.getX() + aSize.getWidth(), lessThan(eLoc.getX()));
+
+        assertThat(dLoc.getX(), closeTo(eLoc.getX(), 0.001));
+        assertThat(eLoc.getY(), lessThan(dLoc.getY() + dSize.getHeight()));
+
+        assertThat(eLoc.getY() + eSize.getHeight(), lessThan(aLoc.getY() + aSize.getHeight()));
+    }
+
 }
