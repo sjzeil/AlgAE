@@ -95,21 +95,21 @@ public void setUp ()
 
 public void insert (nodeType p, int value)
 {
-	ActivationRecord arec = activate(this);//!
-	arec.refParam("p", p).param("value", value);//!
-	arec.breakHere("starting insertion");//!
+	ActivationRecord aRec = activate(this);//!
+	aRec.refParam("p", p).param("value", value);//!
+	aRec.breakHere("starting insertion");//!
 	nodeType newNode = new nodeType();//!    nodeType *newNode = new nodeType;
-	arec.refVar("newNode", newNode);//!
-	arec.breakHere("allocated new node");//!
+	aRec.refVar("newNode", newNode);//!
+	aRec.breakHere("allocated new node");//!
 	newNode.info = value;
-	arec.breakHere("inserted data into new node");//!
+	aRec.breakHere("inserted data into new node");//!
 	newNode.link = p.link;//!    newNode->link = p->link;
-	arec.breakHere("make new node point to p's successor");//!
+	aRec.breakHere("make new node point to p's successor");//!
 	p.link = newNode;//!    p->link = newNode;
-	arec.breakHere("make p point to the new node");//!
-	arec.breakHere("Insertion has been completed");//!
-	arec.breakHere("Trace the 'next' links and see for yourself that ...");//!
-	arec.breakHere("...the new node was inserted right after p.");//!
+	aRec.breakHere("make p point to the new node");//!
+	aRec.breakHere("Insertion has been completed");//!
+	aRec.breakHere("Trace the 'next' links and see for yourself that ...");//!
+	aRec.breakHere("...the new node was inserted right after p.");//!
 }
 
 @Override

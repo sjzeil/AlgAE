@@ -5,8 +5,8 @@ plugins {
 }
 
 java {
-	sourceCompatibility = JavaVersion.toVersion(11)
-	targetCompatibility = JavaVersion.toVersion(11)
+	sourceCompatibility = JavaVersion.toVersion(17)
+	targetCompatibility = JavaVersion.toVersion(17)
 }
 
 version = '1.2'
@@ -21,7 +21,7 @@ repositories {
 
 
 dependencies {
-    implementation 'edu.odu.cs.algae:algae-client-server:4.4'
+    implementation 'edu.odu.cs.algae:algae-client-server:4.5'
     //implementation project(':algae-client-server')
 }
 

@@ -7,6 +7,7 @@ import java.util.List;
 
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Component;
 import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
 import edu.odu.cs.AlgAE.Server.Rendering.CanBeRendered;
@@ -22,9 +23,8 @@ public class SortingDriver extends LocalJavaAnimation {
 	@Override
 	public String about() {
 		return "Demonstration of Sorting Algorithms,\n" +
-				"prepared for CS 333, Advanced Data Strcutures\n" +
-				"and Algorithms, Old Dominion University\n" +
-				"Summer 2011";
+				"prepared for CS 361, Data Structures\n" +
+				"and Algorithms, Old Dominion University\n";
 	}
 
 	
@@ -55,14 +55,24 @@ public class SortingDriver extends LocalJavaAnimation {
 		}
 
 		@Override
-		public int getMaxComponentsPerRow(ArrayContainer obj) {
-			return 1;
-		}
-
-		@Override
 		public String getValue(ArrayContainer obj) {
 			return "";
 		}
+
+        @Override
+        public Boolean getClosedOnConnections() {
+            return true;
+        }
+
+        @Override
+        public Directions getDirection() {
+            return Directions.HorizontalTree;
+        }
+
+        @Override
+        public Double getSpacing() {
+            return 1.0;
+        }
 		
 	}
 
