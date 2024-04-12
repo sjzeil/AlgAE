@@ -349,4 +349,206 @@ public class TestLayout {
         assertThat(eLoc.getY(), closeTo(dLoc.getY(), 0.01));
     }
 
+
+    @Test
+	public void testHorizontalTreeLayout() {
+    	MemoryModel memory = new MemoryModel(null);
+    	SourceLocation sourceLoc = new SourceLocation();
+		Snapshot snap = memory.renderInto("test", sourceLoc);
+
+        
+        Entity container = new Entity(new Identifier(10), "");
+        container.setValue("container");
+        container.setDirection(Entity.Directions.HorizontalTree);
+        snap.add(container);
+        snap.setRootEntity(container.getEntityIdentifier());
+
+        // Container should get a layout roughly like this:
+        //
+        //     B
+        //   
+        //  A
+        //          D
+        //     C
+        //          E
+        
+        EntityIdentifier containerEID = container.getEntityIdentifier();
+        Entity a = new Entity(new Identifier(aID), containerEID, "1");
+        a.setValue("A");
+        snap.add(a);
+        container.getComponents().add(a.getEntityIdentifier());
+
+        Entity b = new Entity(new Identifier(bID), containerEID, "2");
+        b.setValue("B");
+        snap.add(b);
+        Connector a2b = new Connector("a2b", a.getEntityIdentifier(), b.getEntityIdentifier(), 0.0, 360.0);
+        a.getConnections().add(a2b);
+        container.getComponents().add(b.getEntityIdentifier());
+
+        Entity c = new Entity(new Identifier(43), containerEID, "2");
+        c.setValue("C");
+        snap.add(c);
+        Connector a2c = new Connector("a2c", a.getEntityIdentifier(), c.getEntityIdentifier(), 0.0, 360.0);
+        a.getConnections().add(a2c);
+        container.getComponents().add(c.getEntityIdentifier());
+
+        Entity d = new Entity(new Identifier(44), containerEID, "");
+        d.setValue("D");
+        snap.add(d);
+        Connector c2d = new Connector("c2d", c.getEntityIdentifier(), d.getEntityIdentifier(), 0.0, 360.0);
+        c.getConnections().add(c2d);
+        container.getComponents().add(d.getEntityIdentifier());
+
+        Entity e = new Entity(new Identifier(45), containerEID, "");
+        e.setValue("E");
+        snap.add(e);
+        Connector c2e = new Connector("c2e", c.getEntityIdentifier(), e.getEntityIdentifier(), 0.0, 360.0);
+        c.getConnections().add(c2e);
+        container.getComponents().add(e.getEntityIdentifier());
+
+        Layout scene = new Layout(snap);
+        
+    
+        Point2D containerLoc = scene.getLocationOf(container.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble containerSize = scene.getSizeOf(container.getEntityIdentifier());
+
+        Point2D aLoc = scene.getLocationOf(a.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble aSize = scene.getSizeOf(a.getEntityIdentifier());
+
+        Point2D bLoc = scene.getLocationOf(b.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble bSize = scene.getSizeOf(b.getEntityIdentifier());
+
+        Point2D cLoc = scene.getLocationOf(c.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble cSize = scene.getSizeOf(c.getEntityIdentifier());
+
+        Point2D dLoc = scene.getLocationOf(d.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble dSize = scene.getSizeOf(d.getEntityIdentifier());
+
+        Point2D eLoc = scene.getLocationOf(e.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble eSize = scene.getSizeOf(e.getEntityIdentifier());
+
+        assertThat(aLoc.getX() + aSize.getWidth(), lessThan(bLoc.getX()));
+        assertThat(aLoc.getX() + aSize.getWidth(), lessThan(cLoc.getX()));
+        assertThat(aLoc.getX() + aSize.getWidth(), lessThan(dLoc.getX()));
+        assertThat(aLoc.getX() + aSize.getWidth(), lessThan(eLoc.getX()));
+        
+        assertThat(bLoc.getX(), closeTo(cLoc.getX(), 0.01));
+        
+        assertThat(cLoc.getX() + cSize.getWidth(), lessThan(dLoc.getX()));
+        assertThat(cLoc.getX() + cSize.getWidth(), lessThan(eLoc.getX()));
+
+        assertThat(dLoc.getX(), closeTo(eLoc.getX(), 0.01));
+
+        assertThat(bLoc.getY(), lessThan(aLoc.getY()));
+        assertThat(bLoc.getY() + bSize.getHeight(), lessThan(cLoc.getY()));
+        assertThat(bLoc.getY(), lessThan(dLoc.getY()));
+        assertThat(bLoc.getY() + bSize.getHeight(), lessThan(eLoc.getY()));
+
+        assertThat(aLoc.getY(), lessThan(cLoc.getY()));
+        assertThat(aLoc.getY(), lessThan(eLoc.getY()));
+
+        assertThat(dLoc.getY() + dSize.getHeight(), lessThan(eLoc.getY()));
+    }
+
+
+    @Test
+	public void testVerticalTreeLayout() {
+    	MemoryModel memory = new MemoryModel(null);
+    	SourceLocation sourceLoc = new SourceLocation();
+		Snapshot snap = memory.renderInto("test", sourceLoc);
+
+        
+        Entity container = new Entity(new Identifier(10), "");
+        container.setValue("container");
+        container.setDirection(Entity.Directions.VerticalTree);
+        snap.add(container);
+        snap.setRootEntity(container.getEntityIdentifier());
+
+        // Container should get a layout roughly like this:
+        //
+        //            A
+        //        B        C
+        //              D     E
+        
+        EntityIdentifier containerEID = container.getEntityIdentifier();
+        Entity a = new Entity(new Identifier(aID), containerEID, "1");
+        a.setValue("A");
+        snap.add(a);
+        container.getComponents().add(a.getEntityIdentifier());
+
+        Entity b = new Entity(new Identifier(bID), containerEID, "2");
+        b.setValue("B");
+        snap.add(b);
+        Connector a2b = new Connector("a2b", a.getEntityIdentifier(), b.getEntityIdentifier(), 0.0, 360.0);
+        a.getConnections().add(a2b);
+        container.getComponents().add(b.getEntityIdentifier());
+
+        Entity c = new Entity(new Identifier(43), containerEID, "2");
+        c.setValue("C");
+        snap.add(c);
+        Connector a2c = new Connector("a2c", a.getEntityIdentifier(), c.getEntityIdentifier(), 0.0, 360.0);
+        a.getConnections().add(a2c);
+        container.getComponents().add(c.getEntityIdentifier());
+
+        Entity d = new Entity(new Identifier(44), containerEID, "");
+        d.setValue("D");
+        snap.add(d);
+        Connector c2d = new Connector("c2d", c.getEntityIdentifier(), d.getEntityIdentifier(), 0.0, 360.0);
+        c.getConnections().add(c2d);
+        container.getComponents().add(d.getEntityIdentifier());
+
+        Entity e = new Entity(new Identifier(45), containerEID, "");
+        e.setValue("E");
+        snap.add(e);
+        Connector c2e = new Connector("c2e", c.getEntityIdentifier(), e.getEntityIdentifier(), 0.0, 360.0);
+        c.getConnections().add(c2e);
+        container.getComponents().add(e.getEntityIdentifier());
+
+        Layout scene = new Layout(snap);
+        
+    
+        Point2D containerLoc = scene.getLocationOf(container.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble containerSize = scene.getSizeOf(container.getEntityIdentifier());
+
+        Point2D aLoc = scene.getLocationOf(a.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble aSize = scene.getSizeOf(a.getEntityIdentifier());
+
+        Point2D bLoc = scene.getLocationOf(b.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble bSize = scene.getSizeOf(b.getEntityIdentifier());
+
+        Point2D cLoc = scene.getLocationOf(c.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble cSize = scene.getSizeOf(c.getEntityIdentifier());
+
+        Point2D dLoc = scene.getLocationOf(d.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble dSize = scene.getSizeOf(d.getEntityIdentifier());
+
+        Point2D eLoc = scene.getLocationOf(e.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble eSize = scene.getSizeOf(e.getEntityIdentifier());
+
+        assertThat(aLoc.getY() + aSize.getHeight(), lessThan(bLoc.getY()));
+        assertThat(aLoc.getY() + aSize.getHeight(), lessThan(cLoc.getY()));
+        assertThat(aLoc.getY() + aSize.getHeight(), lessThan(dLoc.getY()));
+        assertThat(aLoc.getY() + aSize.getHeight(), lessThan(eLoc.getY()));
+        
+        assertThat(bLoc.getY(), closeTo(cLoc.getY(), 0.01));
+        
+        assertThat(cLoc.getY() + cSize.getHeight(), lessThan(dLoc.getY()));
+        assertThat(cLoc.getY() + cSize.getHeight(), lessThan(eLoc.getY()));
+
+        assertThat(dLoc.getY(), closeTo(eLoc.getY(), 0.01));
+
+        assertThat(bLoc.getX(), lessThan(aLoc.getX()));
+        assertThat(bLoc.getX() + bSize.getWidth(), lessThan(cLoc.getX()));
+        assertThat(bLoc.getX(), lessThan(dLoc.getX()));
+        assertThat(bLoc.getX() + bSize.getWidth(), lessThan(eLoc.getX()));
+
+        assertThat(aLoc.getX(), lessThan(cLoc.getX()));
+        assertThat(aLoc.getX(), lessThan(eLoc.getX()));
+
+        assertThat(dLoc.getX() + dSize.getWidth(), lessThan(eLoc.getX()));
+    }
+
+
+
+
 }
