@@ -281,7 +281,7 @@ public class MemoryModel implements ContextAware,
 
         if (knownComponents.get(oid) != null) {
             if (container == null) {
-                System.err.println("Closure: not re-rendering global " + oid);
+                //System.err.println("Closure: not re-rendering global " + oid);
                 return;
             }
             Renderer<Object> containerRenderer = activationStack.getRenderer(container.getActualObject());
