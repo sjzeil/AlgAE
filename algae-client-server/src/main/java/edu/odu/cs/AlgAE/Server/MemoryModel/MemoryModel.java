@@ -296,7 +296,7 @@ public class MemoryModel implements ContextAware,
             } else {
                 // We have processed this object elsewhere and don't need to
                 // do it again.
-                System.err.println("Closure: not re-rendering " + oid);
+                //System.err.println("Closure: not re-rendering " + oid);
             }
         } else { // rendering this for the first time
             knownComponents.put(oid, c);
