@@ -2,7 +2,6 @@ package edu.odu.cs.AlgAE.Client.Layout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 import edu.odu.cs.AlgAE.Client.Layout.Coordinates.BoundedRegion;
 import edu.odu.cs.AlgAE.Client.Layout.Coordinates.Dimension2DDouble;
@@ -74,12 +73,12 @@ public class PackedLayout implements LayoutModel {
             BoundedRegion relativeTo, 
             double xOffset,
             double yOffset) {
-        Dimension2DDouble bounds = new Dimension2DDouble(0.0, 0.0);
+        //Dimension2DDouble bounds = new Dimension2DDouble(0.0, 0.0);
         ArrayList<Row> rows = new ArrayList<>();
 
         for (EntityIdentifier eid: container.getComponents()) {
-            LocationInfo loc = locations.get(eid);
-            Dimension2DDouble sz = loc.getSize();
+            //LocationInfo loc = locations.get(eid);
+            //Dimension2DDouble sz = loc.getSize();
 
             Row appended = new Row(container.getSpacing());
             appended.add(eid);
@@ -101,7 +100,7 @@ public class PackedLayout implements LayoutModel {
                 }
                 row.removeLast();
             }
-            bounds = bestBound;
+            //bounds = bestBound;
             if (bestRow < rows.size()) {
                 rows.get(bestRow).add(eid);
             } else {
@@ -149,9 +148,10 @@ public class PackedLayout implements LayoutModel {
         return new Dimension2DDouble(w, h);
     }
 
+    /*
     private double delta(Dimension2DDouble b1, Dimension2DDouble b2) {
         return Math.abs(b1.getHeight() - b2.getHeight())
           + Math.abs(b1.getWidth() - b2.getWidth());
     }
-
+    */
 }

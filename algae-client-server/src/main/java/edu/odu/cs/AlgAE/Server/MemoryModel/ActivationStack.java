@@ -170,7 +170,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
     public <T> Renderer<T> getRenderer(T obj) {
         Identifier id = new Identifier(obj);
         CompoundRenderer<T> r = new CompoundRenderer<T>();
-        r.add(new DefaultRenderer<T>());
+        r.add(new DefaultRenderer<T>(obj));
         addTypeRenderers (r, obj);
         if (obj instanceof CanBeRendered<?>) {    
             @SuppressWarnings("unchecked")

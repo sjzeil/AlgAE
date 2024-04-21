@@ -18,8 +18,11 @@ import edu.odu.cs.AlgAE.Server.MemoryModel.Connection;
  */
 public class DefaultRenderer<T> implements Renderer<T> {
 
-    public DefaultRenderer() {
-        
+    private Object appliedTo;
+    private static Directions defaultArrayDirection = Directions.Horizontal;
+
+    public DefaultRenderer(T obj) {
+        appliedTo = obj;    
     }
     
     
@@ -78,7 +81,12 @@ public class DefaultRenderer<T> implements Renderer<T> {
 
     @Override
     public Directions getDirection() {
-        return Directions.Horizontal;
+        String className = appliedTo.getClass().getName();
+        if (className.startsWith("[")) {
+            return defaultArrayDirection;
+        } else {
+            return Directions.Horizontal;
+        }
     }
 
 
@@ -91,6 +99,10 @@ public class DefaultRenderer<T> implements Renderer<T> {
     @Override
     public Boolean getClosedOnConnections() {
         return false;
+    }
+
+    public static void setDefaultArrayDirection(Directions dir) {
+        defaultArrayDirection = dir;
     }
 
 }

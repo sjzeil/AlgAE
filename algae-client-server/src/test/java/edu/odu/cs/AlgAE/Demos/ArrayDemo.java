@@ -3,9 +3,12 @@ package edu.odu.cs.AlgAE.Demos;
 import java.util.ArrayList;
 
 import edu.odu.cs.AlgAE.Animations.LocalJavaAnimation;
+import edu.odu.cs.AlgAE.Common.Snapshot.Entity.Directions;
 import edu.odu.cs.AlgAE.Server.LocalServer;
 import edu.odu.cs.AlgAE.Server.MenuFunction;
 import edu.odu.cs.AlgAE.Server.MemoryModel.ActivationRecord;
+import edu.odu.cs.AlgAE.Server.Rendering.DefaultRenderer;
+import edu.odu.cs.AlgAE.Server.Rendering.VerticalRenderer;
 import edu.odu.cs.AlgAE.Server.Utilities.Index;
 
 public class ArrayDemo extends LocalJavaAnimation {
@@ -27,33 +30,34 @@ public class ArrayDemo extends LocalJavaAnimation {
 
 
 	void animatedFunction (Integer[] param1) {
-		ActivationRecord arec = LocalServer.activate(ArrayDemo.class);
-		arec.refParam("param1", param1);
-		arec.breakHere("about to call");
+		ActivationRecord aRec = LocalServer.activate(ArrayDemo.class);
+		aRec.refParam("param1", param1);
+		aRec.breakHere("about to call");
 		animatedFunction2(param1);
-		arec.breakHere("called");
+		aRec.breakHere("called");
 	}
 
 	void animatedFunction2 (Integer[] param1) {
-		ActivationRecord arec = LocalServer.activate(ArrayDemo.class);
-		arec.refParam("param1", a1);
-		arec.breakHere("show arrays 1");
-		arec.var("a2",a2);
-		arec.breakHere("show arrays 2");
-		arec.pushScope();
-		arec.var("a3",a3);
-		arec.breakHere("show arrays 3");
+		ActivationRecord aRec = LocalServer.activate(ArrayDemo.class);
+		aRec.refParam("param1", a1);
+		aRec.breakHere("show arrays 1");
+		aRec.var("a2",a2);
+		aRec.breakHere("show arrays 2");
+		aRec.pushScope();
+		aRec.var("a3",a3);
+		aRec.breakHere("show arrays 3");
 		Index index = new Index(0, a1, a2);
 		for (int i = 0; i < Math.min(a1.length, a2.length); ++i) {
 			index.set(i);
-			arec.var("i",index);
-			arec.breakHere("looking at " + i);
+			aRec.var("i",index);
+			aRec.breakHere("looking at " + i);
 		}
-		arec.popScope();
-		arec.breakHere("show arrays 2 again");
+		aRec.popScope();
+		aRec.breakHere("show arrays 2 again");
 	}
 	
-	
+    static private int dirCounter = 0;
+
 	
 	@Override
 	public void buildMenu() {
@@ -83,8 +87,8 @@ public class ArrayDemo extends LocalJavaAnimation {
 		register ("index", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord arec = LocalServer.activate(ArrayDemo.class);
-				arec.var("a1", a1).var("i",new Index(1,a1)).breakHere("show arrays 1");			
+				ActivationRecord aRec = LocalServer.activate(ArrayDemo.class);
+				aRec/*.var("a1", a1)*/.var("i",new Index(1,a1)).breakHere("show arrays 1");			
 			}
 		});
 		
@@ -92,14 +96,31 @@ public class ArrayDemo extends LocalJavaAnimation {
 			@Override
 			public void selected() {
 				globalVar("a1g", a1);
-				ActivationRecord arec = LocalServer.activate(ArrayDemo.class);
-				//arec.var("a1", a1);
-				arec.breakHere("show arrays 1");
-				arec.breakHere("show arrays 2");
-				arec.breakHere("show arrays 3");
+				ActivationRecord aRec = LocalServer.activate(ArrayDemo.class);
+				//aRec.var("a1", a1);
+				aRec.breakHere("show arrays 1");
+				aRec.breakHere("show arrays 2");
+				aRec.breakHere("show arrays 3");
 			}
 		});
 
+
+		register ("vertical array", new MenuFunction() {
+			@Override
+			public void selected() {
+                ++dirCounter;
+                DefaultRenderer.setDefaultArrayDirection(
+                    (dirCounter % 2 == 0) 
+                    ? Directions.Horizontal : Directions.Vertical);
+				//globalVar("a1g", a1);
+				ActivationRecord aRec = LocalServer.activate(ArrayDemo.class);
+				//aRec.var("a1", a1);
+                aRec.render(new VerticalRenderer<>(a1));
+				aRec.breakHere("show arrays 1");
+				aRec.breakHere("show arrays 2");
+				aRec.breakHere("show arrays 3");
+			}
+		});
 
 		register ("arrays", new MenuFunction() {
 			@Override
@@ -112,17 +133,17 @@ public class ArrayDemo extends LocalJavaAnimation {
 		register ("arrayLists", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord arec = LocalServer.activate(ArrayDemo.class);
+				ActivationRecord aRec = LocalServer.activate(ArrayDemo.class);
 				ArrayList<Integer> a = new ArrayList<Integer>();
-				arec.var("a", a).breakHere("show list");
+				aRec.var("a", a).breakHere("show list");
 				for (int i = 0; i < 3; ++i) {
 					a.add(i);
-					arec.highlight(a.get(i));
-					arec.var("i",i).breakHere("added " + i);
-					arec.highlight(a.get(i));
+					aRec.highlight(a.get(i));
+					aRec.var("i",i).breakHere("added " + i);
+					aRec.highlight(a.get(i));
 				}
 				for (int i = 0; i < 3; ++i) {
-					arec.var("i",new Index(i,a)).breakHere("looking at " + i);
+					aRec.var("i",new Index(i,a)).breakHere("looking at " + i);
 				}
 			}
 		});
@@ -132,11 +153,11 @@ public class ArrayDemo extends LocalJavaAnimation {
 		register ("highlight", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord arec = LocalServer.activate(ArrayDemo.class);
-				arec.var("a2", a2).breakHere("show array");
+				ActivationRecord aRec = LocalServer.activate(ArrayDemo.class);
+				aRec.var("a2", a2).breakHere("show array");
 				for (int i = 0; i < 3; ++i) {
-					arec.highlight(a2[i]);
-					arec.var("i",i).breakHere("highlight " + i);
+					aRec.highlight(a2[i]);
+					aRec.var("i",i).breakHere("highlight " + i);
 				}
 			}
 		});
