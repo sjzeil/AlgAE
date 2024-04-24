@@ -61,26 +61,26 @@ public class LinkedListDemo extends LocalJavaAnimation {
 		register ("find", new MenuFunction() {
 			@Override
 			public void selected() {
-				ActivationRecord arec = LocalServer.activate(getClass());
-				arec.breakHere("Prompt for input");
+				ActivationRecord aRec = LocalServer.activate(getClass());
+				aRec.breakHere("Prompt for input");
 				String value = algae().promptForInput("Search for ...", "[0-9]+");
 				ListIterator<String> it = list.listIterator();
-				arec.var("it", it).var("value", value).breakHere("About to search");
+				aRec.var("it", it).var("value", value).breakHere("About to search");
 				boolean found = false;
-				arec.var("found", found);
+				aRec.var("found", found);
 				while (it.hasNext() && !found) {
-					arec.breakHere("Iterator points to current element");
-					arec.pushScope();
+					aRec.breakHere("Iterator points to current element");
+					aRec.pushScope();
 					String s = it.next();
 					found = value.equals(s);
-					arec.var("s", s).var("found", found).breakHere("Examined s");
-					arec.popScope();
+					aRec.var("s", s).var("found", found).breakHere("Examined s");
+					aRec.popScope();
 				}
 				if (found) {
-					arec.breakHere("Found it!");
+					aRec.breakHere("Found it!");
 					algae().out.println ("Found it!");
 				} else {
-					arec.breakHere("Could not find it.");
+					aRec.breakHere("Could not find it.");
 					algae().out.println ("Could not find it.");
 				}
 			}

@@ -17,7 +17,7 @@ import edu.odu.cs.AlgAE.Server.Rendering.Renderer;
  * @author zeil
  *
  */
-public class DiscreteInteger implements CanBeRendered<DiscreteInteger>, Renderer<DiscreteInteger> {
+public class DiscreteInteger implements CanBeRendered<DiscreteInteger>, Renderer<DiscreteInteger>, Comparable<DiscreteInteger> {
 
     private static Color color;
 
@@ -156,6 +156,11 @@ public class DiscreteInteger implements CanBeRendered<DiscreteInteger>, Renderer
     @Override
     public Boolean getClosedOnConnections() {
         return false;
+    }
+
+    @Override
+    public int compareTo(DiscreteInteger i) {
+        return value - i.value;
     }
 
 }

@@ -56,8 +56,10 @@ public class HorizontalSpanTreeLayout implements LayoutModel {
             topLevel.add(eid);
         }
         TreeNode root = new TreeNode(null);
-        root.subtreeBB = findBBOfRoot(root);
-        setPositions(root, relativeTo, xOffset, yOffset, spanTree);
+        if (theSpanTree.getComponents().size() > 0) {
+            root.subtreeBB = findBBOfRoot(root);
+            setPositions(root, relativeTo, xOffset, yOffset, spanTree);
+        }
         //System.err.println("SpanTree width is " + root.subtreeBB.getWidth());
         return new Dimension2DDouble(root.subtreeBB.getWidth(), root.subtreeBB.getHeight());
     }
