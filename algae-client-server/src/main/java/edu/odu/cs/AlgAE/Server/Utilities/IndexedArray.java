@@ -234,7 +234,7 @@ public class IndexedArray<T>
     
     //////// Rendering ////////////
 
-    void showNumbers(boolean tf)
+    public void showNumbers(boolean tf)
     {
         showingNumbers = tf;
     }
