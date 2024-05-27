@@ -28,7 +28,7 @@ classroom) or embed them into a web page.
 
 ## Library Info
 
-Current version: **4.5**
+Current version: **4.6**
 
 To import the client-server library:
 
