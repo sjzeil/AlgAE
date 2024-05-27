@@ -167,6 +167,7 @@ public class IndexedArray<T>
     private Object[] cells;
     private Directions direction;
     private Color color;
+    private boolean showingNumbers;
 
     /**
      * 
@@ -180,6 +181,7 @@ public class IndexedArray<T>
         indexStack = new java.util.Stack<>();
         direction = Directions.Horizontal;
         color = new Color(0, 0, 0, 0);
+        showingNumbers = true;
     }
 
 
@@ -231,6 +233,12 @@ public class IndexedArray<T>
 
     
     //////// Rendering ////////////
+
+    void showNumbers(boolean tf)
+    {
+        showingNumbers = tf;
+    }
+
     @Override
     public String getValue(IndexedArray<T> obj) {
         return "";
@@ -244,8 +252,12 @@ public class IndexedArray<T>
     @Override
     public List<Component> getComponents(IndexedArray<T> obj) {
         java.util.LinkedList<Component> components = new java.util.LinkedList<>(); 
+        int counter = 0;
         for (Object c: cells) {
-            components.add (new Component(c));
+            Component comp = (showingNumbers)? 
+                new Component(c, "" + counter) : new Component(c);
+            components.add (comp);
+            ++counter;
         }
         return components;
     }
