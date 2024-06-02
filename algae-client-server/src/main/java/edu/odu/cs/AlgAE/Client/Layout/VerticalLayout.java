@@ -28,7 +28,7 @@ public class VerticalLayout implements LayoutModel {
             double xOffset,
             double yOffset) {
         // Arrange components into multiple rows.
-        double y = VerticalMargin + yOffset;
+        double y = VerticalMargin;
         double width = 0;
         boolean first = true;
         for (EntityIdentifier eid : container.getComponents()) {
@@ -42,7 +42,7 @@ public class VerticalLayout implements LayoutModel {
             Dimension2DDouble sz = loc.getSize();
             loc.setLoc(new RelativePoint(x + xOffset, y + yOffset, Connections.LU, relativeTo));
             x += sz.getWidth();
-            height = Math.max(height, sz.getHeight());
+            height = sz.getHeight();
             width = Math.max(width, x + HorizontalMargin);
             y += height;
         }

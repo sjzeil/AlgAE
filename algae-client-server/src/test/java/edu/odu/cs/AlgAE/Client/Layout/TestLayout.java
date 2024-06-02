@@ -549,6 +549,50 @@ public class TestLayout {
     }
 
 
+    @Test
+	public void testUnitLayout() {
+    	MemoryModel memory = new MemoryModel(null);
+    	SourceLocation sourceLoc = new SourceLocation();
+		Snapshot snap = memory.renderInto("test", sourceLoc);
+
+        
+        Entity container = new Entity(new Identifier(10), "");
+        container.setValue("container");
+        container.setDirection(Entity.Directions.Horizontal);
+        snap.add(container);
+        snap.setRootEntity(container.getEntityIdentifier());
+
+        Entity a = new Entity(new Identifier(aID), container.getEntityIdentifier(), "");
+        a.setValue("x");
+        a.setDirection(Entity.Directions.Horizontal);
+        snap.add(a);
+        container.getComponents().add(a.getEntityIdentifier());
+
+        Entity b = new Entity(new Identifier(bID), container.getEntityIdentifier(), "");
+        b.setValue("x");
+        a.setDirection(Entity.Directions.Vertical);
+        snap.add(b);
+        container.getComponents().add(b.getEntityIdentifier());
+
+        Layout scene = new Layout(snap);
+        
+    
+        Point2D aLoc = scene.getLocationOf(a.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble aSize = scene.getSizeOf(a.getEntityIdentifier());
+
+        assertThat(aSize.getWidth(), greaterThan(1.0));
+        assertThat(aSize.getWidth(), lessThan(1.8));
+        assertThat(aSize.getHeight(), greaterThan(1.0));
+        assertThat(aSize.getHeight(), lessThan(1.6));
+
+        Point2D bLoc = scene.getLocationOf(b.getEntityIdentifier()).getCoordinates();
+        Dimension2DDouble bSize = scene.getSizeOf(b.getEntityIdentifier());
+
+        assertThat(bSize.getWidth(), greaterThan(1.0));
+        assertThat(bSize.getWidth(), lessThan(1.8));
+        assertThat(bSize.getHeight(), greaterThan(1.0));
+        assertThat(bSize.getHeight(), lessThan(1.6));
+    }
 
 
 }
