@@ -3,7 +3,7 @@ plugins {
 	id 'project-report'
 	id 'pmd'
 	id 'jacoco'
-	id 'ivy-publish'
+	id 'maven-publish'
 }
 
 java {
@@ -51,40 +51,38 @@ javadoc.failOnError=false
 
 // Publishing
 
-// Credentials are loaded from ~/.gradle/gradle.properties
-if(project.hasProperty("ivyRepoUser")){
-    ext.ivyRepoUser = "$ivyRepoUser";
-} else {
-    ext.ivyRepoUser = "user";
-}
-if(project.hasProperty("ivyRepoPass")){
-    ext.ivyRepoPass = "$ivyRepoPass";
-} else {
-    ext.ivyRepoPass = "password";
-}
-
 publishing {
     publications {
-        ivyJava(IvyPublication) {
-            organisation 'edu.odu.cs.algae'
-            module project.name
-            revision project.version
-            descriptor.status = 'integration'   // milestone, release
-            descriptor.branch = 'v4'
-
+        codegraderLibrary(MavenPublication) {
             from components.java
+            groupId = 'edu.odu.cs.algae'
+            artifactId = project.name
+            version = project.version
+            pom {
+                name = "algae-client-server"
+                description = 'AlgAE Algorithm Animation Engine'
+                url = 'https://github.com/sjzeil/AlgAE'
+                licenses {
+                    license {
+                        name = "Educational Community License"
+                        url = "https://github.com/sjzeil/AlgAE/blob/master/LICENSE.md"
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'sjzeil'
+                        name = 'Steven Zeil'
+                        email = 'szeil@odu.edu'
+                    }
+                }
+            }
         }
     }
 
     repositories {
-        ivy {
-            name 'ivyRepo'
-            url 'sftp://linux.cs.odu.edu:22/home/zeil/secure_html/ivyrepo'
-            // Readable via https://www.cs.odu.edu/~zeil/ivyrepo
-            credentials {
-                username project.ivyRepoUser
-                password project.ivyRepoPass
-            }
+        maven {
+            name = 'Zeil-maven-repo'
+            url = '../../mvnrepo'
         }
     }
 }

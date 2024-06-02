@@ -2,11 +2,10 @@ subprojects {
     version = "4.6"
 
     repositories {
-        jcenter()
-		//mavenCentral()
-        ivy { // Use my own CS dept repo
-            url 'https://www.cs.odu.edu/~zeil/ivyrepo'
-        }         
+		mavenCentral()
+        maven {
+            url 'https://github.com/sjzeil/mvnrepo/raw/main'
+        } 
     }
 
 }
