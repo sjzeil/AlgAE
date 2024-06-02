@@ -87,8 +87,7 @@ public class HorizontalSpanTreeLayout implements LayoutModel {
             }
             firstTime = false;
             setPositions(child, relativeTo, xOffsetChildren, yOffsetChildren, spanTree);
-            LocationInfo childLoc = locations.get(child.data.getEntityIdentifier());
-            yOffsetChildren += childLoc.getSize().getHeight();
+            yOffsetChildren += child.subtreeBB.height;
         }
         //System.err.println(")");
     }

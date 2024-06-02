@@ -84,11 +84,10 @@ public class VerticalSpanTreeLayout implements LayoutModel {
         for (TreeNode child : root.children) {
             if (!firstTime) {
                 xOffsetChildren += spanTree.getSpacing();
-            }
+            } 
             firstTime = false;
             setPositions(child, relativeTo, xOffsetChildren, yOffsetChildren, spanTree);
-            LocationInfo childLoc = locations.get(child.data.getEntityIdentifier());
-            xOffsetChildren += childLoc.getSize().getWidth();
+            xOffsetChildren += child.subtreeBB.width;
         }
         //System.err.println(")");
     }
