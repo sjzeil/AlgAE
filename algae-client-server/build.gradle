@@ -29,7 +29,11 @@ test {
 	
 }
 
-
+tasks.withType(Jar) {
+    from(sourceSets["main"].allSource)
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+ 
 
 // Reporting
 
