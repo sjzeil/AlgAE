@@ -45,8 +45,10 @@ public class DefaultRenderer<T> implements Renderer<T> {
             // This is an array
             int len = Array.getLength(obj);
             LinkedList<Component> components = new LinkedList<Component>();
-            for (int i = 0; i < len; ++i)
-                components.add (new Component(Array.get(obj, i)));
+            for (int i = 0; i < len; ++i) {
+            	Object component = Array.get(obj, i);
+                components.add (new Component(component));
+            }
             return components;
         } else if (obj instanceof Iterable<?>) {
             LinkedList<Component> componentsL = new LinkedList<Component>();

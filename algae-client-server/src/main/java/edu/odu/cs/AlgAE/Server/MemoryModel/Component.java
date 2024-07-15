@@ -19,26 +19,34 @@ public class Component {
         actual = comp;
         this.label = label;
         this.container = container;
+        nullCheck();
     }
     
     public Component (Object comp, String label) {
         actual = comp;
         this.label = label;
         this.container = null;
+        nullCheck();
     }
 
     public Component (Object comp, Component container) {
         actual = comp;
         this.label = null;
         this.container = container;
+        nullCheck();
     }
     
     public Component (Object comp) {
         actual = comp;
         this.label = null;
         this.container = null;
+        nullCheck();
     }
     
+    private void nullCheck() {
+    	if (actual == null)
+    		actual = "\u2400";   // null components rendered as the Unicode NUL character
+    }
     
     public Object getActualObject() {
         return actual;
