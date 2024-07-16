@@ -45,7 +45,11 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
     
     private MemoryModel memory;
 
-    
+    /**
+     * Allows for temporary suppression of breakpoint animations
+     */
+    private boolean suppressed;
+
     
     public ActivationStack (MemoryModel context) {
         memory = context;
@@ -53,6 +57,7 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
         stack = new ArrayList<ActivationRecord>();
         stack.renderHorizontally(false);
         stack.setColor(Color.darkGray);
+        suppressed = false;
     }
     
     /**
@@ -150,6 +155,25 @@ public class ActivationStack implements CanBeRendered<ActivationStack>, Renderer
      */
     public void clear() {
         stack.clear();
+    }
+
+        /**
+     * Suppress animation of subsequent breakpoints (until resumeAnimation()
+     * is called).
+     */
+    public void suppressAnimation() {
+        suppressed = true;
+    }
+
+    /**
+     * Resume animation of subsequent breakpoints.
+     */
+    public void resumeAnimation() {
+        suppressed = false;
+    }
+
+    public boolean isSuppressed() {
+        return suppressed;
     }
 
     /**

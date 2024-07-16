@@ -135,6 +135,21 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
     }
 
     /**
+     * Suppress animation of subsequent breakpoints (until resumeAnimation()
+     * is called).
+     */
+    public void suppressAnimation() {
+        stack.suppressAnimation();
+    }
+
+    /**
+     * Resume animation of subsequent breakpoints.
+     */
+    public void resumeAnimation() {
+        stack.resumeAnimation();
+    }
+
+    /**
      * Highlight the rendering of dataValue by altering its color.
      * This change remains in effect until we leave the current activation.
      *
@@ -226,24 +241,24 @@ implements ContextAware, CanBeRendered<ActivationRecord> {
         while (!stack.isEmpty() && stack.topOfStack() != this) {
             stack.pop();
         }
-        SourceLocation location = null;
-        final StackTraceElement[] trace =
-                Thread.currentThread().getStackTrace();
-        final StackTraceElement activeCall = trace[2];
-        final Object obj = getMethodOwner();
-        final String className = activeCall.getClassName();
-        final String fileName = className.replaceFirst(
-                "\\$.*$", "").replaceAll("\\.", "/") + ".java";
-        context().sendSourceToClient(fileName);
-        if (obj != null) {
-            location = new SourceLocation(fileName, activeCall.getLineNumber());
+        if (!stack.isSuppressed()) {
+            SourceLocation location = null;
+            final StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+            final StackTraceElement activeCall = trace[2];
+            final Object obj = getMethodOwner();
+            final String className = activeCall.getClassName();
+            final String fileName = className.replaceFirst(
+                    "\\$.*$", "").replaceAll("\\.", "/") + ".java";
+            context().sendSourceToClient(fileName);
+            if (obj != null) {
+                location = new SourceLocation(fileName, activeCall.getLineNumber());
+            }
+
+            final Snapshot snapshot = stack.getMemoryModel().renderInto(message,
+                    location);
+
+            context().sendToClient(snapshot, false);
         }
-
-        final Snapshot snapshot = stack.getMemoryModel().renderInto(message,
-                location);
-
-        context().sendToClient (snapshot, false);
-
     }
 
 
